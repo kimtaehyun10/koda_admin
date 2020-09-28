@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MessageSettingDAO">
+
+    <typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>             
+    
+    <select id="MessageSettingDAO.selectCount" resultClass="int">
+    	<![CDATA[
+    	SELECT COUNT(*)
+    	FROM message_setting   	
+    	]]>
+    </select>
+    
+    <select id="MessageSettingDAO.select" resultClass="java.util.HashMap">
+    	SELECT *
+    	FROM message_setting
+    	WHERE 1=1 
+    	<isNotEmpty property="message_setting_index">
+    	AND message_setting_index = #message_setting_index#
+    	</isNotEmpty>
+    	<isNotEmpty property="message_setting_code">
+    	AND message_setting_code = #message_setting_code#
+    	</isNotEmpty>
+    </select>
+    
+    <select id="MessageSettingDAO.selectList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	<![CDATA[
+    	SELECT *
+    	FROM message_setting
+    	ORDER BY message_setting_index DESC
+    	]]>
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>
+    </select>   
+    
+    <insert id="MessageSettingDAO.insert">
+	   	INSERT INTO message_setting (
+			message_setting_name, 
+			message_setting_code, 
+			sms_send_state, 
+			sms_subject, 
+			sms_send_msg, 
+			sms_send_sender, 
+			sms_type, 
+			arrange_priority
+		) VALUES (
+			#message_setting_name#, 
+			#message_setting_code#, 
+			#sms_send_state#, 
+			#sms_subject#, 
+			#sms_send_msg#, 
+			#sms_send_sender#, 
+			#sms_type#, 
+			#arrange_priority#
+		)   
+    	<selectKey keyProperty="message_setting_index" resultClass="int">
+        SELECT LAST_INSERT_ID()
+   		</selectKey> 	
+    </insert>
+    
+    <update id="MessageSettingDAO.update">
+    	<![CDATA[
+    	UPDATE message_setting
+		SET			
+			message_setting_name = #message_setting_name#, 
+			message_setting_code = #message_setting_code#, 
+			sms_send_state = #sms_send_state#, 
+			sms_subject = #sms_subject#, 
+			sms_send_msg = #sms_send_msg#, 
+			sms_send_sender = #sms_send_sender#, 
+			sms_type = #sms_type#, 
+			arrange_priority = #arrange_priority#
+			
+		WHERE
+			message_setting_index = #message_setting_index#
+    	]]>
+    </update>     
+    
+    <delete id="MessageSettingDAO.delete">
+    	<![CDATA[
+    	DELETE FROM message_setting
+    	WHERE message_setting_index = #message_setting_index#
+    	]]>
+    </delete>
+</sqlMap>

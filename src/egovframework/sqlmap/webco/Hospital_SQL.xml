@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="HospitalDAO">
+
+    <typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>   
+
+    <select id="HospitalDAO.hospitalList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        
+    	select * 
+    	from hospital 
+		where 1=1
+		<isNotEmpty property="hospital_type">
+			and hospital_type = #hospital_type#
+		</isNotEmpty>
+		<isNotEmpty property="search_keyword">
+	    	and hospital_name like "%$search_keyword$%"
+		</isNotEmpty>
+		<isNotEmpty property="search_area">
+	    	and hospital_area = #search_area#	    		    
+		</isNotEmpty>
+		<isNotEmpty property="search_type">
+	    	and hospital_type = #search_type#	    		    
+		</isNotEmpty> 
+		order by hospital_idx desc
+    	
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>
+ 			
+    </select>
+    
+    <select id="HospitalDAO.hospitalListTotCnt" resultClass="int">
+  
+    	select count(*) 
+    	from hospital 
+		where 1=1
+		<isNotEmpty property="hospital_type">
+		and hospital_type = #hospital_type#
+		</isNotEmpty>
+		<isNotEmpty property="search_keyword">
+	    	and hospital_name like "%$search_keyword$%"
+		</isNotEmpty>
+		<isNotEmpty property="search_area">
+	    	and hospital_area = #search_area#	    		    
+		</isNotEmpty>
+		<isNotEmpty property="search_type">
+	    	and hospital_type = #search_type#	    		    
+		</isNotEmpty> 	
+		    	
+    </select>
+	
+	<select id="HospitalDAO.selectedHospital" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        
+    	select * 
+    	from hospital 
+		where hospital_idx = #hospital_idx#
+ 			
+    </select>
+    
+    <update id="HospitalDAO.hospitalUpdateEnd" parameterClass="java.util.Map">
+    	update hospital
+    	set
+    	hospital_name = #hospital_name#,
+    	hospital_area = #hospital_area#
+    	where
+    	hospital_idx = #hospital_idx#
+    </update>
+    
+    <delete id="HospitalDAO.hospitalDeleteEnd" parameterClass="java.util.Map">
+    	delete 
+    	from hospital
+    	where
+    	hospital_idx = #hospital_idx#
+    </delete>
+    
+    <insert id="HospitalDAO.hospitalWriteEnd" parameterClass="java.util.Map">
+    	insert into hospital
+	    	(	    	
+	    	hospital_name,
+	    	hospital_area,
+	    	hospital_type
+	    	) 
+    	values 
+    		(    		
+    		#hospital_name#,
+    		#hospital_area#,
+    		#hospital_type#
+    		)
+    </insert>
+</sqlMap>

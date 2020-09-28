@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN" "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<sqlMap resource="egovframework/sqlmap/webco/Admin_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/webco/User_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/webco/Visit_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/webco/SmsForm_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/webco/Consult_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/webco/MessageSetting_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/webco/IssueMembership_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/webco/Notification_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/webco/Hospital_SQL.xml"/>
+	<sqlMap resource="egovframework/sqlmap/webco/DefaultSetting_SQL.xml"/>
+</sqlMapConfig>

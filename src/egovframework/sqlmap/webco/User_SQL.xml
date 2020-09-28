@@ -1,0 +1,1287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="UserDAO">
+
+    <typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>   
+	
+	<!-- 기증자목록 조회 공통 검색조건 -->
+    <sql id="UserDAO.selectListWhere"> 
+    	<isNotEmpty property="search_keyword_type">
+ 			<isNotEmpty property="search_keyword">
+ 		AND $search_keyword_type$ LIKE CONCAT('%', #search_keyword#, '%')
+ 			</isNotEmpty>
+ 		</isNotEmpty>
+        <isNotEmpty property="search_keyword_type1">
+ 			<isNotEmpty property="search_keyword1">
+ 		AND $search_keyword_type1$ LIKE CONCAT('%', #search_keyword1#, '%')
+ 			</isNotEmpty>
+ 		</isNotEmpty>
+ 		<isNotEmpty property="search_keyword_type2">
+ 			<isNotEmpty property="search_keyword2">
+ 		AND $search_keyword_type2$ LIKE CONCAT('%', #search_keyword2#, '%')
+ 			</isNotEmpty>
+ 		</isNotEmpty>
+ 		<isNotEmpty property="search_keyword_type3">
+ 			<isNotEmpty property="search_keyword3">
+ 		AND $search_keyword_type3$ LIKE CONCAT('%', #search_keyword3#, '%')
+ 			</isNotEmpty>
+ 		</isNotEmpty>
+ 		<isNotEmpty property="search_start_date">
+ 			<isNotEmpty property="search_end_date">
+ 				<isNotEmpty property="search_between_type">
+ 		AND $search_between_type$ between #search_start_date# and #search_end_date#
+ 				</isNotEmpty>
+ 				<isEmpty property="search_between_type">
+ 		AND user_pledge_date between #search_start_date# and #search_end_date#
+ 				</isEmpty>
+ 			</isNotEmpty>
+ 		</isNotEmpty>
+ 		<isNotEmpty property="search_start_birthday">
+ 			<isNotEmpty property="search_end_birthday">
+ 		AND user_birthday between #search_start_birthday# and #search_end_birthday#
+ 			</isNotEmpty>
+ 		</isNotEmpty>
+ 		<isNotEmpty property="user_pledge_date">
+ 		AND user_pledge_date = #user_pledge_date#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="user_register_channel">
+ 		AND user_register_channel = #user_register_channel#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="user_sex">
+ 		AND user_sex = #user_sex#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="user_withdraw_date">
+ 		AND user_withdraw_date = #user_withdraw_date#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="user_withdraw_reason">
+ 		AND user_withdraw_reason = #user_withdraw_reason#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="user_recognize_type">
+ 		AND user_recognize_type = #user_recognize_type#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="user_index_array">
+ 		<iterate property="user_index_array" prepend="AND user_index IN" open="(" close=")" conjunction="," >
+ 		<![CDATA[
+            #user_index_array[]#
+        ]]>
+        </iterate>    
+        </isNotEmpty>            
+    </sql>
+    
+    <!-- 기증자목록 조회 -->
+    <select id="UserDAO.selectCount" resultClass="int">
+        <![CDATA[
+		SELECT COUNT(*)
+			FROM user
+		WHERE 1=1
+ 		]]>
+ 		<include refid="UserDAO.selectListWhere"/>
+    </select> 
+    
+    <select id="UserDAO.checkUserCI" resultClass="java.util.HashMap">
+	    <![CDATA[
+			SELECT 
+			user_index 
+			,user_num 
+			,user_name 			
+			FROM user 
+		WHERE (ipin_ci = #ipinCi# OR checkplus_dupinfo = #ipinCi# OR syrup_ci = #ipinCi#) 
+ 		]]> 	 		 		
+    </select>  
+    
+    <select id="UserDAO.select" resultClass="java.util.HashMap">
+        <!--damo ,CAST(IFNULL(db_kost.FN_DEC(user_social_security_num),'') AS CHAR(20)) as user_social_security_num -->
+        <![CDATA[
+		SELECT 
+			user_index 
+			,user_num 
+			,user_name 			
+			,user_birthday
+			,IFNULL(cast(AES_DECRYPT(UNHEX(user_social_security_num), 'koda') as char),'') as user_social_security_num			 
+			,user_age 
+			,user_sex 
+			,user_email 
+			,user_post 
+			,user_address 
+			,user_address_detail 
+			,user_send_post 
+			,user_send_address 
+			,user_send_address_detail 
+			,user_mobile 
+			,user_phone 
+			,user_recognize_type 
+			,user_donation_type_body 
+			,user_donation_type_organ 
+			,user_donation_type_comea 
+			,user_is_driving_license 
+			,user_konos_register_state 
+			,user_pledge_date 
+			,user_registration_date 
+			,user_konos_registration_date 
+			,user_register 
+			,user_register_channel 
+			,user_withdraw_date 
+			,user_withdraw_reason 
+			,user_withdraw_way 
+			,user_konos_withdraw_date 
+			,user_is_email_agree 
+			,user_is_sms_agree 
+			,user_is_mail_agree 
+			,user_pledge_card_state 
+			,user_legal_representative_info 
+			,user_is_legal_representative_text 
+			,ipin_vno 
+			,ipin_ci 
+			,ipin_dup_info 
+			,ipin_result_index 
+			,checkplus_dupinfo 
+			,checkplus_conninfo 
+			,checkplus_result_index 
+			,syrup_ci 
+			,create_time 
+			,update_time
+			FROM user
+		WHERE user_index = #user_index#
+ 		]]> 		
+    </select>
+    
+    <select id="UserDAO.selectList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        <!-- ,CAST(IFNULL(db_kost.FN_DEC(user_social_security_num),'') AS CHAR(20)) as user_social_security_num  -->
+        <![CDATA[
+		SELECT
+			user_index 
+			,user_num 
+			,user_name 
+			,user_birthday
+			,IFNULL(cast(AES_DECRYPT(UNHEX(user_social_security_num), 'koda') as char),'') as user_social_security_num			
+			,user_age 
+			,user_sex 
+			,user_email 
+			,user_post 
+			,user_address 
+			,user_address_detail 
+			,user_send_post 
+			,user_send_address 
+			,user_send_address_detail 
+			,user_mobile 
+			,user_phone 
+			,user_recognize_type 
+			,user_donation_type_body 
+			,user_donation_type_organ 
+			,user_donation_type_comea 
+			,user_is_driving_license 
+			,user_konos_register_state 
+			,user_pledge_date 
+			,user_registration_date 
+			,user_konos_registration_date 
+			,user_register 
+			,user_register_channel 
+			,user_withdraw_date 
+			,user_withdraw_reason 
+			,user_withdraw_way 
+			,user_konos_withdraw_date 
+			,user_is_email_agree 
+			,user_is_sms_agree 
+			,user_is_mail_agree 
+			,user_pledge_card_state 
+			,user_legal_representative_info 
+			,user_is_legal_representative_text 
+			,ipin_vno 
+			,ipin_ci 
+			,ipin_dup_info 
+			,ipin_result_index 
+			,checkplus_dupinfo 
+			,checkplus_conninfo 
+			,checkplus_result_index 
+			,syrup_ci 
+			,create_time 
+			,update_time
+			FROM user
+		WHERE 1=1
+ 		]]>
+ 		<include refid="UserDAO.selectListWhere"/>
+ 		<![CDATA[
+ 		ORDER BY user.user_pledge_date DESC, user.create_time DESC
+ 		]]>
+ 		<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty> 		
+    </select>  
+    
+    <insert id="UserDAO.insert">
+    	<!-- db_kost.FN_ENC(#user_social_security_num#), -->
+    	<![CDATA[
+    	INSERT INTO user ( 
+			user_num, 
+			user_name, 
+			user_social_security_num, 
+			user_birthday, 
+			user_age, 
+			user_sex, 
+			user_email, 
+			user_post, 
+			user_address, 
+			user_address_detail, 
+			user_send_post, 
+			user_send_address, 
+			user_send_address_detail, 
+			user_mobile, 
+			user_phone, 
+			user_recognize_type, 
+			user_donation_type_body, 
+			user_donation_type_organ, 
+			user_donation_type_comea, 
+			user_is_driving_license, 
+			user_konos_register_state, 
+			user_pledge_date, 
+			user_registration_date, 
+			user_konos_registration_date, 
+			user_register, 
+			user_register_channel, 
+			user_withdraw_date, 
+			user_withdraw_reason, 
+			user_withdraw_way, 
+			user_konos_withdraw_date, 
+			user_is_email_agree, 
+			user_is_sms_agree, 
+			user_is_mail_agree, 
+			user_pledge_card_state, 
+			user_legal_representative_info, 
+			user_is_legal_representative_text, 
+			ipin_vno, 
+			ipin_ci, 
+			ipin_dup_info, 
+			ipin_result_index, 
+			checkplus_dupinfo, 
+			checkplus_conninfo, 
+			checkplus_result_index, 
+			syrup_ci, 
+			create_time, 
+			update_time
+		) VALUES (
+			#user_num#, 
+			#user_name#, 
+			HEX(AES_ENCRYPT(#user_social_security_num#,'koda')),   
+			#user_birthday#, 
+			#user_age#, 
+			#user_sex#, 
+			#user_email#, 
+			#user_post#, 
+			#user_address#, 
+			#user_address_detail#, 
+			#user_send_post#, 
+			#user_send_address#, 
+			#user_send_address_detail#, 
+			#user_mobile#, 
+			#user_phone#, 
+			#user_recognize_type#, 
+			#user_donation_type_body#, 
+			#user_donation_type_organ#, 
+			#user_donation_type_comea#, 
+			#user_is_driving_license#, 
+			#user_konos_register_state#, 
+			#user_pledge_date#, 
+			#user_registration_date#, 
+			#user_konos_registration_date#, 
+			#user_register#, 
+			#user_register_channel#, 
+			#user_withdraw_date#, 
+			#user_withdraw_reason#, 
+			#user_withdraw_way#, 
+			#user_konos_withdraw_date#, 
+			#user_is_email_agree#, 
+			#user_is_sms_agree#, 
+			#user_is_mail_agree#, 
+			#user_pledge_card_state#, 
+			#user_legal_representative_info#, 
+			#user_is_legal_representative_text#, 
+			#ipin_vno#, 
+			#ipin_ci#, 
+			#ipin_dup_info#, 
+			#ipin_result_index#, 
+			#checkplus_dupinfo#, 
+			#checkplus_conninfo#, 
+			#checkplus_result_index#, 
+			#syrup_ci#, 
+			now(), 
+			now()
+		)
+    	]]>
+    	<selectKey keyProperty="user_index" resultClass="int">
+        SELECT LAST_INSERT_ID()
+   		</selectKey> 
+    </insert>
+    
+    <update id="UserDAO.update">
+    <!-- user_social_security_num = db_kost.FN_ENC(#user_social_security_num#),  -->
+	    UPDATE user 
+			SET 
+			user_num = #user_num#, 
+			user_name = #user_name#, 
+			user_social_security_num = HEX(AES_ENCRYPT(#user_social_security_num#,'koda')), 
+			user_birthday = #user_birthday#, 
+			user_age = #user_age#, 
+			user_sex = #user_sex#, 
+			user_email = #user_email#, 
+			user_post = #user_post#, 
+			user_address = #user_address#, 
+			user_address_detail = #user_address_detail#, 
+			user_send_post = #user_send_post#, 
+			user_send_address = #user_send_address#, 
+			user_send_address_detail = #user_send_address_detail#, 
+			user_mobile = #user_mobile#, 
+			user_phone = #user_phone#, 
+			user_recognize_type = #user_recognize_type#, 
+			user_donation_type_body = #user_donation_type_body#, 
+			user_donation_type_organ = #user_donation_type_organ#, 
+			user_donation_type_comea = #user_donation_type_comea#, 
+			user_is_driving_license = #user_is_driving_license#, 
+			user_konos_register_state = #user_konos_register_state#, 
+			user_pledge_date = #user_pledge_date#, 
+			user_registration_date = #user_registration_date#, 
+			user_konos_registration_date = #user_konos_registration_date#, 
+			user_register = #user_register#, 
+			user_register_channel = #user_register_channel#, 
+			user_withdraw_date = #user_withdraw_date#, 
+			user_withdraw_reason = #user_withdraw_reason#, 
+			user_withdraw_way = #user_withdraw_way#, 
+			user_konos_withdraw_date = #user_konos_withdraw_date#, 
+			user_is_email_agree = #user_is_email_agree#, 
+			user_is_sms_agree = #user_is_sms_agree#, 
+			user_is_mail_agree = #user_is_mail_agree#, 
+			user_pledge_card_state = #user_pledge_card_state#, 
+			user_legal_representative_info = #user_legal_representative_info#, 
+			user_is_legal_representative_text = #user_is_legal_representative_text#, 
+			ipin_vno = #ipin_vno#, 
+			ipin_ci = #ipin_ci#, 
+			ipin_dup_info = #ipin_dup_info#, 
+			ipin_result_index = #ipin_result_index#, 
+			checkplus_dupinfo = #checkplus_dupinfo#, 
+			checkplus_conninfo = #checkplus_conninfo#, 
+			checkplus_result_index = #checkplus_result_index#, 
+			syrup_ci = #syrup_ci#, 		
+			update_time = now()		
+		WHERE
+			user_index = #user_index#
+    </update>
+    
+    <delete id="UserDAO.delete">
+    	<![CDATA[
+		DELETE
+			FROM user
+		WHERE user_index = #user_index#
+ 		]]>
+    </delete>  
+    
+    <select id="UserDAO.hopeDonateStatsList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        <![CDATA[
+    	SELECT *
+    	FROM hope_donate_stats
+    	order by stats_idx desc
+    	]]>
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>	
+    </select>
+    
+    <select id="UserDAO.hopeDonateStatsListTotCnt" resultClass="int">
+    	<![CDATA[
+    	SELECT COUNT(*)
+    	FROM hope_donate_stats   	
+    	]]>
+    </select>
+    
+    <select id="UserDAO.brainDonateStatsList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        
+    	SELECT *
+    	FROM brain_donate_stats
+    	where 1=1
+    	<isNotEmpty property="search_start_date">
+ 			<isNotEmpty property="search_end_date">
+ 				and stats_date between #search_start_date# and #search_end_date#		
+ 			</isNotEmpty>
+ 		</isNotEmpty>
+    	order by stats_date desc
+    	
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>	
+    </select>
+    
+	<select id="UserDAO.brainDonateStatsListTotCnt" resultClass="int">
+    	
+    	SELECT COUNT(*)
+    	FROM brain_donate_stats   	
+    	where 1=1
+    	<isNotEmpty property="search_start_date">
+ 			<isNotEmpty property="search_end_date">
+ 				and stats_date between #search_start_date# and #search_end_date#		
+ 			</isNotEmpty>
+ 		</isNotEmpty>
+    </select>
+    
+    <select id="UserDAO.organDonateStatsList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        <![CDATA[
+    	SELECT *
+    	FROM organ_donate_stats
+    	order by stats_date desc
+    	]]>
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>	
+    </select>
+    
+    <select id="UserDAO.organDonateStatsListTotCnt" resultClass="int">
+    	<![CDATA[
+    	SELECT COUNT(*)
+    	FROM organ_donate_stats   	
+    	]]>
+    </select>
+    
+    <select id="UserDAO.donateStatsTrendList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        <![CDATA[
+    	select * 
+    	from donate_stats_trend 
+		order by trend_date desc
+    	]]>
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>	
+    </select>
+    
+    <select id="UserDAO.donateStatsTrendListTotCnt" resultClass="int">
+    	<![CDATA[
+    	SELECT COUNT(*)
+    	FROM donate_stats_trend   	
+    	]]>
+    </select>
+    
+    <select id="UserDAO.familyEventList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        
+    	select * 
+    	from family_event
+    	where 1=1
+    	<isNotEmpty property="search_keyword">
+		and fam_evnt_title like "%$search_keyword$%"
+		</isNotEmpty>
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and fam_evnt_regdate >= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and fam_evnt_regdate <= #search_end_date#	
+			]]>
+		</isNotEmpty>
+		order by fam_evnt_regdate desc
+    	
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>	
+    </select>
+    
+    <select id="UserDAO.familyEventListTotCnt" resultClass="int">
+    	
+    	SELECT COUNT(*)
+    	FROM family_event
+    	where 1=1
+    	<isNotEmpty property="search_keyword">
+		and fam_evnt_title like "%$search_keyword$%"
+		</isNotEmpty>
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and fam_evnt_regdate >= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and fam_evnt_regdate <= #search_end_date#	
+			]]>
+		</isNotEmpty>
+    </select>
+    
+    <select id="UserDAO.memberList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        select * 
+		from donate
+		where 1=1
+		<isNotEmpty property="search_gubun">
+			<isEqual property="search_gubun" compareValue="T">
+	    	and donate_title like "%$search_keyword$%"
+	    	</isEqual>
+	    	<isEqual property="search_gubun" compareValue="N">
+	    	and donate_name like "%$search_keyword$%"	
+	    	</isEqual>
+		</isNotEmpty> 
+		<isNotEmpty property="search_start_date">
+ 			<isNotEmpty property="search_end_date">
+ 				and donate_date between #search_start_date# and #search_end_date#		
+ 			</isNotEmpty>
+ 		</isNotEmpty>
+		order by donate_date desc
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>	
+    </select>
+    
+    <select id="UserDAO.memberListTotCnt" resultClass="int">
+    	
+    	select count(*)
+		from donate
+		where 1=1
+		<isNotEmpty property="search_gubun">
+			<isEqual property="search_gubun" compareValue="T">
+	    	and donate_title like "%$search_keyword$%"
+	    	</isEqual>
+	    	<isEqual property="search_gubun" compareValue="N">
+	    	and donate_name like "%$search_keyword$%"	
+	    	</isEqual>
+		</isNotEmpty> 
+		<isNotEmpty property="search_start_date">
+ 			<isNotEmpty property="search_end_date">
+ 				and donate_date between #search_start_date# and #search_end_date#		
+ 			</isNotEmpty>
+ 		</isNotEmpty>	
+    
+    </select>
+    
+    <select id="UserDAO.letterStoryList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        
+    	select S.*, D.donate_name, IFNULL(C.comment_num, 0) as comment_num
+		from story S 
+		left join donate D on S.donate_idx = D.donate_idx 
+		left outer join (select bod_idx, count(*) as comment_num from story_comment group by bod_idx) C on S.story_idx = C.bod_idx
+		where story_gubun = #story_gubun#
+		<isNotEmpty property="search_gubun">
+			<isEqual property="search_gubun" compareValue="T">
+	    	and S.story_title like "%$search_keyword$%"
+	    	</isEqual>
+	    	<isEqual property="search_gubun" compareValue="N">
+	    	and D.donate_name like "%$search_keyword$%"	
+	    	</isEqual>
+	    	<isEqual property="search_gubun" compareValue="A">
+	    	and S.story_area like "%$search_keyword$%"	
+	    	</isEqual>
+	    	<isEqual property="search_gubun" compareValue="W">
+	    	and S.story_writer like "%$search_keyword$%"	
+	    	</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="search_janggi">
+	    	and S.story_area = #search_janggi#	    		    
+		</isNotEmpty> 
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and S.story_regdate >= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and S.story_regdate <= #search_end_date#	
+			]]>
+		</isNotEmpty>
+		order by story_regdate desc
+    	
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>	
+    </select>
+    
+    <select id="UserDAO.letterStoryListTotCnt" resultClass="int">
+
+    	select count(*)
+		from story S left join donate D on S.donate_idx = D.donate_idx
+		where story_gubun = #story_gubun#
+		<isNotEmpty property="search_gubun">
+			<isEqual property="search_gubun" compareValue="T">
+	    	and S.story_title like "%$search_keyword$%"
+	    	</isEqual>
+	    	<isEqual property="search_gubun" compareValue="N">
+	    	and D.donate_name like "%$search_keyword$%"	
+	    	</isEqual>
+	    	<isEqual property="search_gubun" compareValue="A">
+	    	and S.story_area like "%$search_keyword$%"	
+	    	</isEqual>
+	    	<isEqual property="search_gubun" compareValue="W">
+	    	and S.story_writer like "%$search_keyword$%"	
+	    	</isEqual>
+		</isNotEmpty>
+		<isNotEmpty property="search_janggi">
+	    	and S.story_area = #search_janggi#	    		    
+		</isNotEmpty> 
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and S.story_regdate >= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and S.story_regdate <= #search_end_date#	
+			]]>
+		</isNotEmpty>  	
+
+    </select>
+    
+    <select id="UserDAO.selectedMember" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        select * 
+		from donate
+		where donate_idx = #donate_idx#	
+    </select>
+    
+    <update id="UserDAO.memberUpdateEnd" parameterClass="java.util.Map">
+	    update donate 
+	    set
+			donate_title = #donate_title#,
+			donate_anonymity = #donate_anonymity#,
+			donate_writer = #donate_writer#,
+			donate_name = #donate_name#,
+			donate_date = #donate_date#,
+			donate_age = #donate_age#,
+			donate_gender = #donate_gender#,
+			donate_contents = #donate_contents#
+		where donate_idx = #donate_idx#
+    </update>
+    
+    <delete id="UserDAO.memberDeleteEnd" parameterClass="java.util.Map">
+    	delete 
+    	from donate
+    	where
+    	donate_idx = #donate_idx#
+    </delete>
+    
+    <insert id="UserDAO.memberWriteEnd" parameterClass="java.util.Map">
+    	insert into donate
+	    	(	    	
+	    	donate_name,
+	    	donate_title,
+	    	donate_contents,
+	    	donate_writer,
+	    	donate_regdate,
+	    	donate_date,
+	    	donate_gender,
+	    	donate_age,
+	    	donate_anonymity,
+	    	donate_area
+	    	) 
+    	values 
+    		(    		
+    		#donate_name#,
+    		#donate_title#,
+    		#donate_contents#,
+    		#donate_writer#,
+    		now(),
+    		#donate_date#,
+    		#donate_gender#,
+    		#donate_age#,
+    		#donate_anonymity#,
+    		'1'
+    		)
+    </insert>
+    
+    <select id="UserDAO.selectedLetterStory" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        select S.*, D.donate_name
+		from story S left join donate D 
+		on S.donate_idx = D.donate_idx
+		where story_idx = #story_idx#
+		order by story_regdate desc
+    </select>
+    
+    <update id="UserDAO.letterStoryUpdateEnd" parameterClass="java.util.Map">
+	    update story 
+	    set
+			story_area = #story_area#,
+			story_title = #story_title#,
+			story_password = #story_password#,
+			story_writer = #story_writer#,
+			story_anonymity = #story_anonymity#,
+			story_contents = #story_contents#,
+			donate_idx = #donate_idx#
+		where story_idx = #story_idx#
+    </update>
+    
+    <delete id="UserDAO.letterStoryDeleteEnd" parameterClass="java.util.Map">
+    	delete 
+    	from story
+    	where
+    	story_idx = #story_idx#
+    </delete>
+    
+    <insert id="UserDAO.letterStoryWriteEnd" parameterClass="java.util.Map">
+    	insert into story
+	    	(	    	
+	    	story_gubun,
+	    	story_area,
+	    	story_title,
+	    	story_donate_name,
+	    	story_password,
+	    	story_writer,
+	    	story_anonymity,
+	    	story_hits,
+	    	story_contents,
+	    	story_img,
+	    	story_org_img,
+	    	story_regdate,
+	    	donate_idx
+	    	) 
+    	values 
+    		(    		
+    		#story_gubun#,
+    		#story_area#,
+    		#story_title#,
+    		' ',
+    		#story_password#,
+    		#story_writer#,
+    		#story_anonymity#,
+    		0,    		
+    		#story_contents#,
+    		' ',
+    		' ',    		
+    		now(),
+    		#donate_idx#
+    		)
+    </insert>
+    
+    <select id="UserDAO.selectedBrain" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        select * 
+        from brain_donate_stats
+		where 
+		stats_idx = #stats_idx#
+    </select>
+    
+    <update id="UserDAO.brainDonateStatsUpdateEnd" parameterClass="java.util.Map">
+    	update brain_donate_stats
+    	set
+    	stats_date = #stats_date#,
+    	stats_sphere_edonor1 = #stats_sphere_edonor1#,
+    	stats_sphere_tdonor1 = #stats_sphere_tdonor1#,
+    	stats_sphere_edonor2 = #stats_sphere_edonor2#,
+    	stats_sphere_tdonor2 = #stats_sphere_tdonor2#,
+    	stats_sphere_edonor3 = #stats_sphere_edonor3#,
+    	stats_sphere_tdonor3 = #stats_sphere_tdonor3#,
+    	stats_view = #stats_view#
+    	where
+    	stats_idx = #stats_idx#
+    </update>
+   
+    <delete id="UserDAO.brainDonateStatsDeleteEnd" parameterClass="java.util.Map">
+    	delete 
+    	from brain_donate_stats
+    	where
+    	stats_idx = #stats_idx#
+    </delete>
+    
+    <insert id="UserDAO.brainDonateStatsWriteEnd" parameterClass="java.util.Map">
+    	insert into brain_donate_stats
+	    	(
+	    	stats_idx,
+	    	stats_date,
+	    	stats_sphere_edonor1,
+	    	stats_sphere_tdonor1,
+	    	stats_sphere_edonor2,
+	    	stats_sphere_tdonor2,
+	    	stats_sphere_edonor3,
+	    	stats_sphere_tdonor3,
+	    	regdate,
+	    	stats_view
+	    	) 
+    	values 
+    		(
+    		#stats_idx#,
+    		#stats_date#,
+    		#stats_sphere_edonor1#,
+    		#stats_sphere_tdonor1#,
+    		#stats_sphere_edonor2#,
+    		#stats_sphere_tdonor2#,
+    		#stats_sphere_edonor3#,
+    		#stats_sphere_tdonor3#,
+    		now(),
+    		#stats_view#
+    		)
+    </insert>
+   
+    <select id="UserDAO.selectedOrgan" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        select * 
+        from organ_donate_stats
+		where 
+		stats_idx = #stats_idx#
+    </select>
+    
+    <update id="UserDAO.organDonateStatsUpdateEnd" parameterClass="java.util.Map">
+    	update organ_donate_stats
+    	set
+    	stats_date = #stats_date#,
+    	stats_brain_total = #stats_brain_total#,
+    	stats_total = #stats_total#,
+    	stats_kidney = #stats_kidney#,
+    	stats_hepar = #stats_hepar#,
+    	stats_pancreas = #stats_pancreas#,
+    	stats_heart = #stats_heart#,
+    	stats_lung = #stats_lung#,
+    	stats_islet = #stats_islet#,
+    	stats_intestine = #stats_intestine#,
+    	stats_cornea = #stats_cornea#
+    	where
+    	stats_idx = #stats_idx#
+    </update>
+   
+    <delete id="UserDAO.organDonateStatsDeleteEnd" parameterClass="java.util.Map">
+    	delete 
+    	from organ_donate_stats
+    	where
+    	stats_idx = #stats_idx#
+    </delete>
+
+    <insert id="UserDAO.organDonateStatsWriteEnd" parameterClass="java.util.Map">
+    	insert into organ_donate_stats
+	    	(
+	    	stats_idx,
+	    	stats_date,
+	    	stats_brain_total,
+	    	stats_total,
+	    	stats_kidney,
+	    	stats_hepar,
+	    	stats_pancreas,
+	    	stats_heart,
+	    	stats_lung,
+	    	stats_islet,
+	    	stats_intestine,
+	    	stats_cornea,
+	    	regdate
+	    	) 
+    	values 
+    		(
+    		#stats_idx#,
+    		#stats_date#,
+    		#stats_brain_total#,
+    		#stats_total#,
+    		#stats_kidney#,
+    		#stats_hepar#,
+    		#stats_pancreas#,
+    		#stats_heart#,
+    		#stats_lung#,
+    		#stats_islet#,
+    		#stats_intestine#,
+    		#stats_cornea#,
+    		now()
+    		)
+    </insert>
+   
+    <select id="UserDAO.selectedHope" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        select * 
+        from hope_donate_stats
+		where 
+		stats_idx = #stats_idx#
+    </select>
+    
+    <update id="UserDAO.hopeDonateStatsUpdateEnd" parameterClass="java.util.Map">
+    	update hope_donate_stats
+    	set
+    	stats_date = #stats_date#,
+    	stats_total = #stats_total#,
+    	stats_regi_total = #stats_regi_total#,
+    	stats_brain_donate_total = #stats_brain_donate_total#,
+    	stats_brain_donate_cancle = #stats_brain_donate_cancle#,
+    	stats_brain_donate_regi = #stats_brain_donate_regi#,
+    	stats_bone_donate_total = #stats_bone_donate_total#,
+    	stats_bone_donate_cancle = #stats_bone_donate_cancle#,
+    	stats_bone_donate_regi = #stats_bone_donate_regi#
+    	where
+    	stats_idx = #stats_idx#
+    </update>
+    
+    <delete id="UserDAO.hopeDonateStatsDeleteEnd" parameterClass="java.util.Map">
+    	delete 
+    	from hope_donate_stats
+    	where
+    	stats_idx = #stats_idx#
+    </delete>
+    
+    <insert id="UserDAO.hopeDonateStatsWriteEnd" parameterClass="java.util.Map">
+    	insert into hope_donate_stats
+	    	(
+	    	stats_idx,
+	    	stats_date,
+	    	stats_total,
+	    	stats_regi_total,
+	    	stats_brain_donate_total,
+	    	stats_brain_donate_cancle,
+	    	stats_brain_donate_regi,
+	    	stats_bone_donate_total,
+	    	stats_bone_donate_cancle,
+	    	stats_bone_donate_regi,
+	    	regdate
+	    	) 
+    	values 
+    		(
+    		#stats_idx#,
+    		#stats_date#,
+    		#stats_total#,
+    		#stats_regi_total#,
+    		#stats_brain_donate_total#,
+    		#stats_brain_donate_cancle#,
+    		#stats_brain_donate_regi#,
+    		#stats_bone_donate_total#,
+    		#stats_bone_donate_cancle#,
+    		#stats_bone_donate_regi#,    		
+    		now()
+    		)
+    </insert>
+    
+    <select id="UserDAO.selectedBoard" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        select * 
+        from 
+		board_cont B 
+		left join board_file F on
+		B.brd_no = F.brd_no 
+		and B.brd_cont_no = F.brd_cont_no
+		where 
+		B.brd_no = #brd_no# 
+		and B.brd_cont_no = #brd_cont_no#
+		<isNotEmpty property="brd_file_seq">
+ 		and F.brd_file_seq = #brd_file_seq#
+ 		</isNotEmpty>
+    </select>
+    
+    <update id="UserDAO.boardUpdateEnd" parameterClass="java.util.Map">
+    	update board_cont
+    	set
+    	<isNotEmpty property="brd_title">
+ 			brd_title = #brd_title#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="brd_mkr_nm">
+ 			,brd_mkr_nm = #brd_mkr_nm#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="brd_url">
+ 			,brd_url = #brd_url#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="brd_down_url">
+ 			,brd_down_url = #brd_down_url#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="brd_etc1">
+ 			,brd_etc1 = #brd_etc1#
+ 		</isNotEmpty>		
+    	where
+    	brd_no = #brd_no# and
+    	brd_cont_no = #brd_cont_no#
+    </update>
+    
+    <delete id="UserDAO.boardDeleteEnd" parameterClass="java.util.Map">
+    	delete 
+    	from board_cont
+    	where 1=1
+    	<isNotEmpty property="brd_no">
+ 			and brd_no = #brd_no#
+ 		</isNotEmpty>
+    	<isNotEmpty property="brd_cont_no">
+ 			and brd_cont_no = #brd_cont_no#
+ 		</isNotEmpty>
+    </delete>
+    
+    <delete id="UserDAO.boardFileDeleteEnd" parameterClass="java.util.Map">
+    	delete 
+    	from board_file
+    	where 1=1
+    	<isNotEmpty property="brd_no">
+ 			and brd_no = #brd_no#
+ 		</isNotEmpty>
+    	<isNotEmpty property="brd_cont_no">
+ 			and brd_cont_no = #brd_cont_no#
+ 		</isNotEmpty>
+    </delete>
+    
+    <insert id="UserDAO.boardFileInsert" parameterClass="java.util.Map">
+    	insert into board_file
+	    	(
+	    	brd_no,
+	    	brd_cont_no,
+	    	brd_cont_re,
+	    	brd_file_seq,
+	    	brd_file_nm,
+	    	brd_file_org_nm,
+	    	reg_dm
+	    	) 
+    	values 
+    		(
+    		#brd_no#,
+    		#brd_cont_no#,
+    		'0',
+    		<isNotEmpty property="brd_file_seq">
+ 			#brd_file_seq#,
+ 			</isNotEmpty>
+    		<isEmpty property="brd_file_seq">
+    		1,
+    		</isEmpty>
+    		#brd_file_nm#,
+    		#brd_file_org_nm#,   		
+    		now()
+    		)
+    </insert>
+    
+    <insert id="UserDAO.boardInsert" parameterClass="java.util.Map">
+    	insert into board_cont
+	    	(
+	    	brd_no,
+	    	brd_cont_no,
+	    	brd_cont_re,
+	    	brd_cont_class,
+	    	brd_title,
+	    	brd_mkr_nm,
+	    	brd_pwd,
+	    	brd_eml,
+	    	brd_url,
+	    	brd_lock,
+	    	brd_contents,
+	    	brd_html_yn,
+	    	brd_read_num,
+	    	reg_dm,
+	    	brd_etc1,
+	    	brd_etc2,
+	    	brd_etc3,
+	    	brd_etc4,
+	    	brd_etc5,
+	    	brd_down_url
+	    	) 
+    	values 
+    		(
+    		#brd_no#,
+    		#brd_cont_no#,
+    		'0',
+    		'0',
+    		#brd_title#,
+    		<isNotEmpty property="brd_mkr_nm">
+    		#brd_mkr_nm#,
+    		</isNotEmpty>
+    		<isEmpty property="brd_mkr_nm">
+    		'관리자',
+    		</isEmpty>
+    		'0',
+    		#brd_eml#,
+    		#brd_url#,
+    		#brd_lock#,
+    		#brd_contents#,
+    		#brd_html_yn#,
+    		0,
+    		now(),
+    		#brd_etc1#,
+    		#brd_etc2#,
+    		#brd_etc3#,
+    		#brd_etc4#,
+    		#brd_etc5#,
+    		#brd_down_url#
+    		)
+    </insert>
+    
+    <select id="UserDAO.selectedTrend" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        select * 
+        from donate_stats_trend
+		where trend_idx = #trend_idx#
+    </select>
+    
+    <update id="UserDAO.donateStatsTrendUpdateEnd" parameterClass="java.util.Map">
+    	update donate_stats_trend
+    	set
+    	trend_date = #trend_date#,
+    	trend_value1 = #trend_value1#,
+    	trend_value2 = #trend_value2#
+    	where
+    	trend_idx = #trend_idx#
+    </update>
+    
+    <delete id="UserDAO.donateStatsTrendDeleteEnd" parameterClass="java.util.Map">
+    	delete 
+    	from donate_stats_trend
+    	where
+    	trend_idx = #trend_idx#
+    </delete>
+    
+    <insert id="UserDAO.donateStatsTrendWriteEnd" parameterClass="java.util.Map">
+    	insert into donate_stats_trend
+	    	(
+	    	trend_idx,
+	    	trend_date,
+	    	trend_value1,
+	    	trend_value2,
+	    	trend_reg_dm
+	    	) 
+    	values 
+    		(
+    		#trend_idx#,
+    		#trend_date#,
+    		#trend_value1#,
+    		#trend_value2#,   		
+    		now()
+    		)
+    </insert>
+    
+    <select id="UserDAO.selectedFamilyEvent" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	
+    	select * 
+    	from family_event
+    	where 1=1
+    	<isNotEmpty property="fam_evnt_idx">
+		and fam_evnt_idx = #fam_evnt_idx#
+		</isNotEmpty>	
+ 		
+    </select>
+    
+    <update id="UserDAO.familyEventUpdateEnd" parameterClass="java.util.Map">
+    		update family_event
+    	set
+    		fam_evnt_title = #fam_evnt_title#,
+    		fam_evnt_file_name = #fam_evnt_file_name#,		
+    		fam_evnt_file_org_name = #fam_evnt_file_org_name#		
+    	where
+    		fam_evnt_idx = #fam_evnt_idx#
+    		 
+    </update>
+    
+    <update id="UserDAO.familyEventContentsUpdateEnd" parameterClass="java.util.Map">
+    		update family_event
+    	set
+    		fam_evnt_contents = #fam_evnt_contents#		
+    	where
+    		fam_evnt_idx = #fam_evnt_idx#
+    		 
+    </update>
+    
+    <delete id="UserDAO.familyEventDeleteEnd" parameterClass="java.util.Map">
+    	delete 
+    	from family_event
+    	where
+    	fam_evnt_idx = #fam_evnt_idx#
+    </delete>
+    
+    <insert id="UserDAO.familyEventInsertEnd" parameterClass="java.util.Map">
+    	insert into family_event
+	    	(
+	    	fam_evnt_idx,
+	    	fam_evnt_title,
+	    	fam_evnt_type,
+	    	fam_evnt_status,
+	    	fam_evnt_file_name,
+	    	fam_evnt_file_org_name,
+	    	fam_evnt_regdate,
+	    	fam_evnt_hitcnt
+	    	) 
+    	values 
+    		(
+    		#fam_evnt_idx#,
+    		#fam_evnt_title#,
+    		'P',
+    		#fam_evnt_status#,   		
+    		#fam_evnt_file_name#,   		
+    		#fam_evnt_file_org_name#,   		    		  		
+    		now(),
+    		0
+    		)
+    </insert>
+    
+    <select id="UserDAO.letterStoryComment" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	
+    	select * from 
+    		  story_comment
+		where com_div = #story_gubun#
+			  and bod_idx = #story_idx#
+		order by com_reg_date desc
+ 		
+    </select>
+    
+    <update id="UserDAO.letterStoryCommentUpdateEnd" parameterClass="java.util.Map">
+    		update story_comment
+    	set
+    		com_content = #com_content#		
+    	where
+    		com_div = #com_div# and
+    		com_idx = #com_idx#
+    		 
+    </update>
+    
+    <insert id="UserDAO.letterStoryCommentWriteEnd" parameterClass="java.util.Map">
+    	insert into story_comment
+	    	(
+	    	com_idx,
+	    	bod_idx,
+	    	com_reg_name,
+	    	com_pwd,
+	    	com_content,
+	    	com_reg_date,
+	    	com_div
+	    	) 
+    	values 
+    		(
+    		#com_idx#,
+    		#bod_idx#,
+    		#com_reg_name#,
+    		#com_pwd#,   		
+    		#com_content#,   		   		    		  		
+    		now(),
+    		#com_div#
+    		)
+    </insert>
+    
+    <delete id="UserDAO.letterStoryCommentDeleteEnd" parameterClass="java.util.Map">
+    	delete 
+    	from story_comment
+    	where
+    	<isNotEmpty property="deleteType">
+			bod_idx = #bod_idx# and
+		</isNotEmpty>
+		<isEmpty property="deleteType">
+			com_idx = #com_idx# and
+		</isEmpty>
+    	com_div = #com_div#
+    </delete>
+    
+    <select id="UserDAO.commentEndIdx" resultClass="int">    	    	
+ 		select ifnull(max(com_idx),1) 
+ 		from story_comment
+    </select>
+    
+    <select id="UserDAO.brainDonateStatsEndIdx" resultClass="int">
+    	select ifnull(max(stats_idx),1) 
+ 		from brain_donate_stats
+    </select>
+    
+    <select id="UserDAO.organDonateStatsEndIdx" resultClass="int">
+    	select ifnull(max(stats_idx),1) 
+ 		from organ_donate_stats
+    </select>
+    
+	<select id="UserDAO.hopeDonateStatsEndIdx" resultClass="int">
+    	select ifnull(max(stats_idx),1) 
+ 		from hope_donate_stats
+    </select>
+    
+	<select id="UserDAO.donateStatsTrendEndIdx" resultClass="int">
+    	select ifnull(max(trend_idx),1) 
+ 		from donate_stats_trend
+    </select>
+    
+	<select id="UserDAO.familyEventEndIdx" resultClass="int">
+    	select ifnull(max(fam_evnt_idx),1) 
+ 		from family_event
+    </select>
+    
+    <select id="UserDAO.donateEndIdx" resultClass="int">
+    	select ifnull(max(donate_idx),1) 
+ 		from donate
+    </select>
+    
+    <select id="UserDAO.boardContEndIdx" resultClass="int">
+    	select ifnull(max(brd_cont_no),1) 
+ 		from board_cont
+    </select>
+    
+    <select id="UserDAO.pageViewSelectCount" resultClass="int">
+        
+		SELECT COUNT(*)
+			FROM visit_act_hist
+		WHERE 1=1
+ 		<isNotEmpty property="act_time">
+ 			AND DATE_FORMAT(act_time, '%Y-%m-%d') = #act_time#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="dp1_idx">
+ 			AND dp1_idx = #dp1_idx#
+ 		</isNotEmpty>
+ 		
+    </select> 
+</sqlMap>

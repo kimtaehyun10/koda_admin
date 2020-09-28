@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="AdminDAO">
+
+    <typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias alias="adminVO" type="egovframework.webco.vo.AdminVO"/> 
+    <typeAlias alias="adminActHistVO" type="egovframework.webco.vo.AdminActHistVO"/>           
+
+    <!-- 로그인 -->
+    <select id="AdminDAO.selectAdminLogin" resultClass="adminVO">
+        <![CDATA[
+            SELECT 
+                  a.admin_index
+                , a.admin_id
+                , CASE WHEN PASSWORD(#userPw#) = a.admin_pwd THEN  'O'
+                    ELSE  'X'
+                  END AS admin_pwd                
+                , a.admin_nick_name
+                , a.admin_grade
+                , a.admin_phone
+                , a.admin_create_time
+                , a.login_fail_cnt
+                , CASE WHEN DATE_ADD(NOW(), INTERVAL -3 MONTH) > a.admin_pwd_chg_time THEN 1
+                	ELSE 0
+                	END AS admin_chg_pwd
+            FROM admin a            
+            WHERE a.admin_id = #userId#            
+        ]]>
+    </select>
+    
+    <!-- 로그인 -->
+    <select id="AdminDAO.selectAdminLoginInfo" resultClass="adminVO">
+        <![CDATA[
+            SELECT 
+                  a.admin_index
+                , a.admin_id
+                , 'O' as admin_pwd
+                , a.admin_nick_name
+                , a.admin_grade
+                , a.admin_phone
+                , a.admin_create_time
+                , a.login_fail_cnt
+                , CASE WHEN DATE_ADD(NOW(), INTERVAL -3 MONTH) > a.admin_pwd_chg_time THEN 1
+                	ELSE 0
+                	END AS admin_chg_pwd
+            FROM admin a            
+            WHERE a.admin_index = #admin_index#            
+        ]]>
+    </select>
+    
+    <!-- 관리자접속로그 등록(로그인일시) -->
+    <insert id="AdminDAO.insertAdminLogin">
+        INSERT INTO admin_login (                                 
+               admin_index
+             , login_ip
+             , login_time
+         ) VALUES (
+               #admin_index#             
+             , #login_ip#
+             , now()
+         )
+    </insert>
+    
+    <select id="AdminDAO.selectCount" resultClass="int">
+    	<![CDATA[
+    	SELECT COUNT(*)
+    	FROM admin
+    	WHERE admin_grade >= 0     	
+    	]]>
+    </select>
+    
+    <select id="AdminDAO.select" resultClass="java.util.HashMap">
+    	SELECT *
+    	FROM admin
+    	WHERE 1=1 
+    	<isNotEmpty property="admin_index">
+    	AND admin_index = #admin_index#
+    	</isNotEmpty>
+    	<isNotEmpty property="admin_id">
+    	AND admin_id = #admin_id#
+    	</isNotEmpty>
+    </select>
+    
+    <select id="AdminDAO.selectList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	<![CDATA[
+    	SELECT *
+    	FROM admin
+    	WHERE admin_grade >= 0 
+    	ORDER BY admin_create_time ASC
+    	]]>
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>
+    </select>   
+    
+    <insert id="AdminDAO.insert">
+    	INSERT INTO admin (
+    		admin_id
+    		,admin_pwd
+    		,admin_nick_name
+    		,admin_grade
+    		,admin_phone
+    		,admin_create_time
+    	) VALUES (
+    		#admin_id#
+    		,PASSWORD(#admin_pwd#)
+    		,#admin_nick_name#
+    		,#admin_grade#
+    		,#admin_phone#
+    		,now()
+    	)   
+    	<selectKey keyProperty="admin_index" resultClass="int">
+        SELECT LAST_INSERT_ID()
+   		</selectKey> 	
+    </insert>
+    
+    <update id="AdminDAO.update">
+    	<![CDATA[
+    	UPDATE admin
+    		SET admin_nick_name = #admin_nick_name#
+    			,admin_grade = #admin_grade#
+    			,admin_phone = #admin_phone#
+    	WHERE admin_index = #admin_index#
+    	]]>
+    </update>  
+    
+    <update id="AdminDAO.updatePwd">
+    	<![CDATA[
+    	UPDATE admin
+    		SET admin_pwd = PASSWORD(#admin_new_pwd#),
+    			admin_pwd_chg_time =  now()
+    	WHERE admin_index = #admin_index#
+    	]]>
+    </update>  
+    
+    <update id="AdminDAO.lock">
+    	<![CDATA[
+    	UPDATE admin
+    		SET login_fail_cnt = 3
+    	WHERE admin_index = #admin_index#
+    	]]>
+    </update>
+    
+    <update id="AdminDAO.unlock">
+    	<![CDATA[
+    	UPDATE admin
+    		SET login_fail_cnt = 0
+    	WHERE admin_index = #admin_index#
+    	]]>
+    </update>
+    
+    <delete id="AdminDAO.delete">
+    	<![CDATA[
+    	DELETE FROM admin
+    	WHERE admin_index = #admin_index#
+    	]]>
+    </delete>
+    
+    <update id="AdminDAO.updateLoginFailCnt">
+    	UPDATE admin
+    		SET login_fail_cnt = #login_fail_cnt#
+    		<isLessEqual prepend="," property="login_fail_cnt" compareValue="0">
+    			last_login_time = now()
+    		</isLessEqual>
+    	WHERE admin_id = #admin_id#
+    </update>
+    
+    <select id="AdminDAO.selectActList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT admin_act_hist.*, admin.admin_id, admin.admin_nick_name
+    	FROM admin_act_hist
+    	left outer join admin
+    	on admin_act_hist.admin_index = admin.admin_index
+    	WHERE 1=1    	
+    	AND admin.admin_grade != '-1'
+    	<isNotEmpty property="admin_id">
+    	AND admin.admin_id = #admin_id#
+    	</isNotEmpty>
+    	<isNotEmpty property="act_type">
+    		<isEqual property="act_type" compareValue="R">
+    		AND admin_act_hist.act_type in ('R', 'L')
+    		</isEqual>
+    		<isNotEqual property="act_type" compareValue="R">
+    		AND admin_act_hist.act_type = #act_type#
+			</isNotEqual>
+    	</isNotEmpty>
+    	<isNotEmpty property="begin_act_time">
+    	<![CDATA[
+    	AND admin_act_hist.act_time >= #begin_act_time#
+    	]]>
+    	</isNotEmpty>
+    	<isNotEmpty property="end_act_time">
+    	<![CDATA[
+    	AND admin_act_hist.act_time <= #end_act_time#
+    	]]>
+    	</isNotEmpty>
+    	ORDER BY act_index desc
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>
+    </select>
+    
+    <select id="AdminDAO.selectActHistCount" resultClass="int">
+    	SELECT COUNT(*)
+    	FROM admin_act_hist
+    	left outer join admin
+    	on admin_act_hist.admin_index = admin.admin_index
+    	WHERE 1=1    	
+    	AND admin.admin_grade != '-1'
+    	<isNotEmpty property="admin_id">
+    	AND admin.admin_id = #admin_id#
+    	</isNotEmpty>
+    	<isNotEmpty property="act_type">
+    		<isEqual property="act_type" compareValue="R">
+    		AND admin_act_hist.act_type in ('R', 'L')
+    		</isEqual>
+    		<isNotEqual property="act_type" compareValue="R">
+    		AND admin_act_hist.act_type = #act_type#
+			</isNotEqual>
+    	</isNotEmpty>
+    	<isNotEmpty property="begin_act_time">
+    	<![CDATA[
+    	AND admin_act_hist.act_time >= #begin_act_time#
+    	]]>
+    	</isNotEmpty>
+    	<isNotEmpty property="end_act_time">
+    	<![CDATA[
+    	AND admin_act_hist.act_time <= #end_act_time#
+    	]]>
+    	</isNotEmpty>
+    </select>
+    
+    <insert id="AdminDAO.insertActHist" parameterClass="adminActHistVO">
+    	INSERT INTO admin_act_hist
+    	(admin_index, act_type, act_url, act_detail, act_ip, act_time)
+    	VALUES
+    	(#admin_index#, #act_type#, #act_url#, #act_detail#, #act_ip#, now())
+    	<selectKey keyProperty="act_index" resultClass="int">
+        SELECT LAST_INSERT_ID()
+   		</selectKey>
+    </insert>
+   
+    <select id="AdminDAO.endIdx" parameterClass="java.util.Map" resultClass="int">
+    	select ifnull(max($idxName$),1) from $tableName$
+    	where 1=1
+    	<isNotEmpty property="brd_no">
+ 			and brd_no = #brd_no#
+ 		</isNotEmpty>
+    </select>
+    
+    <select id="AdminDAO.selectedFile" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	select * 
+    	from board_file 
+    	where brd_no = #brd_no# 
+    </select>
+    
+    <update id="AdminDAO.fileUpload" parameterClass="java.util.Map">
+    	update board_file
+    	set
+    	brd_file_nm = #brd_file_nm#,
+    	brd_file_org_nm = #brd_file_org_nm#
+    	where
+    	brd_no = #brd_no#
+    	<isNotEmpty property="brd_cont_no">
+ 			and brd_cont_no = #brd_cont_no#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="brd_file_seq">
+ 			and brd_file_seq = #brd_file_seq#
+ 		</isNotEmpty>
+    </update>
+    
+    <select id="AdminDAO.adminMenuList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	select M.*,G.admin_grade 
+    	from 
+    	admin_menu M 
+		left join admin_menu_grade G 
+		on M.menu_cd = G.menu_cd 
+		and M.seq_cd = G.seq_cd 
+		and G.admin_grade = #search_auth#
+		order by M.menu_sunbun
+    </select>
+    
+    <delete id="AdminDAO.adminMenuDelete" parameterClass="java.util.Map">
+    	delete from
+    		admin_menu_grade
+    	where
+    		admin_grade = #admin_grade#
+    </delete>
+    
+    <insert id="AdminDAO.adminMenuChange" parameterClass="java.util.Map">
+    	insert into admin_menu_grade
+	    	(
+	    	menu_cd,
+	    	seq_cd,
+	    	admin_grade
+	    	) 
+    	values 
+    		(
+    		#menu_cd#,
+    		#seq_cd#,
+    		#admin_grade#    		    		
+    		)
+    </insert>
+    
+    <select id="AdminDAO.webMenuList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	select M.*,G.admin_grade 
+    	from 
+    	admin_menu M 
+		left join admin_menu_grade G 
+		on M.menu_cd = G.menu_cd 
+		and M.seq_cd = G.seq_cd 
+		where G.admin_grade = #admin_grade#
+		order by M.menu_sunbun
+    </select>
+</sqlMap>

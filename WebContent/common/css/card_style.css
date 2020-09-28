@@ -1,0 +1,70 @@
+@media print {
+    @page {
+        size: 85.6mm 54mm;
+        margin: 0mm;
+        /*width:85.6mm;
+        height: 54mm;*/
+        overflow:hidden !important;
+        background: #000;
+    }
+    .page-divide {
+        page-break-after: always;
+        height: 0;
+        margin: 0;
+        border-top: none;
+    }
+    .card_object {
+        width:100%;
+        height: 100%;
+        position:relative;
+        overflow:hidden;
+    }
+    .card_user_name {
+        position:absolute;
+        left: 13mm;
+        top: 22mm;
+        font-size: 18px;
+        font-weight: 800;
+    }
+    .card_user_name_4 {
+        left: 12mm !important;
+    }
+    .card_user_name_5 {
+        left: 10mm !important;
+        font-size: 18px !important;
+        font-weight: 800 !important;
+    }
+    .card_user_name_6 {
+        left: 8mm !important;
+        top: 24.5mm !important;
+        font-size: 14px !important;
+        font-weight: 800 !important;
+    }
+    .card_user_name_7 {
+        left: 6mm !important;
+        top: 24.5mm !important;
+        font-size: 12px !important;
+        font-weight: 800 !important;
+    }
+    .card_user_num {
+        position:absolute;
+        left: 46mm;
+        top: 22.5mm;
+        font-size: 12px;
+        font-weight: 800;
+    }
+    .card_user_pledge_date {
+        position:absolute;
+        left: 46mm;
+        top: 27.2mm;
+        font-size: 12px;
+        font-weight: 800;
+    }
+    .card_donation_type {
+        position:absolute;
+        left: 16mm;
+        top: 34mm;
+        font-size: 12px;
+        font-weight: 800;
+    }
+}
