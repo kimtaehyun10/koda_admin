@@ -843,7 +843,7 @@ public class NotificationController {
 	// 기관일정 수정 end
 	@RequestMapping("/notification/organScheduleUpdateEnd.do")
 	@ResponseBody
-	public String organScheduleUpdateEnd(ModelMap model, @RequestParam Map<String, Object> commandMap, @RequestParam("sch_file_org_name") MultipartFile multipartFile) throws Exception{
+	public String organScheduleUpdateEnd(ModelMap model, @RequestParam Map<String, Object> commandMap, @RequestParam("sch_file_org_name") MultipartFile multipartFile, HttpServletRequest request) throws Exception{
 		
     	String msg = "";
 		int endIdx = 0;
@@ -862,7 +862,7 @@ public class NotificationController {
 			commandMap.put("sch_file_org_name", originFilename);
 			commandMap.put("sch_file_name", saveFileName);
 			
-			writeFile(multipartFile, saveFileName);
+			writeFile(multipartFile, saveFileName, request);
 									
 			}
 			
@@ -904,11 +904,11 @@ public class NotificationController {
 	}
     
     // 파일을 실제로 write 하는 메서드
- 	private boolean writeFile(MultipartFile multipartFile, String saveFileName)throws IOException{
+ 	private boolean writeFile(MultipartFile multipartFile, String saveFileName, HttpServletRequest request)throws IOException{
  		boolean result = false;
-
+ 		String path=request.getServletContext().getRealPath("/upFile");
  		byte[] data = multipartFile.getBytes();
- 		FileOutputStream fos = new FileOutputStream("C:/work/koda/workspace/koda_admin/WebContent/upFile" + "/" + saveFileName);
+ 		FileOutputStream fos = new FileOutputStream(path + "/" + saveFileName);
  		fos.write(data);
  		fos.close();
  		

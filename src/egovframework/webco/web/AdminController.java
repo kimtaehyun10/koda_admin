@@ -537,7 +537,7 @@ public class AdminController {
     // 파일 업로드
     @RequestMapping("/admin/fileUpload.do")
 	@ResponseBody
-	public String fileUpload(ModelMap model, @RequestParam Map<String, Object> commandMap, @RequestParam("brd_file_org_nm") MultipartFile multipartFile) throws Exception{
+	public String fileUpload(ModelMap model, @RequestParam Map<String, Object> commandMap, @RequestParam("brd_file_org_nm") MultipartFile multipartFile, HttpServletRequest request) throws Exception{
 		
     	String msg = "";
 		int endIdx = 0;
@@ -556,7 +556,7 @@ public class AdminController {
 			commandMap.put("brd_file_org_nm", originFilename);
 			commandMap.put("brd_file_nm", saveFileName);
 			
-			writeFile(multipartFile, saveFileName);
+			writeFile(multipartFile, saveFileName, request);
 			
 			//board_file 테이블 수정
 			if(!"".equals(commandMap.get("brd_cont_no")) && commandMap.get("brd_cont_no") != null){
@@ -599,7 +599,8 @@ public class AdminController {
 	@ResponseBody
 	public String multiFileUpload(ModelMap model, @RequestParam Map<String, Object> commandMap, 
 								 @RequestParam("brd_file_org_nm") MultipartFile multipartFile,
-								 @RequestParam("brd_file_org_nm1") MultipartFile multipartFile1) throws Exception{
+								 @RequestParam("brd_file_org_nm1") MultipartFile multipartFile1,
+								 HttpServletRequest request) throws Exception{
 		
     	String msg = "";
 		int endIdx = 0;
@@ -619,7 +620,7 @@ public class AdminController {
 			commandMap.put("brd_file_org_nm", originFilename);
 			commandMap.put("brd_file_nm", saveFileName);
 			
-			writeFile(multipartFile, saveFileName);
+			writeFile(multipartFile, saveFileName, request);
 			
 			//board_file 테이블 수정
 			if("board_update".equals(commandMap.get("type"))){
@@ -675,7 +676,7 @@ public class AdminController {
 			commandMap2.put("brd_file_org_nm", originFilename);
 			commandMap2.put("brd_file_nm", saveFileName);
 			
-			writeFile(multipartFile, saveFileName);
+			writeFile(multipartFile, saveFileName, request);
 			
 			//board_file 테이블 수정
 			if("board_update".equals(commandMap.get("type"))){
@@ -718,11 +719,11 @@ public class AdminController {
 	}
     
     // 파일을 실제로 write 하는 메서드
- 	private boolean writeFile(MultipartFile multipartFile, String saveFileName)throws IOException{
+ 	private boolean writeFile(MultipartFile multipartFile, String saveFileName, HttpServletRequest request)throws IOException{
  		boolean result = false;
-
+ 		String path=request.getServletContext().getRealPath("/upFile");
  		byte[] data = multipartFile.getBytes();
- 		FileOutputStream fos = new FileOutputStream("C:/work/koda/workspace/koda_admin/WebContent/upFile" + "/" + saveFileName);
+ 		FileOutputStream fos = new FileOutputStream(path + "/" + saveFileName);
  		fos.write(data);
  		fos.close();
  		
@@ -749,10 +750,10 @@ public class AdminController {
 	         
 	         //파일 이름 가져오기
 	         String fileName = upload.getOriginalFilename();
-	         byte[] bytes = upload.getBytes();
+	         byte[] bytes = upload.getBytes();	         	         	         
 	         
 	         //이미지 경로 생성
-	         String path = "C:/work/koda/workspace/koda_admin/WebContent/common/ckeditor/ckupload/";// fileDir는 전역 변수라 그냥 이미지 경로 설정해주면 된다.
+	         String path = request.getServletContext().getRealPath("/common/ckeditor/ckupload/"); // fileDir는 전역 변수라 그냥 이미지 경로 설정해주면 된다.
 	         String ckUploadPath = path + uid + "_" + fileName;
 	         File folder = new File(path);
 	         
@@ -795,7 +796,7 @@ public class AdminController {
                             , HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
         
         //서버에 저장된 이미지 경로
-        String path = "C:/work/koda/workspace/koda_admin/WebContent/common/ckeditor/ckupload/";
+ 		String path = request.getServletContext().getRealPath("/common/ckeditor/ckupload/");
     
         String sDirPath = path + uid + "_" + fileName;
     

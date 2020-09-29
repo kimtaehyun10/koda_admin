@@ -110,7 +110,7 @@ public class respectController {
  	// 유가족 행사 수정 end
  	@RequestMapping("/respect/familyEventUpdateEnd.do")
 	@ResponseBody
-	public String familyEventUpdateEnd(ModelMap model, @RequestParam Map<String, Object> commandMap, @RequestParam("fam_evnt_file_org_name") MultipartFile multipartFile) throws Exception{
+	public String familyEventUpdateEnd(ModelMap model, @RequestParam Map<String, Object> commandMap, @RequestParam("fam_evnt_file_org_name") MultipartFile multipartFile, HttpServletRequest request) throws Exception{
 		
     	String msg = "";
 		int endIdx = 0;
@@ -129,7 +129,7 @@ public class respectController {
 			commandMap.put("fam_evnt_file_org_name", originFilename);
 			commandMap.put("fam_evnt_file_name", saveFileName);
 			
-			writeFile(multipartFile, saveFileName);
+			writeFile(multipartFile, saveFileName, request);
 									
 			}
 			
@@ -171,11 +171,11 @@ public class respectController {
 	}
     
     // 파일을 실제로 write 하는 메서드
- 	private boolean writeFile(MultipartFile multipartFile, String saveFileName)throws IOException{
+ 	private boolean writeFile(MultipartFile multipartFile, String saveFileName, HttpServletRequest request)throws IOException{
  		boolean result = false;
-
+ 		String path=request.getServletContext().getRealPath("/upFile"); 		
  		byte[] data = multipartFile.getBytes();
- 		FileOutputStream fos = new FileOutputStream("C:/work/koda/workspace/koda_admin/WebContent/upFile" + "/" + saveFileName);
+ 		FileOutputStream fos = new FileOutputStream(path + "/" + saveFileName);
  		fos.write(data);
  		fos.close();
  		

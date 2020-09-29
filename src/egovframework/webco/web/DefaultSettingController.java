@@ -89,7 +89,7 @@ public class DefaultSettingController {
     	model.addAttribute("param", commandMap);
     	model.addAttribute("displayNum",paginationInfo.getPageSize()); //페이지당 게시물 출력 수
     	
-    	adminService.insertActHist("L", "[팝업관리]목록 조회");
+    	adminService.insertActHist("R", "[팝업관리]목록 조회");
 		return "defaultSetting/popup";	 	
 	}
 	
@@ -131,7 +131,7 @@ public class DefaultSettingController {
     	model.addAttribute("param", commandMap);
     	model.addAttribute("displayNum",paginationInfo.getPageSize()); //페이지당 게시물 출력 수
     	
-    	adminService.insertActHist("L", "[배너관리]목록 조회");
+    	adminService.insertActHist("R", "[배너관리]목록 조회");
 		return "defaultSetting/banner";	 	
 	}
 
@@ -211,7 +211,7 @@ public class DefaultSettingController {
 	// 배너관리 수정 end
 	@RequestMapping("/defaultSetting/bannerUpdateEnd.do")
 	@ResponseBody
-	public String bannerUpdateEnd(ModelMap model, @RequestParam Map<String, Object> commandMap, @RequestParam("banner_org_img") MultipartFile multipartFile) throws Exception{
+	public String bannerUpdateEnd(ModelMap model, @RequestParam Map<String, Object> commandMap, @RequestParam("banner_org_img") MultipartFile multipartFile, HttpServletRequest request) throws Exception{
 		
     	String msg = "";
 		int banner_idx = 0;
@@ -230,7 +230,7 @@ public class DefaultSettingController {
 			commandMap.put("banner_org_img", originFilename);
 			commandMap.put("banner_img", saveFileName);
 			
-			writeFile(multipartFile, saveFileName);
+			writeFile(multipartFile, saveFileName, request);
 									
 			}
 			
@@ -273,11 +273,11 @@ public class DefaultSettingController {
 	}
     
     // 파일을 실제로 write 하는 메서드
- 	private boolean writeFile(MultipartFile multipartFile, String saveFileName)throws IOException{
+ 	private boolean writeFile(MultipartFile multipartFile, String saveFileName, HttpServletRequest request)throws IOException{
  		boolean result = false;
-
+ 		String path=request.getServletContext().getRealPath("/upFile");
  		byte[] data = multipartFile.getBytes();
- 		FileOutputStream fos = new FileOutputStream("C:/work/koda/workspace/koda_admin/WebContent/upFile" + "/" + saveFileName);
+ 		FileOutputStream fos = new FileOutputStream(path + "/" + saveFileName);
  		fos.write(data);
  		fos.close();
  		
