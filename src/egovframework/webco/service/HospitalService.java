@@ -5,8 +5,7 @@ import java.util.Map;
 
 public interface HospitalService {
 
-	List<Map<String, Object>> hospitalList(
-			Map<String, Object> commandMap);
+	List<Map<String, Object>> hospitalList(Map<String, Object> commandMap);
 
 	int hospitalListTotCnt(Map<String, Object> commandMap);
 

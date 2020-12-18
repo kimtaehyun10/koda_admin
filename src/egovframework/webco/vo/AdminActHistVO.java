@@ -41,6 +41,9 @@ public class AdminActHistVO extends CommonVO implements Serializable {
     
     /* 활동일시 */
     private String act_time;
+    
+    /* 정보주체 */
+    private String act_subject;
 
 	public int getAct_index() {
 		return act_index;
@@ -96,6 +99,14 @@ public class AdminActHistVO extends CommonVO implements Serializable {
 
 	public void setAct_time(String act_time) {
 		this.act_time = act_time;
+	}
+
+	public String getAct_subject() {
+		return act_subject;
+	}
+
+	public void setAct_subject(String act_subject) {
+		this.act_subject = act_subject;
 	}
 
 	@Override

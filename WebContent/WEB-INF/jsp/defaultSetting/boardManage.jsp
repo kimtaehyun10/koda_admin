@@ -43,6 +43,7 @@ response.setDateHeader("Expires",0);
           <!-- END PAGE HEADER-->
           <div class="row" style="margin-top: 70px;">
               <div class="col-md-12">
+              <!-- <div class="col-md-11" style="float: none; margin: 0 auto;"> 사이즈 나중에 작업하자 -->              
                   <!-- BEGIN SAMPLE TABLE PORTLET-->
                   <div class="portlet light portlet-fit bordered">
                       <div class="portlet-title">

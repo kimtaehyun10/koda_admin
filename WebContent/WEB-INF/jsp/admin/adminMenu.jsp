@@ -74,7 +74,7 @@ response.setDateHeader("Expires",0);
           <!-- BEGIN PAGE HEADER-->                    
           <!-- END PAGE HEADER-->
           <div class="row" style="margin-top: 70px;">
-              <div class="col-md-12">
+              <div class="col-md-11" style="float: none; margin: 0 auto;">
                   <!-- BEGIN SAMPLE TABLE PORTLET-->
                   <div class="portlet light portlet-fit bordered">
                       <div class="portlet-title">
@@ -120,7 +120,7 @@ response.setDateHeader("Expires",0);
 						  <span id="count-netscape1" class="count"></span>
 						  <ul id="tree-netscape1">
 						   	<c:forEach items="${adminMenuList}" var="adminMenuList">
-						   	  <c:if test="${adminMenuList.menu_cd eq 1 and adminMenuList.seq_cd ne 1 and adminMenuList.seq_cd ne 6 and adminMenuList.seq_cd ne 7}">
+						   	  <c:if test="${adminMenuList.menu_cd eq 1 and adminMenuList.seq_cd ne 1 and adminMenuList.seq_cd ne 6 and adminMenuList.seq_cd ne 7 and adminMenuList.seq_cd ne 5}">
 						   	  	<li><input type="checkbox" name="menu1" value="${adminMenuList.seq_cd}" ${not empty adminMenuList.admin_grade ? 'checked':''}/>${adminMenuList.menu_nm}</li>
 						   	  </c:if>
 						   	</c:forEach>					   
@@ -161,19 +161,7 @@ response.setDateHeader("Expires",0);
 						   	  </c:if>
 						   	</c:forEach>						   								   						   						   						   						   						   
 						  </ul>
-						 </li>
-						 <li id="show-netscape5">
-						  <input id="check-netscape5" type="checkbox" />
-						     우체통 회원관리
-						  <span id="count-netscape5" class="count"></span>
-						  <ul id="tree-netscape5">
-						   	<c:forEach items="${adminMenuList}" var="adminMenuList">
-						   	  <c:if test="${adminMenuList.menu_cd eq 5 and adminMenuList.seq_cd ne 1}">
-						   	  	<li><input type="checkbox" name="menu5" value="${adminMenuList.seq_cd}" ${not empty adminMenuList.admin_grade ? 'checked':''}/>${adminMenuList.menu_nm}</li>
-						   	  </c:if>
-						   	</c:forEach>						   						   						   						   								   						   						   						   						   						   
-						  </ul>
-						 </li>
+						 </li>						 
 						 <li id="show-netscape6">
 						  <input id="check-netscape6" type="checkbox" />
 						     관리자
@@ -188,7 +176,7 @@ response.setDateHeader("Expires",0);
 						 </li>
 						 <li id="show-netscape7">
 						  <input id="check-netscape7" type="checkbox" />
-						     생명나눔 우체통
+						     생명나눔 우체통 <br/>
 						  <span id="count-netscape7" class="count"></span>
 						  <ul id="tree-netscape7">
 						   	<c:forEach items="${adminMenuList}" var="adminMenuList">

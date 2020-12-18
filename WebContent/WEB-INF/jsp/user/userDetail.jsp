@@ -89,7 +89,7 @@ response.setDateHeader("Expires",0);
                                 <div class="form-group">
                                     <label class="col-md-3 control-label">등록번호</label>
                                     <div class="col-md-9">
-                                        <input id="user_num" name="user_num" type="text" class="form-control input-sm" placeholder="" value="${user_detail.user_num}">
+                                        <input id="user_num" name="user_num" type="text" class="form-control input-sm" placeholder="" value="${user_detail.user_num}" readonly="readonly">
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -314,10 +314,16 @@ response.setDateHeader("Expires",0);
                                     <label class="col-md-3 control-label important-form-mark">법정대리인 증명서류</label>
                                     <div class="col-md-9">
                                         <label class="mt-checkbox" style="margin-top: 8px;">&nbsp
-                                        	<c:set var="checked" value=""/>
-                                        	<c:if test="${user_detail.user_is_legal_representative_text != ''}"><c:set var="checked" value="checked"/></c:if>
-                                            <input id="user_is_legal_representative_text" name="user_is_legal_representative_text" type="checkbox" class="input-sm" value="1" ${checked}><span></span>
+                                        	<%-- <c:set var="checked" value=""/>
+                                        	<c:if test="${user_detail.user_is_legal_representative_text != ''}"><c:set var="checked" value="checked"/></c:if> --%>
+                                            <input id="user_is_legal_representative_text" name="user_is_legal_representative_text" type="checkbox" class="input-sm" value="1" ${user_detail.user_is_legal_representative_text == 1?"checked":""}><span></span>
                                         </label>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label class="col-md-3 control-label important-form-mark">첨부파일</label>
+                                    <div class="col-md-9">
+                                    	<input type="file" id="org_file_name" name="org_file_name" onchange="fileYN();">
                                     </div>
                                 </div>
                             </div>
@@ -334,7 +340,7 @@ response.setDateHeader("Expires",0);
                     <div class="portlet-title">
                         <div class="caption">등록정보</div>
                     </div>
-                    <div class="portlet-body">
+                    <div class="portlet-body" style="height:333px;">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
@@ -399,7 +405,7 @@ response.setDateHeader("Expires",0);
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" hidden>
                                     <label class="col-md-6 control-label important-form-mark">Konos 등록상태</label>
                                     <div class="col-md-6">
                                         <select id="user_konos_register_state" name="user_konos_register_state" class="form-control input-sm">
@@ -415,7 +421,7 @@ response.setDateHeader("Expires",0);
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" hidden>
                                     <label class="col-md-6 control-label">서약일</label>
                                     <div class="col-md-6">
                                         <input id="user_pledge_date" name="user_pledge_date" type="text" size="10" id="" class="input-sm form_datetime form-control" value="${user_detail.user_pledge_date}">
@@ -427,7 +433,7 @@ response.setDateHeader("Expires",0);
                                         <input id="user_registration_date" name="user_registration_date" type="text" size="10" id="" class="input-sm form_datetime form-control" value="${user_detail.user_registration_date}">
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" hidden>
                                     <label class="col-md-6 control-label important-form-mark">Konos 등록일</label>
                                     <div class="col-md-6">
                                         <input id="user_konos_registration_date" name="user_konos_registration_date" type="text" size="10" id="" class="input-sm form_datetime form-control" value="${user_detail.user_konos_registration_date}">
@@ -443,7 +449,7 @@ response.setDateHeader("Expires",0);
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-md-6 control-label important-form-mark">접수채널</label>
+                                    <label class="col-md-6 control-label important-form-mark">등록 분류</label>
                                     <div class="col-md-6">
                                         <select id="user_register_channel" name="user_register_channel" class="form-control input-sm">
                                         	<c:forEach var="value" items="${enum_array.user_register_channel}" varStatus="status">
@@ -459,13 +465,13 @@ response.setDateHeader("Expires",0);
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-md-6 control-label important-form-mark">탈퇴일</label>
+                                    <label class="col-md-6 control-label important-form-mark">취소일</label>
                                     <div class="col-md-6">
                                         <input id="user_withdraw_date" name="user_withdraw_date" type="text" size="10" id="" class="input-sm form_datetime form-control" value="${user_detail.user_withdraw_date}">
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <label class="col-md-6 control-label important-form-mark">탈퇴사유</label>
+                                    <label class="col-md-6 control-label important-form-mark">취소사유</label>
                                     <div class="col-md-6">
                                         <select id="user_withdraw_reason" name="user_withdraw_reason" class="form-control input-sm">
                                         	<c:forEach var="value" items="${enum_array.user_withdraw_reason}" varStatus="status">
@@ -496,12 +502,13 @@ response.setDateHeader("Expires",0);
                                         </select>
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" hidden>
                                     <label class="col-md-6 control-label important-form-mark">Konos 탈퇴일</label>
                                     <div class="col-md-6">
                                         <input id="user_konos_withdraw_date" name="user_konos_withdraw_date" type="text" size="10" id="" class="input-sm form_datetime form-control" value="${user_detail.user_konos_withdraw_date}">
                                     </div>
                                 </div>
+                                
                             </div>
                             <!-- /.col-md-6 -->
                         </div>
@@ -1335,5 +1342,9 @@ response.setDateHeader("Expires",0);
                 document.getElementById("user_address_detail").focus();
             }
         }).open();
+    }
+    function fileYN(){
+    	//여기서부터 작업하자
+    	alert($("#org_file_name").val());
     }
 </script>

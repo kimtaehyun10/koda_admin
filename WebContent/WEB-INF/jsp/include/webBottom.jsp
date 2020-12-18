@@ -39,7 +39,7 @@
 <!-- END THEME GLOBAL SCRIPTS -->
 
 <!-- BEGIN THEME LAYOUT SCRIPTS -->
-<script src="${pageContext.request.contextPath}/common/layouts/layout/scripts/layout.min.js" type="text/javascript"></script>
+<script src="${pageContext.request.contextPath}/common/layouts/layout/scripts/layout.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/common/layouts/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/common/layouts/global/scripts/quick-nav.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/common/jquery.validate.js"></script>

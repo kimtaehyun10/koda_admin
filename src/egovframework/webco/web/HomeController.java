@@ -335,6 +335,8 @@ public class HomeController {
     	                            request.getSession().setAttribute(resultvo.getAdmin_id(), listener);
     	                            
                         		} else {
+                        			
+                        			//로그인 테스트용 sms 없음
                         			resultData.setErrCd("000"); //정상 접속
 	                				param.put("login_fail_cnt", 0);
                         			
@@ -398,7 +400,10 @@ public class HomeController {
 		                				resultData.setErrCd("2"); //인증번호 발송 실패
 		                				resultData.setErrMsg("로그인 인증번호 발송 중 오류가 발생하였습니다. 다시 로그인 해주세요.");
 		                			}*/
-	                                                                                    
+	                            
+		                			
+		                			
+		                			
 	                            /*webcoService.insert("AdminDAO.insertAdminLogin", param);                            
 	                            webcoService.update("AdminDAO.updateLoginFailCnt", param); 	                            	                                                   
 	                                                        

@@ -175,7 +175,7 @@ var Layout = function () {
         }
 
         // handle sidebar link click
-        $('.page-sidebar-menu').on('click', 'li > a.nav-toggle, li > a > span.nav-toggle', function (e) {
+        $('.page-sidebar-menu').on('mouseenter', 'li > a.nav-toggle, li > a > span.nav-toggle', function (e) {        	
             var that = $(this).closest('.nav-item').children('.nav-link');
 
             if (App.getViewPort().width >= resBreakpointMd && !$('.page-sidebar-menu').attr("data-initialized") && $('body').hasClass('page-sidebar-closed') &&  that.parent('li').parent('.page-sidebar-menu').size() === 1) {
@@ -246,7 +246,79 @@ var Layout = function () {
 
             e.preventDefault();
         });
+        
+        $('.page-sidebar-menu>.nav-item>ul').on('mouseleave', function (e) { // 문제점 나중에 수정하자       	
+            var that = $(this).closest('.nav-item').children('.nav-link');
 
+            if (App.getViewPort().width >= resBreakpointMd && !$('.page-sidebar-menu').attr("data-initialized") && $('body').hasClass('page-sidebar-closed') &&  that.parent('li').parent('.page-sidebar-menu').size() === 1) {
+                return;
+            }
+
+            var hasSubMenu = that.next().hasClass('sub-menu');
+
+            if (App.getViewPort().width >= resBreakpointMd && that.parents('.page-sidebar-menu-hover-submenu').size() === 1) { // exit of hover sidebar menu
+                return;
+            }
+
+            if (hasSubMenu === false) {
+                if (App.getViewPort().width < resBreakpointMd && $('.page-sidebar').hasClass("in")) { // close the menu on mobile view while laoding a page 
+                    $('.page-header .responsive-toggler').click();
+                }
+                return;
+            }
+
+            var parent =that.parent().parent();
+            var the = that;
+            var menu = $('.page-sidebar-menu');
+            var sub = that.next();
+
+            var autoScroll = menu.data("auto-scroll");
+            var slideSpeed = parseInt(menu.data("slide-speed"));
+            var keepExpand = menu.data("keep-expanded");
+            
+            if (!keepExpand) {
+                parent.children('li.open').children('a').children('.arrow').removeClass('open');
+                parent.children('li.open').children('.sub-menu:not(.always-open)').slideUp(slideSpeed);
+                parent.children('li.open').removeClass('open');
+            }
+
+            var slideOffeset = -200;
+
+            if (sub.is(":visible")) {
+                $('.arrow', the).removeClass("open");
+                the.parent().removeClass("open");
+                sub.slideUp(slideSpeed, function () {
+                    if (autoScroll === true && $('body').hasClass('page-sidebar-closed') === false) {
+                        if ($('body').hasClass('page-sidebar-fixed')) {
+                            menu.slimScroll({
+                                'scrollTo': (the.position()).top
+                            });
+                        } else {
+                            App.scrollTo(the, slideOffeset);
+                        }
+                    }
+                    handleSidebarAndContentHeight();
+                });
+            } else if (hasSubMenu) {
+                $('.arrow', the).addClass("open");
+                the.parent().addClass("open");
+                sub.slideDown(slideSpeed, function () {
+                    if (autoScroll === true && $('body').hasClass('page-sidebar-closed') === false) {
+                        if ($('body').hasClass('page-sidebar-fixed')) {
+                            menu.slimScroll({
+                                'scrollTo': (the.position()).top
+                            });
+                        } else {
+                            App.scrollTo(the, slideOffeset);
+                        }
+                    }
+                    handleSidebarAndContentHeight();
+                });
+            }
+
+            e.preventDefault();
+        });
+        
         // handle menu close for angularjs version
         if (App.isAngularJsApp()) {
             $(".page-sidebar-menu li > a").on("click", function(e) {

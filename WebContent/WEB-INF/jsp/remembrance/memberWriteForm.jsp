@@ -40,7 +40,7 @@ response.setDateHeader("Expires",0);
        <form role="form" name="updateForm" id="updateForm" class="form-horizontal" enctype="multipart/form-data" action="<c:url value='/remembrance/memberWriteEnd.do'/>" method="post"> 
         
         <!-- BEGIN PAGE TITLE-->
-        <div class="row">
+        <div class="row" style="margin-top: 70px;">
             <div class="col-md-7">            	
                 <h1 class="page-title"> 기증자 추모관 글 등록</h1>                
             </div>

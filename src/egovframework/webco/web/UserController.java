@@ -1,7 +1,10 @@
 package egovframework.webco.web;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +22,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 import egovframework.com.cmm.service.EgovProperties;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
@@ -76,12 +80,12 @@ public class UserController {
      */
 	@RequestMapping("/user/detail.do")
 	public String userDetail(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{	    
-
+		String user_name = "";
     	EnumValue enumValue = new EnumValue();
     	if(commandMap.get("user_index") != null && !("").equals(commandMap.get("user_index").toString())) {
     		Map<String, Object> userInfo = userService.selectUserInfo(commandMap);		    		    	
     		model.addAttribute("user_detail",     CommonUtil.getObjectToJSONObject(userInfo));
-    		 
+    		user_name=(String)userInfo.get("user_name"); 
     		List<Map<String, Object>> consultList =  webcoService.list_map("ConsultDAO.selectUserConsultList", commandMap);
 	    	for( Map<String, Object> consult : consultList ) {
 	    		consult.put("consult_date", CommonUtil.DateFormat(consult.get("consult_date").toString(), "yyyy.MM.dd"));
@@ -98,7 +102,7 @@ public class UserController {
         model.addAttribute("enum_array", CommonUtil.getObjectToJSONObject(enumValue.getEnumArray()));
         model.addAttribute("menu",     menuId); 
         
-        adminService.insertActHist("R", "[등록자]상세 조회 user_index : "+EgovStringUtil.isNullToString(commandMap.get("user_index")));
+        adminService.insertActHist("R", "[등록자]상세 조회 user_index : "+EgovStringUtil.isNullToString(commandMap.get("user_index")), user_name);
         return "user/userDetail"; 
 	}  
 	
@@ -136,7 +140,7 @@ public class UserController {
      */
 	@RequestMapping("/user/update.do")
 	public String update(ModelMap model, @RequestParam Map<String, Object> commandMap
-			,HttpServletRequest request, HttpServletResponse response) throws Exception{
+			,HttpServletRequest request, HttpServletResponse response, @RequestParam("org_file_name") MultipartFile multipartFile) throws Exception{
 		String status = EgovStringUtil.isNullToString(commandMap.get("status"));
 		
 		if(!status.equals("1")) {
@@ -144,6 +148,38 @@ public class UserController {
 		}
 		int result = (int) userService.saveUserInfo(commandMap);
 		String msg = "서약자 정보가 저장되었습니다.";
+		
+		////////////첨부파일
+    	try {
+			// 파일 정보
+			String originFilename = multipartFile.getOriginalFilename();
+			
+			if(!"".equals(originFilename) && originFilename!=null){
+				String extName
+				= originFilename.substring(originFilename.lastIndexOf("."), originFilename.length());
+			Long size = multipartFile.getSize();
+			
+			// 서버에서 저장 할 파일 이름
+			String saveFileName = genSaveFileName(extName);
+			
+			commandMap.put("org_file_name", originFilename);
+			commandMap.put("re_file_name", saveFileName);
+			commandMap.put("attach_no", commandMap.get("user_index"));
+			commandMap.put("attach_type", "USR");
+			
+			writeFile(multipartFile, saveFileName, request);
+			
+			//attach 테이블 수정
+			adminService.attachSave(commandMap);
+			
+			}										
+
+		}
+		catch (IOException e) {
+			
+			throw new RuntimeException(e);
+		}
+		//////////////
 		
 		if(result <= 0) {    		
     		msg = "서약자 정보 저장 중 오류가 발생하였습니다. 잠시 후 다시 시도해주시기 바랍니다.";
@@ -158,8 +194,8 @@ public class UserController {
     	PrintWriter out = response.getWriter();    	
     	//out.println("<script>alert('"+msg+"'); location.href='./detail.do?user_index="+result+"';</script>");    	 
     	out.println("<script>alert('"+msg+"'); location.href='./userList.do';</script>");    	 
-    	out.flush(); 
-		
+    	out.flush(); 		    	    	    	
+    	
 		return "user/userList";
 	}
 	
@@ -703,8 +739,36 @@ public class UserController {
 		rtnMap.put("search_value", commandMap);
 		
 		return CommonUtil.getObjectToJSONObject(rtnMap);
-	}	
+	}
 	
+	// 현재 시간을 기준으로 파일 이름 생성
+    private String genSaveFileName(String extName) {
+		String fileName = "";
+		
+		Calendar calendar = Calendar.getInstance();
+		fileName += calendar.get(Calendar.YEAR);
+		fileName += calendar.get(Calendar.MONTH);
+		fileName += calendar.get(Calendar.DATE);
+		fileName += calendar.get(Calendar.HOUR);
+		fileName += calendar.get(Calendar.MINUTE);
+		fileName += calendar.get(Calendar.SECOND);
+		fileName += calendar.get(Calendar.MILLISECOND);
+		fileName += extName;
+		
+		return fileName;
+	}
+	
+    // 파일을 실제로 write 하는 메서드
+ 	private boolean writeFile(MultipartFile multipartFile, String saveFileName, HttpServletRequest request)throws IOException{
+ 		boolean result = false;
+ 		String path=request.getServletContext().getRealPath("/upFile");
+ 		byte[] data = multipartFile.getBytes();
+ 		FileOutputStream fos = new FileOutputStream(path + "/" + saveFileName);
+ 		fos.write(data);
+ 		fos.close();
+ 		
+ 		return result;
+ 	}
 }
 
         

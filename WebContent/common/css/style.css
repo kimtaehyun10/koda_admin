@@ -424,3 +424,60 @@ hr.purple-plum{
     right: 0;
 }
 
+/*
+	우체통 관리 css_2020.10.03
+*/
+
+.post_star {
+	color : red;
+}
+.post_searchBox {
+	border-top:1px solid #eee;
+	border-bottom:1px solid #eee;
+	margin-top:15px;
+}
+
+.post_select {
+	height:30px;
+	width:150px;
+	border: 1px solid #ccc;
+}
+
+.post_input200 {
+	width:200px;
+	border: 1px solid #ccc;
+}
+.post_input300 {
+	width:300px;
+	height:30px;
+	border: 1px solid #ccc;
+}
+.post_input600 {
+	width:600px;
+	border: 1px solid #ccc;
+}
+.post_register_td_170 {
+	width:170px;
+	font-weight:bold;
+}
+.post_td_gray {
+	background: #d0d0d0dd;
+}
+.post_td_green {
+	background: #33bf2a3d;
+}
+.post_inp_style {
+	border:1px solid #ccc;
+}
+
+.post_view_gray {
+	background:#ccc
+}
+
+.post_view_purple {
+	background:#d0c9e3
+}
+
+.post_view_green {
+	background:#55a872
+}

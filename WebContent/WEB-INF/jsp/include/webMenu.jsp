@@ -4,14 +4,18 @@
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="ajax" uri="http://ajaxtags.sourceforge.net/tags/ajaxtags"%>
-
+<style>
+	.nav-item{
+		float: left;						
+	}			
+</style>
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
 <!-- BEGIN HEADER INNER -->
 <div class="page-header-inner ">
 <!-- BEGIN LOGO -->
 <div class="page-logo">
-    <h4>한국장기조직기증원 관리자페이지</h4>
+    <h4 onclick="window.location.href='/statistics/dashboard.do'" style="cursor:pointer;">한국장기조직기증원 관리자페이지</h4>
 </div>
 <!-- END LOGO -->
 <!-- BEGIN RESPONSIVE MENU TOGGLER -->
@@ -109,11 +113,7 @@
             <span></span>
         </div>
     </li>
-<!-- END SIDEBAR TOGGLER BUTTON -->
-	
-	<style>
-		.nav-item{float: left;}
-	</style>
+<!-- END SIDEBAR TOGGLER BUTTON -->		
 	
 	<li class="nav-item ">
 		<c:set var="doneLoop1" value="false"/>		
@@ -136,8 +136,8 @@
 	    </c:forEach>
 	    <ul class="sub-menu">
 	    	<c:forEach items="${webMenuList}" var="webMenuList">
-	    		<c:if test="${webMenuList.menu_cd eq 1 and webMenuList.seq_cd ne 6 and webMenuList.seq_cd ne 7}">
-			        <li class="nav-item1">
+	    		<c:if test="${webMenuList.menu_cd eq 1 and webMenuList.seq_cd ne 6 and webMenuList.seq_cd ne 7 and webMenuList.seq_cd ne 5}">
+			        <li class="nav-item1" id="nav-item1">
 			            <a href="<c:url value='${webMenuList.menu_url}'/>" class="nav-link ">	                			                	
 			                <span class="title">${webMenuList.menu_nm}</span>		                		                	                
 			            </a>
@@ -153,9 +153,9 @@
 	    	<c:if test="${not doneLoop2}">
 		    	<c:choose>
 		    		<c:when test="${webMenuList.menu_cd eq 2}">
-		    			<a href="javascript:;" class="nav-link nav-toggle"> 
+		    			<a href="javascript:;" class="nav-link nav-toggle" id="nav-toggle"> 
 					        <i class="icon-user"></i>
-					        <span class="title">등록자</span>
+					        <span class="title">기증희망등록</span>
 					        <span class="arrow"></span>
 					    </a>
 					    <c:set var="doneLoop2" value="true"/>
@@ -185,7 +185,7 @@
 	    	<c:if test="${not doneLoop3}">
 		    	<c:choose>
 		    		<c:when test="${webMenuList.menu_cd eq 3}">
-		    			<a href="javascript:;" class="nav-link nav-toggle"> 
+		    			<a href="javascript:;" class="nav-link nav-toggle" id="nav-toggle"> 
 					        <i class="glyphicon glyphicon-zoom-in"></i>
 					        <span class="title">국민소통 게시판</span>
 					        <span class="arrow"></span>
@@ -217,7 +217,7 @@
 	    	<c:if test="${not doneLoop4}">
 		    	<c:choose>
 		    		<c:when test="${webMenuList.menu_cd eq 4}">
-		    			<a href="javascript:;" class="nav-link nav-toggle"> 
+		    			<a href="javascript:;" class="nav-link nav-toggle" id="nav-toggle"> 
 					        <i class="glyphicon glyphicon-file"></i>
 					        <span class="title">정보공개 게시판</span>
 					        <span class="arrow"></span>
@@ -243,45 +243,13 @@
 	    </ul>
 	</li>
 	
-	<li class="nav-item ">	    
-	    <c:set var="doneLoop5" value="false"/>		
-	    <c:forEach items="${webMenuList}" var="webMenuList">
-	    	<c:if test="${not doneLoop5}">
-		    	<c:choose>
-		    		<c:when test="${webMenuList.menu_cd eq 5}">
-		    			<a href="javascript:;" class="nav-link nav-toggle"> 
-					        <i class="glyphicon glyphicon-user"></i>
-					        <span class="title">우체통 회원관리</span>
-					        <span class="arrow"></span>
-					    </a>
-					    <c:set var="doneLoop5" value="true"/>
-		    		</c:when>
-		    		<c:otherwise>
-		    			
-		    		</c:otherwise>
-		    	</c:choose>
-	    	</c:if>
-	    </c:forEach>
-	    <ul class="sub-menu">
-	    	<c:forEach items="${webMenuList}" var="webMenuList">
-	    		<c:if test="${webMenuList.menu_cd eq 5}">
-			        <li class="nav-item5">
-			            <a href="<c:url value='${webMenuList.menu_url}'/>" class="nav-link ">	                			                	
-			                <span class="title">${webMenuList.menu_nm}</span>		                		                	                
-			            </a>
-			        </li>
-	        	</c:if>
-	        </c:forEach>
-	    </ul>
-	</li>
-	
 	<li class="nav-item ">
 	    <c:set var="doneLoop6" value="false"/>		
 	    <c:forEach items="${webMenuList}" var="webMenuList">
 	    	<c:if test="${not doneLoop6}">
 		    	<c:choose>
 		    		<c:when test="${webMenuList.menu_cd eq 6}">
-    				    <a href="javascript:;" class="nav-link nav-toggle"> 
+    				    <a href="javascript:;" class="nav-link nav-toggle" id="nav-toggle"> 
 					        <i class="glyphicon glyphicon-list-alt"></i>
 					        <span class="title">관리자</span>
 					        <span class="arrow"></span>
@@ -313,7 +281,7 @@
 	    	<c:if test="${not doneLoop7}">
 		    	<c:choose>
 		    		<c:when test="${webMenuList.menu_cd eq 7}">
-    				    <a href="javascript:;" class="nav-link nav-toggle"> 
+    				    <a href="javascript:;" class="nav-link nav-toggle" id="nav-toggle"> 
 					        <i class="glyphicon glyphicon-share"></i>
 					        <span class="title">생명나눔 우체통</span>
 					        <span class="arrow"></span>
@@ -345,7 +313,7 @@
 	    	<c:if test="${not doneLoop8}">
 		    	<c:choose>
 		    		<c:when test="${webMenuList.menu_cd eq 8}">
-    				    <a href="javascript:;" class="nav-link nav-toggle"> 
+    				    <a href="javascript:;" class="nav-link nav-toggle" id="nav-toggle"> 
 					        <i class="glyphicon glyphicon-stats"></i>
 					        <span class="title">통계메뉴</span>
 					        <span class="arrow"></span>
@@ -377,7 +345,7 @@
 	    	<c:if test="${not doneLoop9}">
 		    	<c:choose>
 		    		<c:when test="${webMenuList.menu_cd eq 9}">
-    				    <a href="javascript:;" class="nav-link nav-toggle"> 
+    				    <a href="javascript:;" class="nav-link nav-toggle" id="nav-toggle"> 
 					        <i class="glyphicon glyphicon-gift"></i>
 					        <span class="title">병원관리</span>
 					        <span class="arrow"></span>
@@ -409,7 +377,7 @@
 	    	<c:if test="${not doneLoop10}">
 		    	<c:choose>
 		    		<c:when test="${webMenuList.menu_cd eq 10}">
-    				    <a href="javascript:;" class="nav-link nav-toggle"> 
+    				    <a href="javascript:;" class="nav-link nav-toggle" id="nav-toggle"> 
 					        <i class="glyphicon glyphicon-star"></i>
 					        <span class="title">추모공간</span>
 					        <span class="arrow"></span>

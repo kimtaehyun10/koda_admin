@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="IssueMembershipDAO">
+
+    <typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    <typeAlias alias="issueMembershipVO" type="egovframework.webco.vo.SyrupRequestVO"/>
+
+    <!-- 건수 조회 -->
+    <select id="IssueMembershipDAO.selectCount" resultClass="Integer">
+        <![CDATA[
+		SELECT COUNT(*)
+			FROM issue_membership
+		WHERE 1=1
+ 		]]> 		
+    </select>   
+    
+    <select id="IssueMembershipDAO.select" resultClass="java.util.HashMap">
+        <![CDATA[
+		SELECT *
+			FROM issue_membership
+		WHERE 1=1
+		]]>
+		<isNotEmpty property="issue_membership_index">
+		AND issue_membership_index = #issue_membership_index#
+		</isNotEmpty>
+		<isNotEmpty property="paymentTrNo">
+		AND paymentTrNo = #paymentTrNo#
+		</isNotEmpty>
+ 		<![CDATA[
+ 		ORDER BY issue_membership_index DESC
+ 		limit 1
+ 		]]>		 		
+    </select> 
+    
+    <insert id="IssueMembershipDAO.insert" parameterClass="issueMembershipVO">
+    	INSERT INTO issue_membership 
+			(
+			trNo 
+			,trDt 
+			,korName 
+			,mdn 
+			,birthdayType 
+			,birthday 
+			,gender 
+			,nationality 
+			,ipinCi 
+			,newAddrYN 
+			,addrType 
+			,zipCode 
+			,basicAddr 
+			,detailAddr 
+			,email 
+			,paymentTrNo 
+			,rCode 
+			,rMsg 
+			,cardNo 
+			,issueType 
+			,user_index 
+			,create_time
+			)
+			VALUES
+			(
+			#trNo#
+			,#trDt#
+			,#korName#
+			,#mdn#
+			,#birthdayType#
+			,#birthday#
+			,#gender#
+			,#nationality#
+			,#ipinCi#
+			,#newAddrYN#
+			,#addrType#
+			,#zipCode#
+			,#basicAddr#
+			,#detailAddr#
+			,#email#
+			,#paymentTrNo#
+			,#rCode#
+			,#rMsg#
+			,#cardNo#
+			,#issueType#
+			,#user_index#
+    		,now()	 
+	    )
+	    <selectKey keyProperty="issue_membership_index" resultClass="int">
+        SELECT LAST_INSERT_ID()
+   		</selectKey>
+    </insert>         
+</sqlMap>

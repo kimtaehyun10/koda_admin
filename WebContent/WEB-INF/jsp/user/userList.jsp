@@ -75,7 +75,7 @@ response.setDateHeader("Expires",0);
                             <tr><td colspan="2" id="user_option_user_address" col="user_address" class="user_option_tab">주소</td></tr>
                             <tr><td colspan="2" id="user_option_user_address_detail" col="user_address_detail" class="user_option_tab">상세주소</td></tr>
                             <tr><td colspan="2" id="user_option_user_register" col="user_register" class="user_option_tab">등록자</td></tr>
-                            <tr><td colspan="2" id="user_option_user_register_channel" col="user_register_channel" class="user_option_tab">접수채널</td></tr>
+                            <tr><td colspan="2" id="user_option_user_register_channel" col="user_register_channel" class="user_option_tab">등록 분류</td></tr>
                             <tr><td colspan="2" id="user_option_user_withdraw_way" col="user_withdraw_way" class="user_option_tab">가입경로</td></tr>
                             <tr><td colspan="2" id="user_option_user_recognize_type" col="user_recognize_type" class="user_option_tab">서약구분</td></tr>                                                 
                             <tr><td colspan="2" id="user_option_user_birthday" col="user_birthday" class="user_option_tab">생년월일</td></tr>
@@ -128,7 +128,7 @@ response.setDateHeader("Expires",0);
                                         <option value="user_registration_date">등록일</option>
                                         <option value="user_konos_registration_date">Konos 등록일</option>
                                         <option value="user_register">등록자</option>
-                                        <option value="user_register_channel">접수채널</option>
+                                        <option value="user_register_channel">등록 분류</option>
                                         <option value="user_withdraw_date">탈퇴일</option>
                                         <option value="user_withdraw_reason">탈퇴사유</option>
                                         <option value="user_withdraw_way">가입경로</option>
@@ -156,6 +156,7 @@ response.setDateHeader("Expires",0);
                                     <button type="button" class="btn btn-sm btn-circle blue btn-outline page-title-element btn-excel-export align-right">내보내기</button>
                                     <button type="button" class="btn btn-sm btn-circle blue btn-outline page-title-element btn-print align-right">카드 인쇄</button>
                                     <button type="button" class="btn btn-sm btn-circle blue btn-outline page-title-element btn-sms align-right">선택 문자발송</button>
+                                    <button type="button" class="btn btn-sm btn-circle blue btn-outline page-title-element align-right" onclick="showSMSSendDialog('A');">일반 문자발송</button>
                                 </div>
                                 <div class="col-md-12" >
                                     <button type="button" class="zero-margin-top btn btn-sm btn-circle blue btn-outline page-title-element btn-delete-selected align-right">선택 삭제</button>
@@ -193,7 +194,7 @@ response.setDateHeader("Expires",0);
                                         <option value="user_registration_date">등록일</option>
                                         <option value="user_konos_registration_date">Konos 등록일</option>
                                         <option value="user_register">등록자</option>
-                                        <option value="user_register_channel">접수채널</option>
+                                        <option value="user_register_channel">등록 분류</option>
                                         <option value="user_withdraw_date">탈퇴일</option>
                                         <option value="user_withdraw_reason">탈퇴사유</option>
                                         <option value="user_withdraw_way">가입경로</option>
@@ -236,7 +237,7 @@ response.setDateHeader("Expires",0);
                                         <option value="user_registration_date">등록일</option>
                                         <option value="user_konos_registration_date">Konos 등록일</option>
                                         <option value="user_register">등록자</option>
-                                        <option value="user_register_channel">접수채널</option>
+                                        <option value="user_register_channel">등록 분류</option>
                                         <option value="user_withdraw_date">탈퇴일</option>
                                         <option value="user_withdraw_reason">탈퇴사유</option>
                                         <option value="user_withdraw_way">가입경로</option>
@@ -385,7 +386,7 @@ response.setDateHeader("Expires",0);
                                 </div>
                                 <div class="col-md-6">
                                     <h5>2. 휴대전화 연락처</h5>
-                                        <textarea id="sms_send_mobile_list" name="sms_send_mobile_list" class="form-control col-md-12 input-sm" rows="9"></textarea>
+                                        <div id="phoneArea"></div>
                                     <h5>3. 보내는 이</h5>
                                     <select id="sms_send_sender" class="col-md-12 form-control">  
                                     	<c:forEach var="value" items="${enum_array.sms_send_sender}" varStatus="status">
@@ -407,6 +408,7 @@ response.setDateHeader("Expires",0);
                     <div class="modal-footer">
                         <button id="btn_open_sms_message_form" type="button" class="btn blue" style="float:left;">양식 불러오기(클릭)</button>
                         <button id="btn_send_sms" type="button" class="btn blue">보내기</button>
+                        <input type="hidden" id="checkName" value="">
                     </div>
                 </div>
             </div>
@@ -495,6 +497,13 @@ response.setDateHeader("Expires",0);
     }
 
     function sendSMSAjax() {
+    	
+    	if($("#checkName").val() === 'A'){    		
+    		var user_mobile = $("#sms_send_mobile_list").val();
+    		window.sms_send_mobile_list.push(user_mobile);
+    		window.sms_send_mobile_list_sentence += user_mobile;
+    	}    	
+    	
         jQuery.ajaxSettings.traditional = true;
         $.ajax({
             url: "<c:url value='/user/sendSMSAjax.do'/>",
@@ -571,35 +580,41 @@ response.setDateHeader("Expires",0);
         }
     }
 
-    function showSMSSendDialog() {
+    function showSMSSendDialog(checkName) {
+    	$("#checkName").val(checkName);
         var sms_send_mobile_list_html = "";
         window.sms_send_user_list = [];
         window.sms_send_mobile_list = [];
         window.sms_send_mobile_list_sentence = "";
         var checked_count = 0;
         showTotalSMSCount();
-        $("#user_list_tbody").find(".checkboxes").each(function() {
-            if($(this).is(":checked")) {
-                var user_index = $(this).closest('tr').attr("user_index");
-                var user_mobile = $(this).closest('tr').attr("user_mobile");
-                var user_is_sms_agree = $(this).closest('tr').attr("user_is_sms_agree");
-                if (user_mobile != "" && user_is_sms_agree == 'Y') {
-                    checked_count++;
-                    if(checked_count%2 == 0) {
-                        sms_send_mobile_list_html += user_mobile + '\n';
-                    } else {
-                        sms_send_mobile_list_html += user_mobile + '\t';
-                    }
-                    window.sms_send_user_list.push(user_index);
-                    window.sms_send_mobile_list.push(user_mobile);
-                    if( checked_count == 1) {
-                        window.sms_send_mobile_list_sentence += user_mobile;
-                    } else {
-                        window.sms_send_mobile_list_sentence += "," + user_mobile;
+        if(!checkName){
+        	$("#phoneArea").html('<textarea id="sms_send_mobile_list" name="sms_send_mobile_list" class="form-control col-md-12 input-sm" rows="9"></textarea>');
+        	$("#user_list_tbody").find(".checkboxes").each(function() {
+                if($(this).is(":checked")) {
+                    var user_index = $(this).closest('tr').attr("user_index");
+                    var user_mobile = $(this).closest('tr').attr("user_mobile");
+                    var user_is_sms_agree = $(this).closest('tr').attr("user_is_sms_agree");
+                    if (user_mobile != "" && user_is_sms_agree == 'Y') {
+                        checked_count++;
+                        if(checked_count%2 == 0) {
+                            sms_send_mobile_list_html += user_mobile + '\n';
+                        } else {
+                            sms_send_mobile_list_html += user_mobile + '\t';
+                        }
+                        window.sms_send_user_list.push(user_index);
+                        window.sms_send_mobile_list.push(user_mobile);
+                        if( checked_count == 1) {
+                            window.sms_send_mobile_list_sentence += user_mobile;
+                        } else {
+                            window.sms_send_mobile_list_sentence += "," + user_mobile;
+                        }
                     }
                 }
-            }
-        });
+            });
+        }else{
+        	$("#phoneArea").html('<input type="text" id="sms_send_mobile_list" name="sms_send_mobile_list" class="form-control col-md-12" placeholder="010-0000-0000" style="margin-bottom:20px;">');
+        }
         $('#sms_send_msg').html('');
         $('#sms_send_mobile_list').html(sms_send_mobile_list_html);
         $('#sms_send_dialog').modal('show');

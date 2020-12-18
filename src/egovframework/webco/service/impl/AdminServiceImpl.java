@@ -122,10 +122,29 @@ public class AdminServiceImpl extends EgovAbstractServiceImpl implements AdminSe
 		adminActHistVO.setAct_url(act_url);
 		adminActHistVO.setAct_ip(act_ip);
 		adminActHistVO.setAdmin_index(adminVO.getAdmin_index());
+		
 		// TODO Auto-generated method stub
 		return webcoDAO.insert("AdminDAO.insertActHist", adminActHistVO);
 	}
 
+	@Override
+	public Object insertActHist(String act_type, String act_detail, String user_name)
+			throws Exception {
+		AdminActHistVO adminActHistVO = new AdminActHistVO();
+		String act_ip = EgovClntInfo.getClntIP(request);
+		String act_url = request.getRequestURI();
+		AdminVO adminVO = SessionUtil.getAuthenticatedUser();
+		
+		adminActHistVO.setAct_type(act_type);
+		adminActHistVO.setAct_detail(act_detail);
+		adminActHistVO.setAct_url(act_url);
+		adminActHistVO.setAct_ip(act_ip);
+		adminActHistVO.setAdmin_index(adminVO.getAdmin_index());
+		adminActHistVO.setAct_subject(user_name);
+		// TODO Auto-generated method stub
+		return webcoDAO.insert("AdminDAO.insertActHist", adminActHistVO);
+	}
+	
 	@Override
 	public int endIdx(Map<String, Object> commandMap) {
 		
@@ -160,5 +179,11 @@ public class AdminServiceImpl extends EgovAbstractServiceImpl implements AdminSe
 	public void adminMenuChange(Map<String, Object> commandMap) {
 
 		webcoDAO.adminMenuChange("AdminDAO.adminMenuChange",commandMap);
+	}
+
+	@Override
+	public void attachSave(Map<String, Object> commandMap) {
+		
+		webcoDAO.attachSave("AdminDAO.attachSave",commandMap);
 	}
 }

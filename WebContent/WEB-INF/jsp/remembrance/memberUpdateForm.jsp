@@ -43,7 +43,7 @@ response.setDateHeader("Expires",0);
        <form role="form" name="updateForm" id="updateForm" class="form-horizontal"> 
         
         <!-- BEGIN PAGE TITLE-->
-        <div class="row">
+        <div class="row" style="margin-top: 70px;">
             <div class="col-md-7">            	
                 <h1 class="page-title"> 기증자 추모관 수정</h1>                
             </div>

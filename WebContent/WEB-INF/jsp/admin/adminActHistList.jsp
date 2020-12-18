@@ -47,7 +47,7 @@ response.setDateHeader("Expires",0);
           <!-- BEGIN PAGE HEADER-->                    
           <!-- END PAGE HEADER-->
           <div class="row" style="margin-top: 70px;">
-              <div class="col-md-12">
+              <div class="col-md-11" style="float: none; margin: 0 auto;">
                   <!-- BEGIN SAMPLE TABLE PORTLET-->
                   <div class="portlet light portlet-fit bordered">
                       <div class="portlet-title">
@@ -115,6 +115,7 @@ response.setDateHeader("Expires",0);
                               			<col width="130px"/>
                               			<col width="150px"/>
                               			<col width="400px"/>
+                              			<col width="130px"/>
                               			<col width=""/>
                               			<col width="80px;"/>
                               		</colgroup>
@@ -124,6 +125,7 @@ response.setDateHeader("Expires",0);
                                           <th>접속IP</th>
                                           <th>관리자명(아이디)</th>
                                           <th>접속페이지</th>
+                                          <th>정보주체</th>
                                           <th>활동내용</th>
                                           <th>구분</th>
                                       </tr>
@@ -147,6 +149,7 @@ response.setDateHeader("Expires",0);
                                           <td>${data.act_ip}</td>
                                           <td>${data.admin_nick_name}(${data.admin_id})</td>
                                           <td style="text-align:left;">${data.act_url}</td>
+                                          <td>${data.act_subject}</td>
                                           <td style="text-align:left;">${data.act_detail}</td>
                                           <td>${act_type_nm}</td>
                                       </tr>

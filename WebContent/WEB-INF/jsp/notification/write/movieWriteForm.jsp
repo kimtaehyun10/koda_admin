@@ -85,6 +85,7 @@ response.setDateHeader("Expires",0);
                                     <label class="col-md-1 control-label">동영상 URL</label>
                                     <div class="col-md-5">
                                         <input id="brd_url" name="brd_url" type="text" class="form-control input-sm" placeholder="" value="">
+                                        <input type="button" id="htmlAppend" onclick="htmlCreate();" value="스킨생성"/>
                                     </div>                                                                                                                                             
                                 </div>
                                 <div class="form-group">                         
@@ -142,6 +143,21 @@ $(document).ready(function() {
     CKEDITOR.replace('brd_contents',{filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:450});
 	
 });
+
+function htmlCreate() {
+	var html = "";
+	html += "<table>";
+	html += "<tr>";
+	html += "<td>김진우</td>";
+	html += "</tr>";
+	html += "<tr>";
+	html += "<td>안녕";
+	html += "<td>";
+	html += "</tr>";
+	html += "</table>";
+	CKEDITOR.instances["brd_contents"].setData(html);
+	
+}
 
 $("#fileBtn").click(function(){
 	

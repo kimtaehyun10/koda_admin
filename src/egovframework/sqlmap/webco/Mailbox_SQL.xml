@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MailboxDAO">
+    <typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    
+    <select id="MailboxDAO.selectBenefiPartList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT GUBN AS gubn
+    		 , CODE as code
+    		 , NAME as name
+    	  FROM COMMON
+    	 WHERE 1 = 1
+    	   AND GUBN = '02'
+    </select>
+
+    <select id="MailboxDAO.selectKodaMemberList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT CASE KM.GUBN WHEN 'D' THEN '기증자 가족' 
+    				    	WHEN 'B' THEN '수혜자' 
+    		   END AS gubnNm
+    		 , KM.GUBN AS gubn
+    		 , KM.ID AS id
+    		 , KM.NAME AS name
+    		 , KM.PHONE AS phone
+    		 , KM.EMAIL AS email
+    		 , KM.APPR_FLAG as apprFlag
+    		 , RML.NAME AS matchNameList
+    		 , DL.matchDonorName
+    		 , DL.matchDonorHospitalIdx
+    		 , DL.matchDonorHospitalName
+    		 , DL.matchDonorBirth
+    		 , DL.matchDonorDate
+    		 , IFNULL(DL.dlCnt, '0') AS dlCnt
+    		 , BL.benefiNames
+    		 , BL.benefiBirths
+    		 , BL.benefiHospitalIdxs
+    		 , BL.benefiHospitalNames
+    		 , BL.benefiPartsIdxs
+    		 , BL.benefiPartsNames
+    		 , IFNULL(BL.blCnt, '0') AS blCnt
+    	  FROM KODA_MEMBER KM
+     LEFT JOIN (
+				SELECT GROUP_CONCAT(KMM.NAME SEPARATOR ', ') AS NAME
+		   			 , A.ID
+				  FROM (
+					SELECT RML.CHILD_ID
+					  	 , KM.ID
+					  FROM KODA_MEMBER KM
+					   	 , RELA_MATCH_LIST RML
+					 WHERE KM.ID = RML.ID
+					   AND RML.GUBN = 'M'
+					  ) A
+					  , KODA_MEMBER KMM
+					 WHERE A.CHILD_ID = KMM.ID
+					 GROUP BY A.ID
+			) RML
+            ON KM.ID = RML.ID
+	LEFT JOIN (
+				SELECT DL.DONOR_NAME AS matchDonorName
+					 , DL.HOSPITAL_IDX AS matchDonorHospitalIdx
+					 , (SELECT HOSPITAL_NAME FROM HOSPITAL WHERE HOSPITAL_IDX = DL.HOSPITAL_IDX) AS matchDonorHospitalName
+					 , DL.DONOR_BIRTH AS matchDonorBirth
+					 , DL.DONOR_DATE AS matchDonorDate
+					 , KM.ID
+					 , COUNT(*) AS dlCnt
+				  FROM KODA_MEMBER KM
+				  	 , DONOR_LIST DL
+				 WHERE KM.ID = DL.ID
+				 GROUP BY KM.ID
+			) DL
+	        ON KM.ID = DL.ID
+	LEFT JOIN (
+				SELECT GROUP_CONCAT(BL.BENEFI_NAME SEPARATOR ',') AS benefiNames
+					 , GROUP_CONCAT(BL.BENEFI_BIRTH SEPARATOR ',') AS benefiBirths
+					 , GROUP_CONCAT(BL.HOSPITAL_IDX SEPARATOR ',') AS benefiHospitalIdxs
+					 , GROUP_CONCAT((SELECT HOSPITAL_NAME FROM HOSPITAL WHERE HOSPITAL_IDX = BL.HOSPITAL_IDX) SEPARATOR ',') AS benefiHospitalNames
+					 , GROUP_CONCAT(BL.BENEFI_PARTS SEPARATOR ',') AS benefiPartsIdxs
+					 , GROUP_CONCAT((SELECT NAME FROM COMMON WHERE GUBN = '02' AND CODE = BL.BENEFI_PARTS) SEPARATOR ',') AS benefiPartsNames
+					 , KM.ID
+					 , COUNT(*) AS blCnt
+				  FROM KODA_MEMBER KM
+				  	 , BENEFI_LIST BL
+				 WHERE KM.ID = BL.ID
+				 GROUP BY KM.ID
+			) BL
+	        ON KM.ID = BL.ID
+    	 WHERE 1 = 1
+    	   AND KM.USE_FLAG = 'Y'
+    	<isNotEmpty property="type">
+    	  AND KM.GUBN = UPPER(#type#)
+    	</isNotEmpty>
+    	<isNotEmpty property="searchText">
+    	  AND (KM.ID LIKE "%$searchText$%" OR KM.NAME LIKE "%$searchText$%" OR KM.PHONE LIKE "%$searchText$%") 
+    	</isNotEmpty>
+    	<isEqual property="searchType" compareValue="ID">
+    	  AND KM.ID LIKE "%$searchText$%"
+    	</isEqual>  
+    	<isEqual property="searchType" compareValue="NAME">
+    	  AND KM.NAME LIKE "%$searchText$%"
+    	</isEqual>  
+    	<isEqual property="searchType" compareValue="PHONE">
+    	  AND KM.PHONE LIKE "%$searchText$%"
+    	</isEqual>  
+		<isNotEmpty property="offset">
+		 LIMIT #offset#, #limit#
+		</isNotEmpty>
+    </select>
+    
+    <select id="MailboxDAO.selectKodaMemberListCnt" resultClass="int">
+    	SELECT COUNT(*)
+    	  FROM KODA_MEMBER
+    	 WHERE 1 = 1
+    	<isNotEmpty property="type">
+    	  AND GUBN = UPPER(#type#)
+    	</isNotEmpty>
+    	<isNotEmpty property="searchText">
+    	  AND (ID LIKE "%$searchText$%" OR NAME LIKE "%$searchText$%" OR PHONE LIKE "%$searchText$%") 
+    	</isNotEmpty>
+    	<isEqual property="searchType" compareValue="ID">
+    	  AND ID LIKE "%$searchText$%"
+    	</isEqual>  
+    	<isEqual property="searchType" compareValue="NAME">
+    	  AND NAME LIKE "%$searchText$%"
+    	</isEqual>  
+    	<isEqual property="searchType" compareValue="PHONE">
+    	  AND PHONE LIKE "%$searchText$%"
+    	</isEqual>  
+    </select>
+    
+    <select id="MailboxDAO.selectRelationKodaMemberList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT CASE KM.GUBN WHEN 'D' THEN '기증자 가족' 
+    				     WHEN 'B' THEN '수혜자' 
+    		   END AS gubnNm
+    		 , KM.GUBN AS gubn
+    		 , KM.ID AS id
+    		 , KM.NAME AS name
+    		 , KM.PHONE AS phone
+    		 , DL.DONOR_NAME AS donorName
+    		 , DL.DONOR_BIRTH AS donorBirth
+			 , (SELECT HOSPITAL_NAME FROM HOSPITAL WHERE HOSPITAL_IDX = DL.HOSPITAL_IDX) AS hospitalName
+			 , DL.DONOR_DATE AS donorDate
+    	  FROM KODA_MEMBER KM
+    	  	 , DONOR_LIST DL
+    	 WHERE 1 = 1
+    	   AND KM.USE_FLAG = 'Y'
+    	   AND KM.GUBN = 'D'
+    	   AND KM.ID = DL.ID
+    	   AND DL.DONOR_NAME = #donorName#
+    	   AND DL.DONOR_BIRTH = #donorBirth#
+    	   AND DL.HOSPITAL_IDX = #donorHospitalIdx#
+    	   AND DL.DONOR_DATE = #donorDate#
+    	<isNotEmpty property="id">
+    	  AND KM.ID != #id#
+    	</isNotEmpty>  
+		<isNotEmpty property="offset">
+		 LIMIT #offset#, #limit#
+		</isNotEmpty>
+    </select>
+    
+    <select id="MailboxDAO.selectRelationKodaMemberListCnt" resultClass="int">
+    	SELECT COUNT(*)
+    	  FROM KODA_MEMBER KM
+    	  	 , DONOR_LIST DL
+    	 WHERE 1 = 1
+    	  AND KM.GUBN = 'D'
+    	  AND KM.ID = DL.ID
+    	  AND DL.DONOR_NAME = #donorName#
+    	  AND DL.DONOR_BIRTH = #donorBirth#
+    	  AND DL.HOSPITAL_IDX = #donorHospitalIdx#
+    	  AND DL.DONOR_DATE = #donorDate#
+    	  <isNotEmpty property="id">
+    	  AND KM.ID != #id#
+    	</isNotEmpty>  
+    </select>
+    
+    <select id="MailboxDAO.selectMatchKodaMemberList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT CASE KM.GUBN WHEN 'D' THEN '기증자 가족' 
+    				     WHEN 'B' THEN '수혜자' 
+    		   END AS gubnNm
+    		 , KM.GUBN AS gubn
+    		 , KM.ID AS id
+    		 , KM.NAME AS name
+    		 , KM.PHONE AS phone
+    		 , BL.BENEFI_NAME AS benefiName
+    		 , BL.BENEFI_BIRTH AS benefiBirth
+			 , (SELECT HOSPITAL_NAME FROM HOSPITAL WHERE HOSPITAL_IDX = BL.HOSPITAL_IDX) AS hospitalName
+			 , (SELECT NAME FROM COMMON WHERE GUBN = '02' AND CODE = BL.BENEFI_PARTS) AS benefiPartsName 
+    	  FROM KODA_MEMBER KM
+    	  	 , BENEFI_LIST BL
+    	 WHERE 1 = 1
+    	   AND KM.USE_FLAG = 'Y'
+    	   AND KM.GUBN = 'B'
+    	   AND KM.ID = BL.ID
+    	   AND BL.BENEFI_NAME = #benefiName#
+    	   AND BL.BENEFI_BIRTH = #benefiBirth#
+    	   AND BL.HOSPITAL_IDX = #benefiHospitalIdx#
+    	   AND BL.BENEFI_PARTS = #benefiParts#
+    	<isNotEmpty property="id">
+    	  AND KM.ID != #id#
+    	</isNotEmpty>  
+    </select>
+    
+	<select id="MailboxDAO.selectKodaMemberDetail" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT KM.ID 				    			AS id
+			 , KM.NAME                				AS name
+			 , KM.NICK_NAME						 	AS nickName
+			 , KM.PHONE               				AS phone
+			 , KM.EMAIL               				AS email
+			 , KM.EMAIL2							AS email2
+			 , KM.APPR_FLAG           				AS apprFlag
+			 , KM.GUBN                				AS gubn
+			 , IF(GUBN = 'D', '기증자 가족회원', '수혜자')  AS gubnName 
+			 , PASSWORD(KM.PASSWORD)  				AS password
+			 , KM.GENDER              				AS gender
+			 , KM.BIRTHDAY            				AS birthday
+			 , KM.EMAIL_FLAG          				AS emailFlag
+			 , KM.SMS_FLAG            				AS smsFlag
+			 , KM.POST                				AS post
+			 , KM.ADDRESS             				AS address
+			 , KM.ADDRESS_DETAIL      				AS addressDetail
+			 , KM.PRT_NAME            				AS prtName
+			 , KM.PRT_BIRTHDAY        				AS prtBirthday
+			 , KM.PRT_GENDER          				AS prtGender
+			 , KM.PRT_PHONE           				AS prtPhone
+			 , KM.USE_FLAG            				AS useFlag
+			 , DL.DONOR_NAME 						AS donorName
+			 , DL.DONOR_BIRTH						AS donorBirth
+			 , (SELECT HOSPITAL_NAME FROM HOSPITAL WHERE HOSPITAL_IDX = DL.HOSPITAL_IDX) AS donorHospitalNm
+			 , DL.DONOR_DATE						AS donorDate
+			 , (SELECT NAME FROM COMMON WHERE CODE = DL.DONOR_RELATION AND GUBN = '01') AS donorRelationNm
+			 , BL.BENEFI_NAME						AS benefiName
+			 , BL.BENEFI_BIRTH						AS benefiBirth
+			 , (SELECT HOSPITAL_NAME FROM HOSPITAL WHERE HOSPITAL_IDX = BL.HOSPITAL_IDX) AS benefiHospitalNm
+			 , (SELECT NAME FROM COMMON WHERE GUBN = '02' AND CODE = BL.BENEFI_PARTS) AS benefiPartsNm 
+			 , KM.INP_DATE AS inpDate
+			 , RML.relationList
+			 , RML.relationNameDetail
+			 , RML.relationIdDetail
+			 , MML.matchList
+			 , MML.matchNameDetail
+			 , MML.matchIdDetail
+		  FROM KODA_MEMBER KM
+		   LEFT JOIN (
+		   		SELECT GROUP_CONCAT(KMM.NAME, '(', KMM.ID, ')', '[', KMM.PHONE, ']' SEPARATOR ' | ') AS relationList
+		   			 , GROUP_CONCAT(KMM.NAME SEPARATOR '|') AS relationNameDetail
+		   			 , GROUP_CONCAT(KMM.ID SEPARATOR ', ') AS relationIdDetail
+		   			 , A.ID
+				  FROM (
+					SELECT RML.CHILD_ID
+						 , KM.ID
+					  FROM KODA_MEMBER KM
+					   	 , RELA_MATCH_LIST RML
+					 WHERE KM.ID = RML.ID
+					   AND RML.GUBN = 'R'
+				  ) A
+				  , KODA_MEMBER KMM
+				 WHERE A.CHILD_ID = KMM.ID
+				 GROUP BY A.ID ) RML
+		          ON KM.ID = RML.ID
+		   LEFT JOIN (
+		   		SELECT GROUP_CONCAT(KMM.NAME, '(', KMM.ID, ')', '[', KMM.PHONE, ']' SEPARATOR ' | ') AS matchList
+		   			 , GROUP_CONCAT(KMM.NAME SEPARATOR '|') AS matchNameDetail
+		   			 , GROUP_CONCAT(KMM.ID SEPARATOR ', ') AS matchIdDetail
+		   			 , A.ID
+				  FROM (
+					SELECT RML.CHILD_ID
+						 , KM.ID
+					  FROM KODA_MEMBER KM
+					   	 , RELA_MATCH_LIST RML
+					 WHERE KM.ID = RML.ID
+					   AND RML.GUBN = 'M'
+					  ) A
+					  , KODA_MEMBER KMM
+					 WHERE A.CHILD_ID = KMM.ID
+					 GROUP BY A.ID ) MML
+			   	      ON KM.ID = MML.ID
+			   LEFT JOIN DONOR_LIST DL
+			          ON KM.ID = DL.ID
+			   LEFT JOIN BENEFI_LIST BL
+			          ON KM.ID = BL.ID
+		  WHERE KM.ID = #userId#
+	</select>  
+	
+	<select id="MailboxDAO.selectDonorRelationList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT CODE AS code
+		 	 , NAME AS name
+		  FROM COMMON
+		 WHERE USE_FLAG = 'Y'
+		   AND GUBN = '01'
+	</select>    
+	
+	<select id="MailboxDAO.selectBenefiList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT ID AS id
+			 , BENEFI_NAME AS benefiName
+			 , BENEFI_BIRTH AS benefiBirth
+			 , HOSPITAL_IDX AS hospitalIdx
+			 , BENEFI_PARTS AS benefiParts
+	      FROM BENEFI_LIST
+	     WHERE 1 = 1
+	       AND ID = #userId#
+	</select>
+	
+	<select id="MailboxDAO.selectDonorList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT ID AS id
+			 , DONOR_NAME AS donorName
+			 , DONOR_BIRTH AS donorBirth
+			 , HOSPITAL_IDX AS hospitalIdx
+			 , DONOR_DATE AS donorDate
+			 , DONOR_RELATION AS donorRelation
+	      FROM DONOR_LIST
+	     WHERE 1 = 1
+	       AND ID = #userId#
+	</select>
+	
+	<select id="MailboxDAO.selectRelationPopList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT KM.ID AS id
+			 , KM.NAME AS name
+			 , KM.PHONE AS phone
+			 , DL.DONOR_NAME AS donorName
+			 , DL.DONOR_BIRTH AS donorBirth
+			 , (SELECT HOSPITAL_NAME FROM HOSPITAL WHERE HOSPITAL_IDX = DL.HOSPITAL_IDX) AS hospitalNm
+			 , DL.DONOR_DATE AS donorDate
+		  FROM KODA_MEMBER KM
+		  	 , DONOR_LIST DL
+		 WHERE KM.ID = DL.ID
+		   OR DL.DONOR_NAME = #donorName#
+		   OR DL.DONOR_BIRTH = #donorBirthday#
+		   OR DL.HOSPITAL_IDX = #donorHospital#
+		   OR DL.DONOR_DATE = #donorDate#
+	</select>
+	
+    <insert id="MailboxDAO.insertKodaMember" parameterClass="java.util.Map">
+    	INSERT INTO KODA_MEMBER (
+    		ID
+    	  , NAME
+    	  , NICK_NAME
+    	  , PHONE
+    	  , EMAIL
+    	  , EMAIL2
+    	  , APPR_FLAG
+    	  , GUBN
+    	  , PASSWORD
+    	  , GENDER
+    	  , BIRTHDAY
+    	  , EMAIL_FLAG
+    	  , SMS_FLAG
+    	  , POST
+    	  , ADDRESS
+    	  , ADDRESS_DETAIL
+    	  , USE_FLAG
+    	  , INP_ID
+    	  , INP_DATE
+    	  , INP_TIME
+    	  , MOD_ID
+    	  , MOD_DATE
+    	  , MOD_TIME
+    	  <isEqual property="adultFlag" compareValue="N">
+    	  , PRT_NAME
+    	  , PRT_BIRTHDAY
+    	  , PRT_GENDER
+    	  , PRT_PHONE
+    	  </isEqual>
+    	)
+    	VALUES 
+    	(
+    		#userId#
+    	  , #userName#
+    	  , #userNickName#
+    	  , #phone#
+    	  , #email#
+    	  , #email2#
+    	  , #apprFlag#
+    	  , #gubn#
+    	  , PASSWORD(#userPassword#)
+    	  , #gender#
+    	  , #birthday#
+    	  , #emailFlag#
+    	  , #smsFlag#
+    	  , #post#
+    	  , #address#
+    	  , #addressDetail#
+    	  , 'Y'
+    	  , #inpId#
+    	  , DATE_FORMAT(NOW(), '%Y%m%d')
+    	  , DATE_FORMAT(NOW(), '%H%i%s')
+    	  , #inpId#
+    	  , DATE_FORMAT(NOW(), '%Y%m%d')
+    	  , DATE_FORMAT(NOW(), '%H%i%s')
+    	  <isEqual property="adultFlag" compareValue="N">
+    	  , #prtName#
+    	  , #prtBirthday#
+    	  , #prtGender#
+    	  , #prtPhone#
+    	  </isEqual>
+    	)
+    	<selectKey keyProperty="idx" resultClass="int">
+        SELECT LAST_INSERT_ID()
+   		</selectKey> 
+    </insert>
+    
+    <!-- 기증자가족 구분 값 수혜자 정보 삽입 -->
+    <insert id="MailboxDAO.insertBenefiListD"  parameterClass="java.util.Map">
+    	INSERT INTO BENEFI_LIST (
+    		ID
+    	  , BENEFI_NAME
+    	  , BENEFI_BIRTH
+    	  , HOSPITAL_IDX
+    	  , BENEFI_PARTS
+    	)
+    	VALUES (
+    		#userId#
+    	  , #benefiName#
+    	  , #benefiBirthday#
+    	  , #benefiHospital#
+    	  , #benefiParts#
+    	)
+    	<selectKey keyProperty="id" resultClass="String">
+        SELECT LAST_INSERT_ID()
+   		</selectKey> 
+    </insert>
+    
+    <!-- 기증자가족 구분 값 기증자 정보 삽입 -->
+    <insert id="MailboxDAO.insertDonorListD"  parameterClass="java.util.Map">
+    	INSERT INTO DONOR_LIST (
+    		ID
+    	  , DONOR_NAME
+    	  , DONOR_BIRTH
+    	  , HOSPITAL_IDX
+    	  , DONOR_DATE
+    	  , DONOR_RELATION
+    	)
+    	VALUES (
+    		#userId#
+    	  , #dDonorName#
+    	  , #dDonorBirthday#
+    	  , #dDonorHospital#
+    	  , #dDonorDate#
+    	  , #dDonorRelation#
+    	)
+    	<selectKey keyProperty="id" resultClass="String">
+        SELECT LAST_INSERT_ID()
+   		</selectKey> 
+    </insert>
+    
+    <!-- 수혜자 구분 값 기증자 정보 삽입 -->
+    <insert id="MailboxDAO.insertDonorListB"  parameterClass="java.util.Map">
+    	INSERT INTO DONOR_LIST (
+    		ID
+    	  , DONOR_NAME
+    	  , DONOR_BIRTH
+    	  , HOSPITAL_IDX
+    	  , DONOR_DATE
+    	)
+    	VALUES (
+    		#userId#
+    	  , #bDonorName#
+    	  , #bDonorBirthday#
+    	  , #bDonorHospital#
+    	  , #bDonorDate#
+    	)
+    	<selectKey keyProperty="id" resultClass="String">
+        SELECT LAST_INSERT_ID()
+   		</selectKey> 
+    </insert>
+    
+    <!-- 수혜자 구분 값 수혜자 정보 삽입 -->
+    <insert id="MailboxDAO.insertBenefiListB"  parameterClass="java.util.Map">
+    	INSERT INTO BENEFI_LIST (
+    		ID
+    	  , BENEFI_NAME
+    	  , BENEFI_BIRTH
+    	  , HOSPITAL_IDX
+    	  , BENEFI_PARTS
+    	)
+    	VALUES (
+    		#userId#
+    	  , #bBnefiName#
+    	  , #bBenefiBirthday#
+    	  , #bBenefiHospital#
+    	  , #bBenefiParts#
+    	)
+    	<selectKey keyProperty="id" resultClass="String">
+        SELECT LAST_INSERT_ID()
+   		</selectKey> 
+    </insert>
+    
+    <!-- 연계회원 삽입 -->
+    <insert id="MailboxDAO.insertRelaMatchList"  parameterClass="java.util.Map">
+    	INSERT INTO RELA_MATCH_LIST (
+    		ID
+    	  , CHILD_ID
+    	  , GUBN
+    	)
+    	VALUES (
+    		#id#
+    	  , #childId#
+    	  , #gubn#
+    	)
+    	<selectKey keyProperty="id" resultClass="String">
+        SELECT LAST_INSERT_ID()
+   		</selectKey> 
+    </insert>
+    
+    <update id="MailboxDAO.updateKodaMember" parameterClass="java.util.Map">
+    	UPDATE KODA_MEMBER
+    	   SET NAME = #userName#
+    	   	 , NICK_NAME = #userNickName#
+    	   	 , GUBN = #gubn#
+    	   	 , PHONE = #phone#
+    	   	 , EMAIL = #email#
+    	   	 , EMAIL2 = #email2#
+    	   	 , APPR_FLAG = #apprFlag#
+    	   	 , GENDER = #gender#
+    	   	 , BIRTHDAY = #birthday#
+    	   	 , EMAIL_FLAG = #emailFlag#
+    	   	 , SMS_FLAG = #smsFlag#
+    	   	 , POST = #post#
+    	   	 , ADDRESS = #address#
+    	   	 , ADDRESS_DETAIL = #addressDetail#
+    	   	 <isEqual property="adultFlag" compareValue="N">
+	    	 , PRT_NAME = #prtName#
+	    	 , PRT_BIRTHDAY = #prtBirthday#
+	    	 , PRT_GENDER = #prtGender#
+	    	 , PRT_PHONE = #prtPhone#
+	    	 </isEqual>
+	    	 <isEqual property="adultFlag" compareValue="Y">
+	    	 , PRT_NAME = ''
+	    	 , PRT_BIRTHDAY = ''
+	    	 , PRT_GENDER = ''
+	    	 , PRT_PHONE = ''
+	    	 </isEqual>
+    	   	 , MOD_ID = #modId#
+    	     , MOD_DATE = DATE_FORMAT(NOW(), '%Y%m%d')
+    	     , MOD_TIME = DATE_FORMAT(NOW(), '%H%i%s')
+    	 WHERE 1 = 1
+    	   AND ID = #userId#
+    </update>
+    
+    <!-- 회원 탈퇴 -->
+    <update id="MailboxDAO.deleteKodaMember" parameterClass="java.util.Map">
+    	UPDATE KODA_MEMBER
+    	  SET USE_FLAG = 'N'
+    	 WHERE 1 = 1
+    	   AND ID = #userId#
+    </update>
+    
+    <!-- 승인정보 업데이트 -->
+    <update id="MailboxDAO.updateApprFlag" parameterClass="java.util.Map">
+    	UPDATE KODA_MEMBER
+    	   SET APPR_FLAG = #arrAppr#
+    	   	 , MOD_ID = #modId#
+    	   	 , MOD_DATE = DATE_FORMAT(NOW(), '%Y%m%d')
+    	     , MOD_TIME = DATE_FORMAT(NOW(), '%H%i%s')
+    	 WHERE ID = #arrId#
+    </update>
+    
+    <!-- 기증자 정보 삭제 -->
+    <delete id="MailboxDAO.deleteDonorList">
+    	DELETE FROM DONOR_LIST
+    	 WHERE 1 = 1
+    	   AND ID = #userId# 
+    </delete>
+    
+    <!-- 수혜자 정보 삭제 -->
+    <delete id="MailboxDAO.deleteBenefiList">
+    	DELETE FROM BENEFI_LIST
+    	 WHERE 1 = 1
+    	   AND ID = #userId#
+    </delete>
+    
+    <!-- 연계, 매칭회원 삭제 -->
+    <delete id="MailboxDAO.deleteRelaMatchList">
+    	DELETE FROM RELA_MATCH_LIST
+    	 WHERE 1 = 1
+    	   AND ID = #userId#
+    </delete>
+</sqlMap>

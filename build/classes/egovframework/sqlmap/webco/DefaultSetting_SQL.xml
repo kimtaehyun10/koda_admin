@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="DefaultSettingDAO">
+
+    <typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>   
+
+    <select id="DefaultSettingDAO.popupList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        
+    	select * 
+    	from ecm
+    	where 1=1
+    	<isNotEmpty property="search_keyword">
+		and ecm_nm like "%$search_keyword$%"
+		</isNotEmpty>
+		<isEqual property="search_gubun" compareValue="Y">
+	    	and use_yn = 'Y'
+	    </isEqual>
+	    <isEqual property="search_gubun" compareValue="N">
+	    	and use_yn = 'N'	
+	    </isEqual>
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and reg_dm>= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and reg_dm<= #search_end_date#	
+			]]>
+		</isNotEmpty>
+		order by reg_dm desc
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>	
+    </select>
+    
+    <select id="DefaultSettingDAO.popupListTotCnt" resultClass="int">
+  
+    	select count(*) 
+    	from ecm
+    	where 1=1
+    	<isNotEmpty property="search_keyword">
+		and ecm_nm like "%$search_keyword$%"
+		</isNotEmpty>
+		<isEqual property="search_gubun" compareValue="Y">
+	    	and use_yn = 'Y'
+	    </isEqual>
+	    <isEqual property="search_gubun" compareValue="N">
+	    	and use_yn = 'N'	
+	    </isEqual>
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and reg_dm>= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and reg_dm<= #search_end_date#	
+			]]>
+		</isNotEmpty>	
+    	
+    </select>
+
+	<select id="DefaultSettingDAO.bannerList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        
+    	select * 
+    	from banner
+    	where 1=1
+    	<isNotEmpty property="search_keyword">
+		and banner_title like "%$search_keyword$%"
+		</isNotEmpty>		
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and regdate>= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and regdate<= #search_end_date#	
+			]]>
+		</isNotEmpty>
+		order by regdate desc
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>	
+    </select>
+    
+    <select id="DefaultSettingDAO.bannerListTotCnt" resultClass="int">
+  
+    	select count(*) 
+    	from banner
+    	where 1=1
+    	<isNotEmpty property="search_keyword">
+		and banner_title like "%$search_keyword$%"
+		</isNotEmpty>		
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and regdate>= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and regdate<= #search_end_date#	
+			]]>
+		</isNotEmpty>	
+    	
+    </select>
+    
+  	<select id="DefaultSettingDAO.selectedPopup" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        
+    	select * 
+    	from ecm
+		where
+		ecm_seq = #ecm_seq#
+    </select>  
+    
+    <update id="DefaultSettingDAO.popupUpdateEnd" parameterClass="java.util.Map">
+    	update ecm
+    	set
+    	ecm_nm = #ecm_nm#,
+    	ecm_contents = #ecm_contents#,
+    	use_yn = #use_yn#,
+    	ecm_width = #ecm_width#,
+    	ecm_height = #ecm_height#,
+    	ecm_top = #ecm_top#,
+    	ecm_left = #ecm_left#
+    	where
+    	ecm_seq = #ecm_seq# 
+    </update>
+    
+    <delete id="DefaultSettingDAO.popupDeleteEnd" parameterClass="java.util.Map">
+    	delete from
+    		ecm
+    	where
+    		ecm_seq = #ecm_seq#
+    </delete>
+    
+    <select id="DefaultSettingDAO.popupEcmSeq" resultClass="int">
+  		select ifnull(max(ecm_seq),1) 
+  		from ecm  	
+    </select>
+    
+    <insert id="DefaultSettingDAO.popupWriteEnd" parameterClass="java.util.Map">
+    	insert into ecm
+	    	(
+	    	ecm_no,
+	    	ecm_seq,
+	    	ecm_nm,
+	    	ecm_contents,
+	    	reg_dm,
+	    	use_yn,
+	    	ecm_width,
+	    	ecm_height,
+	    	ecm_top,
+	    	ecm_left
+	    	) 
+    	values 
+    		(
+    		1,
+    		#ecm_seq#,
+    		#ecm_nm#,
+    		#ecm_contents#,
+    		now(),
+    		#use_yn#,
+    		#ecm_width#,
+    		#ecm_height#,
+    		#ecm_top#,
+    		#ecm_left#    		
+    		)
+    </insert>
+    
+    <select id="DefaultSettingDAO.selectedBanner" parameterClass="java.util.Map" resultClass="java.util.HashMap">        
+    	select * 
+    	from banner
+		where
+		banner_idx = #banner_idx#
+    </select>
+    
+    <update id="DefaultSettingDAO.bannerUpdateEnd" parameterClass="java.util.Map">
+    	update banner
+    	set
+    	banner_title = #banner_title#
+    	<isNotEmpty property="banner_img">
+			,banner_img = #banner_img#
+		</isNotEmpty>
+		<isNotEmpty property="banner_img">
+			,banner_org_img = #banner_org_img#
+		</isNotEmpty>    	
+    	,banner_url = #banner_url#
+    	where
+    	banner_idx = #banner_idx# 
+    </update>
+    
+    <delete id="DefaultSettingDAO.bannerDeleteEnd" parameterClass="java.util.Map">
+    	delete from
+    		banner
+    	where
+    		banner_idx = #banner_idx#
+    </delete>
+    
+    <select id="DefaultSettingDAO.bannerEndIdx" resultClass="int">
+  		select ifnull(max(banner_idx),1) 
+  		from banner  	
+    </select>
+    
+    <insert id="DefaultSettingDAO.bannerWriteEnd" parameterClass="java.util.Map">
+    	insert into banner
+	    	(
+	    	banner_idx,
+	    	banner_title,
+	    	banner_img,
+	    	banner_org_img,
+	    	banner_url,
+	    	regdate
+	    	) 
+    	values 
+    		(    	
+    		#banner_idx#,
+    		#banner_title#,
+    		#banner_img#,    		
+    		#banner_org_img#,
+    		#banner_url#,
+    		now()    		
+    		)
+    </insert>
+    
+    <select id="DefaultSettingDAO.boardManageList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        
+    	select A.* 
+    	from 
+    	(
+    	select * from board_conf where brd_type='5' or brd_type='6' or brd_type='7'
+    	) A
+    	where 1=1
+    	<isNotEmpty property="search_keyword">
+		and A.brd_nm like "%$search_keyword$%"
+		</isNotEmpty>		
+	    <isEqual property="search_gubun" compareValue="5">
+	    	and A.brd_type = '5'	
+	    </isEqual>
+	    <isEqual property="search_gubun" compareValue="6">
+	    	and A.brd_type = '6'	
+	    </isEqual>
+	    <isEqual property="search_gubun" compareValue="7">
+	    	and A.brd_type = '7'	
+	    </isEqual>
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and A.reg_dm>= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and A.reg_dm<= #search_end_date#	
+			]]>
+		</isNotEmpty>
+		order by A.reg_dm desc
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>
+ 			
+    </select>
+    
+    <select id="DefaultSettingDAO.boardManageListTotalCnt" resultClass="int">
+  
+    	select count(*) 
+    	from 
+    	(
+    	select * from board_conf where brd_type='5' or brd_type='6' or brd_type='7'
+    	) A
+    	where 1=1
+    	<isNotEmpty property="search_keyword">
+		and A.brd_nm like "%$search_keyword$%"
+		</isNotEmpty>		
+	    <isEqual property="search_gubun" compareValue="5">
+	    	and A.brd_type = '5'	
+	    </isEqual>
+	    <isEqual property="search_gubun" compareValue="6">
+	    	and A.brd_type = '6'	
+	    </isEqual>
+	    <isEqual property="search_gubun" compareValue="7">
+	    	and A.brd_type = '7'	
+	    </isEqual>
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and A.reg_dm>= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and A.reg_dm<= #search_end_date#	
+			]]>
+		</isNotEmpty>	
+    	
+    </select>
+    
+    <update id="DefaultSettingDAO.boardManageCommentYN" parameterClass="java.util.Map">
+    	
+    	update board_conf
+    	set
+    	brd_comment_yn = #brd_comment_yn#
+    	where
+    	brd_no = #brd_no# 
+    
+    </update>
+    
+    <select id="DefaultSettingDAO.visitCountList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        
+		SELECT MONTH(create_date) AS date,
+		count(*) AS sum
+		FROM visit
+		where create_date like "%$search_year$%"
+		GROUP BY date
+		ORDER BY date
+    	 			
+    </select>
+    
+    <select id="DefaultSettingDAO.searchKeywordList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT *
+    	FROM search_keyword
+    	WHERE 1=1    	    	
+    	
+    	<isNotEmpty property="search_keyword">
+    		AND sek_keyword like "%$search_keyword$%"
+    	</isNotEmpty>
+    	<isNotEmpty property="search_start_date">
+    	<![CDATA[
+    	AND DATE_FORMAT(sek_datetime, '%Y-%m-%d') >= #search_start_date#
+    	]]>
+    	</isNotEmpty>
+    	<isNotEmpty property="search_end_date">
+    	<![CDATA[
+    	AND DATE_FORMAT(sek_datetime, '%Y-%m-%d') <= #search_end_date#
+    	]]>
+    	</isNotEmpty>
+    	
+    	ORDER BY sek_datetime desc
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>
+    </select>
+    
+    <select id="DefaultSettingDAO.searchKeywordListTotCnt" resultClass="int">
+    	SELECT count(*)
+    	FROM search_keyword
+    	WHERE 1=1    	    	
+    	
+    	<isNotEmpty property="search_keyword">
+    		AND sek_keyword like "%$search_keyword$%"
+    	</isNotEmpty>
+    	<isNotEmpty property="search_start_date">
+    	<![CDATA[
+    	AND DATE_FORMAT(sek_datetime, '%Y-%m-%d') >= #search_start_date#
+    	]]>
+    	</isNotEmpty>
+    	<isNotEmpty property="search_end_date">
+    	<![CDATA[
+    	AND DATE_FORMAT(sek_datetime, '%Y-%m-%d') <= #search_end_date#
+    	]]>
+    	</isNotEmpty>
+    </select>
+</sqlMap>

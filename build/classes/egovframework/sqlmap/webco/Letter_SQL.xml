@@ -1,0 +1,483 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="LetterDAO">
+
+    <typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>
+    
+    <select id="LetterDao.selectTypeLetterFile" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT letter_file_nm
+    	      ,letter_file_org_nm
+    	  FROM letter_file
+    	 WHERE letter_id = #letter_id#
+    	   AND letter_file_seq = #letter_file_seq#
+    </select>
+    
+    <!-- 스킨관리 -->
+	<select id="LetterDao.selectLetterSkinList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT letter_skin_id AS letter_skin_id
+    		  ,letter_skin_name AS letter_skin_name
+    	      ,letter_content AS letter_content
+    		  ,letter_skin_file_nm AS letter_skin_file_nm
+    		  ,letter_skin_file_org_nm AS letter_skin_file_org_nm
+    	  FROM letter_skin
+    	 WHERE 1=1
+    	 <isNotEmpty property="searchText">
+    	  AND letter_skin_name LIKE "%$searchText$%" 
+    	</isNotEmpty>
+    	<isNotEmpty property="letter_skin_id">
+    	  AND letter_skin_id = #letter_skin_id#
+    	</isNotEmpty>
+    	<isNotEmpty property="offset">
+		 LIMIT #offset#, #limit#
+		</isNotEmpty>
+    </select>
+    
+    <select id="LetterDao.selectLetterSkinListTotCnt" parameterClass="java.util.Map" resultClass="int">
+    	SELECT count(*)
+    	  FROM letter_skin
+    	 WHERE 1=1
+    	 <isNotEmpty property="searchText">
+    	  AND letter_skin_name LIKE "%$searchText$%" 
+    	</isNotEmpty>
+    </select>
+    
+    <insert id="LetterDao.saveLetterSkin" parameterClass="java.util.Map">
+    	INSERT INTO letter_skin(letter_skin_name, letter_content, letter_skin_file_nm, letter_skin_file_org_nm, create_time, create_id, update_time, update_id)
+     	VALUES (#letter_skin_name#, #letter_content#, #letter_skin_file_nm#, #letter_skin_file_org_nm#, now(), #create_id#, now(), #create_id#)
+    	<selectKey keyProperty="letter_skin_id" resultClass="String">
+        SELECT LAST_INSERT_ID()
+   		</selectKey> 	
+    </insert>
+    
+    <select id="LetterDao.selectDuplicateSkinName" parameterClass="java.util.Map" resultClass="int">
+    	SELECT count(*)
+    	  FROM letter_skin a
+    	 WHERE a.letter_skin_name = #letter_skin_name#
+    	 <isNotEmpty property="letter_skin_id">
+    	   AND a.letter_skin_id != #letter_skin_id#
+    	 </isNotEmpty>
+    </select>
+    
+    <update id="LetterDao.updateLetterSkinFile" parameterClass="java.util.Map">
+    	UPDATE letter_skin
+    	   SET letter_skin_file_nm = #letter_skin_file_nm#
+    	      ,letter_skin_file_org_nm = #letter_skin_file_org_nm#
+    	      ,update_time = now()
+    	      ,update_id = #create_id#
+    	 WHERE letter_skin_id = #letter_skin_id#
+    </update>
+    
+    <update id="LetterDao.updateLetterSkin" parameterClass="java.util.Map">
+    	UPDATE letter_skin
+    	   SET letter_skin_name = #letter_skin_name#
+    	      ,letter_content = #letter_content#
+    	      ,update_time = now()
+    	      ,update_id = #create_id#
+    	 WHERE letter_skin_id = #letter_skin_id#
+    </update>
+    
+    <delete id="LetterDao.deleteLetterSkin" parameterClass="java.util.Map">
+    	DELETE 
+    	  FROM letter_skin 
+    	 WHERE letter_skin_id = #letter_skin_id#
+    </delete>
+    
+    <select id="LetterDao.selectUseSkinLetterId" parameterClass="java.util.Map" resultClass="int">
+    	SELECT count(*)
+    	  FROM letter
+    	 WHERE skin_id = #letter_skin_id#
+    </select>
+    
+    
+    
+    
+    <!-- 우체통 관리 -->
+    <select id="LetterDao.selectLetterList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT a.letter_id
+		      ,a.group_id
+		      ,a.group_order
+		      ,a.depth
+		      ,b.gubn
+		      ,IFNULL(b.name, c.admin_nick_name) AS sender_name
+		      ,IFNULL(b.id, c.admin_id) AS sender_id
+		      ,IFNULL(b.phone, c.admin_phone) AS sender_phone
+		      ,IFNULL(e.name, f.admin_nick_name) AS receiver_name
+		      ,IFNULL(e.id, f.admin_id) AS receiver_id
+		      ,IFNULL(e.phone, f.admin_phone) AS receiver_phone
+		      ,a.title 
+		      ,a.sender_date
+		      ,d.receiver_date
+		      ,a.status
+		      ,a.return_reason
+		      ,IFNULL(a.admin_reply_yn, 'N') AS admin_reply_yn
+		  FROM letter a
+		  LEFT OUTER JOIN koda_member b ON a.sender_id = b.id
+		  LEFT OUTER JOIN admin c ON a.sender_id = c.admin_id
+		  LEFT OUTER JOIN letter_receiver d ON a.letter_id = d.letter_id
+		  LEFT OUTER JOIN koda_member e ON d.receiver_id = e.id
+		  LEFT OUTER JOIN admin f ON d.receiver_id = f.admin_id
+		 WHERE 1=1
+    	<isNotEmpty property="letter_id">
+    	  AND a.letter_id = #letter_id#
+    	</isNotEmpty>
+    	<isNotEmpty property="gubn">
+    	  AND b.gubn = UPPER(#gubn#)
+    	</isNotEmpty>
+    	<isNotEmpty property="senderType">
+    		<isEqual property="senderType" compareValue="ID">
+    			AND b.id like "%$senderText$%"
+    		</isEqual>
+    		<isEqual property="senderType" compareValue="NAME">
+    			AND b.name like "%$senderText$%"
+    		</isEqual>
+    		<isEqual property="senderType" compareValue="PHONE">
+    			AND b.phone like "%$senderText$%"
+    		</isEqual>
+    	</isNotEmpty>
+    	<isNotEmpty property="receiverType">
+    		<isEqual property="receiverType" compareValue="ID">
+    			AND d.id like "%$receiverText$%"
+    		</isEqual>
+    		<isEqual property="receiverType" compareValue="NAME">
+    			AND d.name like "%$receiverText$%"
+    		</isEqual>
+    		<isEqual property="receiverType" compareValue="PHONE">
+    			AND d.phone like "%$receiverText$%"
+    		</isEqual>
+    	</isNotEmpty>
+    	<isNotEmpty property="startDate">
+    		<isNotEmpty property="endDate">
+    	  	AND a.sender_date between #startDate# and #endDate# 
+    		</isNotEmpty>
+    	</isNotEmpty>
+    	<isNotEmpty property="status">
+    	  AND a.status = #status#
+    	</isNotEmpty>
+    	ORDER BY a.group_id DESC, a.group_order ASC 
+    	<isNotEmpty property="offset">
+		 LIMIT #offset#, #limit#
+		</isNotEmpty>
+    </select>
+    
+    <select id="LetterDao.selectLetterListTotCnt" parameterClass="java.util.Map" resultClass="int">
+    	SELECT count(*)
+		  FROM letter a
+		  LEFT OUTER JOIN koda_member b ON a.sender_id = b.id
+		  LEFT OUTER JOIN admin c ON a.sender_id = c.admin_id
+		  LEFT OUTER JOIN letter_receiver d ON a.letter_id = d.letter_id
+		  LEFT OUTER JOIN koda_member e ON d.receiver_id = e.id
+		  LEFT OUTER JOIN admin f ON d.receiver_id = f.admin_id
+		 WHERE 1=1
+    	<isNotEmpty property="letter_id">
+    	  AND a.letter_id = #letter_id#
+    	</isNotEmpty>
+    	<isNotEmpty property="gubn">
+    	  AND b.gubn = UPPER(#gubn#)
+    	</isNotEmpty>
+    	<isNotEmpty property="senderType">
+    		<isEqual property="senderType" compareValue="ID">
+    			AND b.id like "%$senderText$%"
+    		</isEqual>
+    		<isEqual property="senderType" compareValue="NAME">
+    			AND b.name like "%$senderText$%"
+    		</isEqual>
+    		<isEqual property="senderType" compareValue="PHONE">
+    			AND b.phone like "%$senderText$%"
+    		</isEqual>
+    	</isNotEmpty>
+    	<isNotEmpty property="receiverType">
+    		<isEqual property="receiverType" compareValue="ID">
+    			AND d.id like "%$receiverText$%"
+    		</isEqual>
+    		<isEqual property="receiverType" compareValue="NAME">
+    			AND d.name like "%$receiverText$%"
+    		</isEqual>
+    		<isEqual property="receiverType" compareValue="PHONE">
+    			AND d.phone like "%$receiverText$%"
+    		</isEqual>
+    	</isNotEmpty>
+    	<isNotEmpty property="startDate">
+    		<isNotEmpty property="endDate">
+    	  	AND a.sender_date between #startDate# and #endDate# 
+    		</isNotEmpty>
+    	</isNotEmpty>
+    	<isNotEmpty property="status">
+    	  AND a.status = #status#
+    	</isNotEmpty>
+    </select>
+    
+    <select id="LetterDao.selectLetterFileList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT A.LETTER_ID AS letter_id
+    	      ,A.LETTER_FILE_SEQ AS letter_file_seq
+    	      ,A.LETTER_FILE_NM AS letter_file_nm
+    	      ,A.LETTER_FILE_ORG_NM AS letter_file_org_nm
+    	  FROM LETTER_FILE A
+    	 WHERE 1=1
+    	<isNotEmpty property="letter_id">
+    	  AND A.letter_id = #letter_id#
+    	</isNotEmpty>
+    </select>
+    
+    <select id="LetterDao.selectLetterSenderSearchList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT A.GUBN AS gubn
+    		  ,A.ID AS id
+    		  ,A.NAME AS name
+    		  ,A.PHONE AS phone
+    		  ,B.DONOR_NAME AS donor_name
+    		  ,(SELECT Z.HOSPITAL_NAME FROM HOSPITAL Z WHERE Z.HOSPITAL_IDX=B.HOSPITAL_IDX) AS donor_hospital
+    		  ,B.DONOR_BIRTH AS donor_birthday
+    		  ,B.DONOR_DATE AS donor_date
+    		  ,C.BENEFI_NAME AS benefi_name
+    		  ,(SELECT Z.HOSPITAL_NAME FROM HOSPITAL Z WHERE Z.HOSPITAL_IDX=C.HOSPITAL_IDX) AS benefi_hospital
+    		  ,C.BENEFI_BIRTH AS benefi_birthday
+    		  ,C.BENEFI_PARTS AS benefi_parts
+    		  ,(SELECT GROUP_CONCAT(KM.ID SEPARATOR ',') 
+				  FROM RELA_MATCH_LIST RML
+				  JOIN KODA_MEMBER KM ON RML.CHILD_ID = KM.ID
+				 WHERE RML.ID = A.ID
+				   AND RML.GUBN = 'M') AS match_id
+			  ,(SELECT GROUP_CONCAT(KM.NAME SEPARATOR ',') 
+				  FROM RELA_MATCH_LIST RML
+				  JOIN KODA_MEMBER KM ON RML.CHILD_ID = KM.ID
+				 WHERE RML.ID = A.ID
+				   AND RML.GUBN = 'M') AS match_name
+    	  FROM KODA_MEMBER A
+    	  LEFT OUTER JOIN DONOR_LIST B ON A.ID=B.ID
+    	  LEFT OUTER JOIN BENEFI_LIST C ON A.ID=C.ID
+    	 WHERE 1=1
+    	<isNotEmpty property="gubn">
+    	  AND GUBN = UPPER(#gubn#)
+    	</isNotEmpty>
+		<isEqual property="search_type" compareValue="ID">
+    	  AND A.ID LIKE "%$search_text$%"
+    	</isEqual>  
+    	<isEqual property="search_type" compareValue="NAME">
+    	  AND NAME LIKE "%$search_text$%"
+    	</isEqual>  
+    	<isEqual property="search_type" compareValue="PHONE">
+    	  AND PHONE LIKE "%$search_text$%"
+    	</isEqual>
+		<isNotEmpty property="offset">
+		 LIMIT #offset#, #limit#
+		</isNotEmpty>
+    </select>
+    
+    <select id="LetterDao.selectLetterSenderSearchListTotCnt" parameterClass="java.util.Map" resultClass="int">
+    	SELECT COUNT(*)
+    	  FROM KODA_MEMBER A
+    	  LEFT OUTER JOIN DONOR_LIST B ON A.ID=B.ID
+    	  LEFT OUTER JOIN BENEFI_LIST C ON A.ID=C.ID
+    	 WHERE 1=1
+    	<isNotEmpty property="gubn">
+    	  AND GUBN = UPPER(#gubn#)
+    	</isNotEmpty>
+		<isEqual property="search_type" compareValue="ID">
+    	  AND A.ID LIKE "%$search_text$%"
+    	</isEqual>  
+    	<isEqual property="search_type" compareValue="NAME">
+    	  AND NAME LIKE "%$search_text$%"
+    	</isEqual>  
+    	<isEqual property="search_type" compareValue="PHONE">
+    	  AND PHONE LIKE "%$search_text$%"
+    	</isEqual>
+    </select>
+    
+    <insert id="LetterDao.saveLetterWrite" parameterClass="java.util.Map">
+    	INSERT INTO letter(group_id, group_order, depth, sender_id, sender_date, return_date, skin_id, title, content, status, return_reason, create_time, create_id, update_time, update_id, admin_reply_yn)
+     	VALUES (#group_id#, #group_order#, #depth#, #sender_id#, 
+     			CASE WHEN #letter_status# = 'approval' THEN now() ELSE null END, CASE WHEN #letter_status# = 'return' THEN now() ELSE null END,
+     			#letter_skin_id#, #letter_title#, #letter_content#, #letter_status#, #letter_return_reason#, now(), #create_id#, now(), #create_id#, IFNULL(#admin_reply_yn#, 'N'))
+    	<selectKey keyProperty="letter_id" resultClass="String">
+        SELECT LAST_INSERT_ID()
+   		</selectKey> 	
+    </insert>
+    
+    <update id="LetterDao.updateLetterGroupKeyAndDepth" parameterClass="java.util.Map">
+    	UPDATE letter
+    	   SET group_id = #letter_id#
+    	      ,group_order = 0
+    	      ,depth=1
+    	      ,update_time = now()
+    	      ,update_id = #create_id#
+    	 WHERE letter_id = #letter_id#
+    </update>
+    
+    <insert id="LetterDao.saveLetterFile" parameterClass="java.util.Map">
+    	INSERT INTO letter_file (letter_id, letter_file_seq, letter_file_nm, letter_file_org_nm, create_time, create_id, update_time, update_id)
+    	VALUES (#letter_id#, #letter_file_seq#, #file_nm#, #file_org_nm#, now(), #create_id#, now(), #create_id#)
+    </insert>
+    
+    <insert id="LetterDao.saveLetterReceiver" parameterClass="java.util.Map">
+    	INSERT INTO letter_receiver(letter_id, receiver_id, create_time, create_id, update_time, update_id)
+    	VALUES (#letter_id#, #receiver_id#, now(), #create_id#, now(), #create_id#)
+    </insert>
+    
+    <select id="LetterDao.selectLetterView" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT a.letter_id
+			  ,a.group_id
+			  ,a.group_order 
+			  ,a.depth
+			  ,a.sender_id
+			  ,IFNULL((SELECT z.name FROM koda_member z where z.id=a.sender_id), (SELECT z.admin_nick_name FROM admin z where z.admin_id=a.sender_id)) AS sender_name
+			  ,a.skin_id
+			  ,a.title
+			  ,a.content
+			  ,a.status
+			  ,a.return_reason
+			  ,IFNULL(a.admin_reply_yn, 'N') AS admin_reply_yn
+			  ,(SELECT GROUP_CONCAT(IFNULL(c.id, d.admin_id) SEPARATOR ',') 
+			      FROM letter_receiver b
+			      LEFT OUTER JOIN koda_member c ON b.receiver_id=c.id
+			      LEFT OUTER JOIN admin d ON b.receiver_id=d.admin_id
+			     WHERE b.letter_id = a.letter_id
+			   ) AS receiver_id
+			  ,(SELECT GROUP_CONCAT(IFNULL(c.name, d.admin_nick_name) SEPARATOR ',') 
+			      FROM letter_receiver b
+			      LEFT OUTER JOIN koda_member c ON b.receiver_id=c.id
+			      LEFT OUTER JOIN admin d ON b.receiver_id=d.admin_id
+			     WHERE b.letter_id = a.letter_id
+			   ) AS receiver_name
+		  FROM letter a
+		 WHERE a.letter_id = #letter_id#
+    </select>
+    
+    <delete id="LetterDao.deleteLetterFile" parameterClass="java.util.Map">
+    	DELETE FROM letter_file
+    	 WHERE 1=1
+    	   AND letter_id = #letter_id#
+    	   <isNotEmpty property="letter_file_seq">
+    	   AND letter_file_seq = #letter_file_seq#
+    	   </isNotEmpty>
+    </delete>
+    
+    <update id="LetterDao.updateLetterWrite" parameterClass="java.util.Map">
+    	UPDATE letter
+    	   SET sender_id = #sender_id#
+    	   	  ,skin_id = #letter_skin_id#
+    	      ,title = #letter_title#
+    	      ,content = #letter_content#
+    	      ,status = #letter_status#
+    	      ,sender_date = IFNULL(sender_date, CASE WHEN #letter_status# = 'approval' THEN now() END)
+    	      ,return_date = IFNULL(return_date, CASE WHEN #letter_status# = 'return' THEN now() END)
+    	      ,return_reason = #letter_return_reason#
+    	      ,update_time = now()
+    	      ,update_id = #create_id#
+         WHERE letter_id = #letter_id#
+    </update>
+    
+    <select id="LetterDao.selectLetterReplyCheck" parameterClass="java.util.Map" resultClass="int">
+    	SELECT COUNT(*)
+    	  FROM letter a
+    	  JOIN letter b ON a.group_id = b.group_id AND b.group_order > a.group_order AND b.depth > a.depth
+    	 where a.letter_id = #letter_id#
+    </select>
+    
+    <delete id="LetterDao.deleteLetter" parameterClass="java.util.Map">
+    	DELETE 
+    	  FROM letter
+    	 WHERE letter_id = #letter_id#
+    </delete>
+    
+    <delete id="LetterDao.deleteLetterReceiver" parameterClass="java.util.Map">
+    	DELETE 
+    	  FROM letter_receiver
+    	 WHERE letter_id = #letter_id#
+    </delete>
+    
+    <select id="LetterDao.selectLetterAdminSearchList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT sender_id
+    		  ,sender_name
+    		  ,title
+    		  ,content
+    		  ,use_yn
+    		  ,create_time 
+    	  FROM letter_admin
+    	 WHERE 1=1
+    	<isEqual property="search_type" compareValue="TITLE">
+    	  AND title LIKE "%$search_text$%"
+    	</isEqual>  
+    	<isNotEmpty property="offset">
+		 LIMIT #offset#, #limit#
+		</isNotEmpty>
+    </select>
+    
+    <select id="LetterDao.selectLetterAdminSearchListTotCnt" parameterClass="java.util.Map" resultClass="int">
+    	SELECT count(*)
+    	  FROM letter_admin
+    	 WHERE 1=1
+    	 <isEqual property="search_type" compareValue="TITLE">
+    	  AND title LIKE "%$search_text$%"
+    	</isEqual>  
+    </select>
+    
+    <update id="LetterDao.updateReplyShape" parameterClass="java.util.Map">
+    	UPDATE letter a
+    	   SET a.group_order = a.group_order+1
+    	 WHERE a.group_id = #group_id#
+    	   AND a.group_order > #group_order#
+    </update>
+    
+    
+    
+    
+    
+    
+    <!-- 관리자 예시글 -->
+	<select id="LetterDao.selectLetterAdminList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT A.*
+    	  FROM LETTER_ADMIN A
+    	 WHERE 1=1
+    	<isNotEmpty property="letter_admin_id">
+    	   AND A.LETTER_ADMIN_ID = #letter_admin_id#
+    	</isNotEmpty> 
+    	<isNotEmpty property="offset">
+		 LIMIT #offset#, #limit#
+		</isNotEmpty>
+    </select>
+    
+    <select id="LetterDao.selectLetterAdminListTotCnt" parameterClass="java.util.Map" resultClass="int">
+    	SELECT COUNT(*)
+    	  FROM LETTER_ADMIN A
+    	 WHERE 1=1
+    </select>
+    
+    <select id="LetterDao.selectAdminSearchList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	SELECT A.ADMIN_ID AS id
+    	      ,A.ADMIN_NICK_NAME AS nm
+    	  FROM ADMIN A
+    	 WHERE 1=1
+    	<isNotEmpty property="offset">
+		 LIMIT #offset#, #limit#
+		</isNotEmpty>
+    </select>
+    
+    <select id="LetterDao.selectAdminSearchListTotCnt" parameterClass="java.util.Map" resultClass="int">
+    	SELECT COUNT(*)
+    	  FROM ADMIN A
+    	 WHERE 1=1
+    </select>
+	
+	<insert id="LetterDao.saveLetterAdmin" parameterClass="java.util.Map">
+		INSERT INTO LETTER_ADMIN (SENDER_ID, SENDER_NAME, TITLE, CONTENT, USE_YN, CREATE_TIME, CREATE_ID, UPDATE_TIME, UPDATE_ID)
+		VALUES (#sender_id#, #sender_name#, #title#, #content#, #use_yn#, now(), #create_id#, now(), #create_id#)
+		<selectKey keyProperty="letter_admin_id" resultClass="String">
+        SELECT LAST_INSERT_ID()
+   		</selectKey> 	
+	</insert>
+	
+	<update id="LetterDao.updateLetterAdmin" parameterClass="java.util.Map">
+		UPDATE LETTER_ADMIN
+		   SET TITLE = #title#
+		      ,CONTENT = #content#
+		      ,USE_YN = #use_yn#
+		      ,UPDATE_TIME = now()
+		      ,UPDATE_ID = #create_id#
+		 WHERE LETTER_ADMIN_ID = #letter_admin_id#
+	</update>
+	
+	<delete id="LetterDao.deleteLetterAdmin">
+		DELETE FROM LETTER_ADMIN
+		 WHERE LETTER_ADMIN_ID = #letter_admin_id#
+	</delete>
+
+</sqlMap>

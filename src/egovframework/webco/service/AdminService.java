@@ -22,6 +22,8 @@ public interface AdminService {
 	
 	Object insertActHist(String act_type, String act_detail) throws Exception;
 
+	Object insertActHist(String act_type, String act_detail, String user_name) throws Exception;
+	
 	int endIdx(Map<String, Object> commandMap);
 
 	Map<String, Object> selectedFile(Map<String, Object> commandMap);
@@ -33,5 +35,7 @@ public interface AdminService {
 	void adminMenuDelete(Map<String, Object> commandMap);
 
 	void adminMenuChange(Map<String, Object> commandMap);
+
+	void attachSave(Map<String, Object> commandMap);
 }
   

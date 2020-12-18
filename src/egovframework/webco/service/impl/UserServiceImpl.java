@@ -420,7 +420,7 @@ public class UserServiceImpl extends EgovAbstractServiceImpl implements UserServ
 		// TODO Auto-generated method stub		
     	    	
 		List<Map<String, Object>> userList = webcoDAO.list("UserDAO.selectList", commandMap);
-		System.out.println("값은?!!!!"+userList);
+		
 		EnumValue enumValue = new EnumValue();
 		for( Map<String, Object> userInfo : userList ) {
 			/*

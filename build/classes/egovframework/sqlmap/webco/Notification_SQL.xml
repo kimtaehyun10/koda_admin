@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="NotificationDAO">
+
+    <typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>   
+
+    <select id="NotificationDAO.notificationList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+        
+    	select BC.*, BF.brd_file_nm, BF.brd_file_org_nm, BF.brd_file_seq
+		from board_cont BC 
+		left join board_file BF on BC.brd_no = BF.brd_no 
+		and BC.brd_cont_no = BF.brd_cont_no
+		where BC.brd_no = #brd_no#
+		<isNotEmpty property="brd_file_seq">
+			and BF.brd_file_seq = #brd_file_seq#
+		</isNotEmpty>
+		<isNotEmpty property="search_keyword">
+			and BC.brd_title like "%$search_keyword$%"
+		</isNotEmpty>
+		<isEqual property="search_gubun" compareValue="C">
+	    	and BC.brd_etc1 = '2'
+	    </isEqual>
+	    <isEqual property="search_gubun" compareValue="N">
+	    	and BC.brd_etc1 = '1'	
+	    </isEqual>
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and BC.reg_dm>= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and BC.reg_dm<= #search_end_date#	
+			]]>
+		</isNotEmpty>
+		order by reg_dm desc
+    	
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>	
+    </select>
+    
+    <select id="NotificationDAO.notificationListTotCnt" resultClass="int">
+  
+    	select count(*)
+		from board_cont BC left join board_file BF on BC.brd_no = BF.brd_no and BC.brd_cont_no = BF.brd_cont_no
+		where BC.brd_no = #brd_no#
+		<isNotEmpty property="brd_file_seq">
+		and BF.brd_file_seq = #brd_file_seq#
+		</isNotEmpty>
+		<isNotEmpty property="search_keyword">
+		and BC.brd_title like "%$search_keyword$%"
+		</isNotEmpty>
+		<isEqual property="search_gubun" compareValue="C">
+	    	and BC.brd_etc1 = '2'
+	    </isEqual>
+	    <isEqual property="search_gubun" compareValue="N">
+	    	and BC.brd_etc1 = '1'	
+	    </isEqual>
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and BC.reg_dm>= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and BC.reg_dm<= #search_end_date#	
+			]]>
+		</isNotEmpty>	
+    	
+    </select>
+    
+    <select id="NotificationDAO.organScheduleList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	
+    	select * 
+    	from schedule
+    	where 1=1
+    	<isNotEmpty property="search_keyword">
+		and sch_title like "%$search_keyword$%"
+		</isNotEmpty>
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and sch_start_dt >= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and sch_end_dt <= #search_end_date#	
+			]]>
+		</isNotEmpty>
+ 		
+		order by sch_reg_dm desc
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>	
+ 		
+    </select>
+    
+	<select id="NotificationDAO.organScheduleListTotCnt" resultClass="int">
+  
+    	select count(*)
+    	from schedule
+    	where 1=1
+    	<isNotEmpty property="search_keyword">
+		and sch_title like "%$search_keyword$%"
+		</isNotEmpty>
+		<isNotEmpty property="search_start_date">
+			<![CDATA[
+ 			and sch_start_dt >= #search_start_date#
+ 			]]>
+ 		</isNotEmpty>	
+		<isNotEmpty property="search_end_date">
+			<![CDATA[
+			and sch_end_dt <= #search_end_date#	
+			]]>
+		</isNotEmpty>
+    	
+    </select>
+    
+    <update id="NotificationDAO.contentsUpdateEnd" parameterClass="java.util.Map">
+    	update board_cont
+    	set
+    	brd_contents = #brd_contents#
+    	where
+    	brd_no = #brd_no# and
+    	brd_cont_no = #brd_cont_no# 
+    </update>
+    
+    <select id="NotificationDAO.selectedOrganSchedule" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	
+    	select * 
+    	from schedule
+    	where 1=1
+    	<isNotEmpty property="sch_no">
+		and sch_no = #sch_no#
+		</isNotEmpty>	
+ 		
+    </select>
+    
+	<update id="NotificationDAO.organScheduleUpdateEnd" parameterClass="java.util.Map">
+    		update schedule
+    	set
+    		sch_title = #sch_title#,
+    		sch_start_dt = #sch_start_dt#,
+    		sch_end_dt = #sch_end_dt#,
+    		sch_link_title = #sch_link_title#,
+    		sch_link_no = #sch_link_no#,
+    		sch_file_name = #sch_file_name#,
+    		sch_file_org_name = #sch_file_org_name# 		
+    	where
+    		sch_no = #sch_no#
+    		 
+    </update>
+    
+	<update id="NotificationDAO.scheduleContentsUpdateEnd" parameterClass="java.util.Map">
+    		update schedule
+    	set
+    		sch_contents = #sch_contents#		
+    	where
+    		sch_no = #sch_no#
+    		 
+    </update>
+    
+    <delete id="NotificationDAO.organScheduleDeleteEnd" parameterClass="java.util.Map">
+    	delete from
+    		schedule
+    	where
+    		sch_no = #sch_no#
+    </delete>
+    
+    <insert id="NotificationDAO.organScheduleInsertEnd" parameterClass="java.util.Map">
+    	insert into schedule
+	    	(
+	    	sch_no,
+	    	sch_title,
+	    	sch_start_dt,
+	    	sch_end_dt,
+	    	sch_link_title,
+	    	sch_link_no,
+	    	sch_read_num,
+	    	sch_reg_dm,
+	    	sch_file_name,
+	    	sch_file_org_name
+	    	) 
+    	values 
+    		(
+    		#sch_no#,
+    		#sch_title#,
+    		#sch_start_dt#,
+    		#sch_end_dt#,
+    		#sch_link_title#,
+    		#sch_link_no#,
+    		0,
+    		now(),
+    		#sch_file_name#,
+    		#sch_file_org_name#    		
+    		)
+    </insert>
+    
+    <select id="NotificationDAO.scheduleEndIdx" resultClass="int">
+    	select ifnull(max(sch_no),1) 
+ 		from schedule
+    </select>
+</sqlMap>

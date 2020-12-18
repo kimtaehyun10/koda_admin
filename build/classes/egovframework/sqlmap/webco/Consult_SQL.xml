@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="ConsultDAO">
+
+    <typeAlias alias="egovMap" type="egovframework.rte.psl.dataaccess.util.EgovMap"/>   
+
+    <!-- 건수 조회 -->
+    <select id="ConsultDAO.selectCount" resultClass="Integer">
+        <![CDATA[
+		SELECT COUNT(*)
+			FROM user
+		WHERE 1=1
+ 		]]> 		
+    </select>   
+    
+    <select id="ConsultDAO.select" resultClass="java.util.HashMap">
+        <![CDATA[
+		SELECT *
+			FROM consult
+		WHERE 1=1
+ 		]]> 
+ 		<isNotEmpty property="consult_index">
+ 		AND consult_index = #consult_index#
+ 		</isNotEmpty>		 		
+    </select>
+    
+    <select id="ConsultDAO.selectUserConsultList" resultClass="java.util.HashMap">
+        <![CDATA[
+		SELECT *
+			FROM consult
+		WHERE 1=1
+ 		]]> 
+ 		AND user_index = #user_index#		
+ 		ORDER BY consult.create_time DESC
+    </select>  
+    
+    <insert id="ConsultDAO.insert">
+    	INSERT INTO consult (
+    		user_index    		
+    		,consult_date
+    		,consult_time
+    		,consult_type
+    		,consult_consultor
+    		,consult_memo
+    		,consult_result
+    		,arrange_priority
+	    	,create_time )
+	    VALUES (
+	    	#user_index#
+    		,#consult_date#
+    		,#consult_time#
+    		,#consult_type#
+    		,#consult_consultor#
+    		,#consult_memo#
+    		,#consult_result#
+    		,0
+    		,now()	 
+	    )
+	    <selectKey keyProperty="consult_index" resultClass="int">
+        SELECT LAST_INSERT_ID()
+   		</selectKey>
+    </insert>  
+    
+    <update id="ConsultDAO.update">
+    	UPDATE consult
+    		set user_index = #user_index#    		
+    		,consult_date = #consult_date#
+    		,consult_time = #consult_time#
+    		,consult_type = #consult_type#
+    		,consult_consultor = #consult_consultor#
+    		,consult_memo = #consult_memo#
+    		,consult_result = #consult_result#
+	    WHERE consult_index = #consult_index#	 	    
+    </update> 
+    
+    <delete id="ConsultDAO.delete">
+    	DELETE FROM consult
+    	WHERE consult_index = #consult_index#
+    </delete>
+</sqlMap>
