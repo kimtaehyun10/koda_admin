@@ -914,5 +914,10 @@ public class UserServiceImpl extends EgovAbstractServiceImpl implements UserServ
 		Map<String, Object> userInfo = this.selectUserInfo(commandMap);
 		return userInfo;
 	}
+
+	@Override
+	public Map<String, Object> userAttach(Map<String, Object> commandMap) {
+		return (Map<String, Object>) webcoDAO.userAttach("UserDAO.userAttach", commandMap);
+	}
 	
 }

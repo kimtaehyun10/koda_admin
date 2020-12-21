@@ -310,7 +310,7 @@ response.setDateHeader("Expires",0);
                                         <input id="user_legal_representative_info" name="user_legal_representative_info" type="text" class="form-control input-sm" placeholder="" value="${user_detail.user_legal_representative_info}">
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <div class="form-group" hidden>
                                     <label class="col-md-3 control-label important-form-mark">법정대리인 증명서류</label>
                                     <div class="col-md-9">
                                         <label class="mt-checkbox" style="margin-top: 8px;">&nbsp
@@ -319,13 +319,29 @@ response.setDateHeader("Expires",0);
                                             <input id="user_is_legal_representative_text" name="user_is_legal_representative_text" type="checkbox" class="input-sm" value="1" ${user_detail.user_is_legal_representative_text == 1?"checked":""}><span></span>
                                         </label>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-3 control-label important-form-mark">첨부파일</label>
-                                    <div class="col-md-9">
-                                    	<input type="file" id="org_file_name" name="org_file_name" onchange="fileYN();">
-                                    </div>
-                                </div>
+                                </div>                                                                                               
+                                <c:choose>
+					            	<c:when test="${ !empty user_detail.user_num}">
+					                	<div class="form-group">
+		                                    <label class="col-md-3 control-label important-form-mark">첨부파일</label>
+		                                    <div class="col-md-9">
+		                                    	${userAttach.org_file_name}
+		                                    </div>
+		                                </div>
+					                </c:when>
+					                <c:otherwise>
+					                	<div class="form-group">
+		                                    <label class="col-md-3 control-label important-form-mark">첨부파일</label>
+		                                    <div class="col-md-9">
+		                                    	<input type="file" id="org_file_name" name="org_file_name" onchange="fileYN();">
+		                                    </div>
+		                                </div>
+					                </c:otherwise>
+				                </c:choose>
+                                
+                                
+                                
+                                
                             </div>
                             <!-- /.col-md-6 -->
                         </div> 
@@ -1343,8 +1359,12 @@ response.setDateHeader("Expires",0);
             }
         }).open();
     }
-    function fileYN(){
-    	//여기서부터 작업하자
-    	alert($("#org_file_name").val());
+    function fileYN(){    	
+    	if(!$("#org_file_name").val()){    		
+    		$("#user_is_legal_representative_text").removeAttr("checked");
+    	}else{
+    		$("#user_is_legal_representative_text").prop("checked","true");
+    	}
+    	
     }
 </script>

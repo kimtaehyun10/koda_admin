@@ -359,4 +359,58 @@
     	]]>
     	</isNotEmpty>
     </select>
+    
+    <select id="DefaultSettingDAO.mainBannerList" parameterClass="java.util.Map" resultClass="java.util.HashMap">       
+    	select * 
+    	from main_banner
+    	where 1=1
+    	and main_banner_type = 'W'
+    	<isNotEmpty property="search_keyword">
+		and main_banner_title like "%$search_keyword$%"
+		</isNotEmpty>		
+		order by main_banner_idx desc
+    	<isNotEmpty property="offset">
+ 		LIMIT #offset#, #limit#
+ 		</isNotEmpty>	
+    </select>
+    
+    <select id="DefaultSettingDAO.mainBannerListTotCnt" resultClass="int">
+ 
+	   	select count(*) 
+	   	from main_banner
+	   	where 1=1
+	   	and main_banner_type = 'W'
+	   	<isNotEmpty property="search_keyword">
+		and main_banner_title like "%$search_keyword$%"
+		</isNotEmpty>					
+    	
+    </select>
+    
+    <insert id="DefaultSettingDAO.mainBannerInsert" parameterClass="java.util.Map">
+		<selectKey resultClass="int" keyProperty="main_banner_idx">
+			SELECT IFNULL(MAX(main_banner_idx),0)+1 AS main_banner_idx											
+			FROM main_banner						
+		</selectKey>
+		
+		insert into main_banner
+	 	(
+	 	main_banner_idx,
+	 	main_banner_title,
+	 	main_banner_type,
+	 	main_banner_num,
+	 	main_banner_view,
+	 	main_banner_file_name,
+	 	main_banner_file_org_name
+	 	) 
+		values 
+		(    	
+		#main_banner_idx#,
+		#main_banner_title#,
+		'W',    		
+		0,
+		#main_banner_view#,
+		#main_banner_file_name#,
+		#main_banner_file_org_name#    		
+		)
+	</insert>
 </sqlMap>

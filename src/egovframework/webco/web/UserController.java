@@ -90,7 +90,12 @@ public class UserController {
 	    	for( Map<String, Object> consult : consultList ) {
 	    		consult.put("consult_date", CommonUtil.DateFormat(consult.get("consult_date").toString(), "yyyy.MM.dd"));
 	    	}
-	        model.addAttribute("consult_list",     CommonUtil.getJsonArrayFromList(consultList));	
+	        model.addAttribute("consult_list",     CommonUtil.getJsonArrayFromList(consultList));
+	        //첨부파일
+	        commandMap.put("attach_type", "USR");
+	        Map<String, Object> userAttach = userService.userAttach(commandMap);
+	        model.addAttribute("userAttach",userAttach);
+	        //
     	} else {
     		Map<String, Object> userInfo = new HashMap<String, Object>();
     		userInfo.put("user_register", SessionUtil.getAdminNickName());

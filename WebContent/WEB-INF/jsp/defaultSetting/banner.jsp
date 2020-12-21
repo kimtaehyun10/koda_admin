@@ -116,7 +116,7 @@ response.setDateHeader("Expires",0);
                                       	  <td>${(total_count - status.index) - ( (currentPage - 1)  *  displayNum ) }</td>                    	                                                                                 
                                           <td style="line-height:60px">${bannerList.banner_title}</td>                                                                                   
                                           <td style="line-height:60px">
-                                          <img alt="배너 이미지" src="/upFile/${bannerList.banner_img}" width="150px" height="50px">
+                                          <img alt="배너 이미지" src="/upFile/${bannerList.banner_img}" width="150px" height="50px">                                          
                                           </td>
                                           <td style="line-height:60px">${bannerList.banner_url}</td>                                                                                                                                                            
                                           <td style="line-height:60px">${fn:substring(bannerList.regdate,0,10)}</td>                                                                                                                                                      

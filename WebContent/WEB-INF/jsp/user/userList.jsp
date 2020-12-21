@@ -784,22 +784,23 @@ response.setDateHeader("Expires",0);
         $(".user_option_tab").addClass("active");
     }
     function showUserOptionBasic() {
-        $(".user_option_tab").removeClass("active");
-        $("#user_option_user_registration_date").addClass("active");
+        $(".user_option_tab").removeClass("active");        
+        $("#user_option_user_num").addClass("active");
+        $("#user_option_user_registration_date").addClass("active");        
         //$("#user_option_social_security_num").addClass("active");
-        $("#user_option_user_name").addClass("active");
-        $("#user_option_user_mobile").addClass("active");
-        $("#user_option_user_is_driving_license").addClass("active");
-        $("#user_option_user_email").addClass("active");
-        $("#user_option_user_is_email_agree").addClass("active");
-        $("#user_option_user_is_sms_agree").addClass("active");
-        $("#user_option_user_is_mail_agree").addClass("active");
-        $("#user_option_user_donation_type_organ").addClass("active");
-        $("#user_option_user_donation_type_comea").addClass("active");
-        $("#user_option_user_donation_type_body").addClass("active");
-        $("#user_option_user_post").addClass("active");
-        $("#user_option_user_address").addClass("active");
-        $("#user_option_user_address_detail").addClass("active");
+        //$("#user_option_user_name").addClass("active");
+        //$("#user_option_user_mobile").addClass("active");
+        //$("#user_option_user_is_driving_license").addClass("active");
+        //$("#user_option_user_email").addClass("active");
+        //$("#user_option_user_is_email_agree").addClass("active");
+        //$("#user_option_user_is_sms_agree").addClass("active");
+        //$("#user_option_user_is_mail_agree").addClass("active");
+        //$("#user_option_user_donation_type_organ").addClass("active");
+        //$("#user_option_user_donation_type_comea").addClass("active");
+        //$("#user_option_user_donation_type_body").addClass("active");
+        //$("#user_option_user_post").addClass("active");
+        //$("#user_option_user_address").addClass("active");
+        //$("#user_option_user_address_detail").addClass("active");
         /* $("#user_option_user_num").addClass("active");
         $("#user_option_user_name").addClass("active");
         $("#user_option_user_birthday").addClass("active");
@@ -1050,7 +1051,7 @@ response.setDateHeader("Expires",0);
 
         $("#print_card_div").append(card_div);
     }
-    function initValue() {
+    function initValue() {    	
         // Show option init
         $(".user_option_show_type_tab").removeClass("active");
         $("#user_option_show_basic").addClass("active");
@@ -1322,7 +1323,7 @@ response.setDateHeader("Expires",0);
         });
         // Set user_period_search_all clicked
         if(data_get == null) {
-            $("#user_period_search_all").trigger('click');
+            $("#user_period_search_now").trigger('click');
         } else {
             $("#search_keyword_type1").val(data_get.search_keyword_type1);
             $("#search_keyword_type2").val(data_get.search_keyword_type2);

@@ -1283,5 +1283,17 @@
  			AND dp1_idx = #dp1_idx#
  		</isNotEmpty>
  		
+    </select>
+    
+    <select id="UserDAO.userAttach" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+    	
+    	select attach_type
+    	      ,attach_no
+    	      ,org_file_name
+    	      ,re_file_name
+    	      ,reg_dm
+ 		from attach
+ 		where attach_type = #attach_type#
+ 		  and attach_no = #user_index#
     </select> 
 </sqlMap>

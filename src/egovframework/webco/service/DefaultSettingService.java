@@ -45,4 +45,9 @@ public interface DefaultSettingService {
 
 	int searchKeywordListTotCnt(Map<String, Object> commandMap);
 
+	List<Map<String, Object>> mainBannerList(Map<String, Object> commandMap);
+	
+	int mainBannerListTotCnt(Map<String, Object> commandMap);
+
+	void mainBannerInsert(Map<String, Object> commandMap);
 }

@@ -646,5 +646,23 @@ public class WebcoDefaultDAO extends EgovComAbstractDAO {
 		super.insert(queryId, commandMap);
 		
 	}
+
+	public Map<String, Object> userAttach(String queryId, Map<String, Object> commandMap) {		
+		return (Map<String, Object>)super.select(queryId,commandMap);
+	}
 	
+	public List<Map<String, Object>> mainBannerList(String queryId,
+			Map<String, Object> commandMap) {
+		
+		return (List<Map<String, Object>>)super.list(queryId,commandMap);
+	}
+	public int mainBannerListTotCnt(String queryId, Map<String, Object> commandMap) {
+		
+		return (int)super.select(queryId,commandMap);
+	}
+
+	public void mainBannerInsert(String queryId, Map<String, Object> commandMap) {
+		super.insert(queryId, commandMap);
+		
+	}
 }

@@ -120,7 +120,7 @@ response.setDateHeader("Expires",0);
 						  <span id="count-netscape1" class="count"></span>
 						  <ul id="tree-netscape1">
 						   	<c:forEach items="${adminMenuList}" var="adminMenuList">
-						   	  <c:if test="${adminMenuList.menu_cd eq 1 and adminMenuList.seq_cd ne 1 and adminMenuList.seq_cd ne 6 and adminMenuList.seq_cd ne 7 and adminMenuList.seq_cd ne 5}">
+						   	  <c:if test="${adminMenuList.menu_cd eq 1 and adminMenuList.seq_cd ne 1 and adminMenuList.seq_cd ne 6 and adminMenuList.seq_cd ne 5}">
 						   	  	<li><input type="checkbox" name="menu1" value="${adminMenuList.seq_cd}" ${not empty adminMenuList.admin_grade ? 'checked':''}/>${adminMenuList.menu_nm}</li>
 						   	  </c:if>
 						   	</c:forEach>					   

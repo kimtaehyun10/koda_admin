@@ -76,7 +76,7 @@ response.setDateHeader("Expires",0);
                       		<tr>
                       			<th>제목</th>
                       			<td style="text-align:left;"><input type="text" size=20" name="search_keyword" id="search_keyword" value="${param.search_keyword}"/></td>
-                      			<th>등록일</th>
+                      			<th>기간</th>
                       			<td style="text-align:left;" colspan="3">
 									<input type="text" size="20" name="search_start_date" id="search_start_date" class="form_datetime" value="${param.search_start_date}">	                                                           
 	                                ~	                                        

@@ -27,5 +27,7 @@ public interface UserService {
 	int checkUserCI(String ipinCi) throws Exception;		
 	
 	public String sendAutoSMS(String messageCode, String user_mobile, String user_is_sms_agree) throws Exception;
+
+	Map<String, Object> userAttach(Map<String, Object> commandMap);
 }
   

@@ -10,12 +10,7 @@ response.setHeader("Cache-Control","no-store");
 response.setHeader("Pragma","no-cache");   
 response.setDateHeader("Expires",0);
 %>
-<%
-/*
-	-법률자료실
-	1.수정,등록기능 보완필요
-*/
-%>
+
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
@@ -31,9 +26,6 @@ response.setDateHeader("Expires",0);
     <meta content="한국장기조직기증원 관리자페이지" name="description" />
     <meta content="" name="author" />
 	<c:import url="/webHeader.do" charEncoding="UTF-8"></c:import>
-	<style type="text/css">
-		.table td,.table th{font-size:13px}
-	</style>	
 </head>
 <link href="${pageContext.request.contextPath}/common/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
 <link href="${pageContext.request.contextPath}/common/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
@@ -54,16 +46,16 @@ response.setDateHeader("Expires",0);
                   <div class="portlet light portlet-fit bordered">
                       <div class="portlet-title">
                           <div class="caption">
-                              <span class="caption-subject font-dark bold uppercase">법률자료실</span>
+                              <span class="caption-subject font-dark bold uppercase">메인배너관리</span>
                               </div>
                               <div class="actions">
                               <div class="btn-group">
-                                  <a class="btn dark btn-outline btn-circle btn-sm" href="/infoOpen/lawWriteForm.do">법률자료실 등록</a>                                  
+                                  <a class="btn dark btn-outline btn-circle btn-sm" onclick="mainBannerWriteForm();">메인배너관리 등록</a>                                  
                               </div>
                           </div>    
                       </div>
                       <div class="portlet-body">
-                      	<form name="schFrm" id="schFrm" method="post" action="<c:url value="/infoOpen/law.do"/>">
+                      	<form name="schFrm" id="schFrm" method="post" action="<c:url value="/defaultSetting/mainBanner.do"/>">
                       	<input type="hidden" name="page" id="page" value="${param.page}"/>
                       	<table class="table table-bordered">
                       		<colgroup>
@@ -74,10 +66,10 @@ response.setDateHeader("Expires",0);
                        			<col width="8%"/>
                        		</colgroup>
                       		<tr>
-                      			<th>제목</th>
+                      			<th>메인배너 타이틀</th>
                       			<td style="text-align:left;"><input type="text" size=20" name="search_keyword" id="search_keyword" value="${param.search_keyword}"/></td>
-                      			<th>기간</th>
-                      			<td style="text-align:left;" colspan="3">
+                      			<!-- <th>등록일</th> -->
+                      			<%-- <td style="text-align:left;" colspan="3">
 									<input type="text" size="20" name="search_start_date" id="search_start_date" class="form_datetime" value="${param.search_start_date}">	                                                           
 	                                ~	                                        
 									<input type="text" size="20" name="search_end_date"  id="search_end_date" class="form_datetime" value="${param.search_end_date}">
@@ -87,7 +79,7 @@ response.setDateHeader("Expires",0);
                                 	<a id="user_period_search_month" class="btn dark btn-outline btn-circle btn-sm" href="#" style="margin-right:5px;">월간</a>
                                 	<a id="user_period_search_year" class="btn dark btn-outline btn-circle btn-sm" href="#" style="margin-right:5px;">연간</a>
                                 	</div>	                                        
-                      			</td>                      			
+                      			</td> --%>                      			
                       			<td>
                       				<div class="btn-group">
                                   		<a id="btnSearch" class="btn dark btn-outline btn-circle btn-sm" href="#">검색</a>
@@ -98,12 +90,11 @@ response.setDateHeader("Expires",0);
                       	</table>   
                       	</form>                   	
                       </div>
-                      <form name="Frm" id="Frm" method="post" action="">
-                      <input type="hidden" name="brd_no" id="brd_no" value="">                                            
-                      <input type="hidden" name="brd_cont_no" id="brd_cont_no" value="">                                            
+                      <form name="Frm" id="Frm" method="post" action="" target="popup_window">
+                      <input type="hidden" name="main_banner_idx" id="main_banner_idx" value="">                                            
                       <input type="hidden" name="search_keyword" id="search_keyword" value="${param.search_keyword}">                                                                                                              
-                      <input type="hidden" name="search_end_date" id="search_end_date" value="${param.search_end_date}">                                            
-                      <input type="hidden" name="search_start_date" id="search_start_date" value="${param.search_start_date}">                                            
+                      <%-- <input type="hidden" name="search_end_date" id="search_end_date" value="${param.search_end_date}">                                            
+                      <input type="hidden" name="search_start_date" id="search_start_date" value="${param.search_start_date}"> --%>                                            
                       <input type="hidden" name="page" id="page" value="${param.page}">
                       <div class="portlet-body">
                           <div class="table-scrollable">
@@ -111,25 +102,27 @@ response.setDateHeader("Expires",0);
                                   <thead>
                                       <tr>
                                       	  <th>No</th>
-					                      <th>제목</th>
-					                      <th>작성자</th>					                      					                      					                      					                      					                      
-					                      <th>등록일</th>					                      
-					                      <th>조회수</th>					                      
+					                      <th>메인배너 타이틀</th>					                      
+					                      <th>메인배너 이미지</th>					                      					                      					                      
+					                      <!-- <th>메인배너 URL</th> -->
+					                      <th>사용여부</th>					                      					                      					                    					                     
 					                      <th>관리</th>
 					                  </tr>
 					                  
                                   </thead>
                                   <tbody>
-									<c:forEach var="ntcList" items="${ntcList_list}" varStatus="status">                                      
+									<c:forEach var="mainBannerList" items="${mainBannerList_list}" varStatus="status">                                      
                                       <tr>
                                       	  <td>${(total_count - status.index) - ( (currentPage - 1)  *  displayNum ) }</td>                    	                                                                                 
-                                          <td style="line-height:60px; text-align: left;">${ntcList.brd_title}</td>
-                                          <td style="line-height:60px">${ntcList.brd_mkr_nm}</td>                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
-                                          <td style="line-height:60px">${fn:substring(ntcList.reg_dm,0,10)}</td>                                                                               
-                                          <td style="line-height:60px">${ntcList.brd_read_num}</td>                                                                               
+                                          <td style="line-height:60px; text-align: left;">${mainBannerList.main_banner_title}</td>                                                                                   
                                           <td style="line-height:60px">
-                                          <a style="line-height:60px" onclick="lawUpdateForm(${ntcList.brd_no},${ntcList.brd_cont_no});"><button class="btn btn-default btn-circle mt-sweetalert" type="button"><i class="fa fa-paste"></i> 수정</button></a>
-                                          <a style="line-height:60px" onclick="lawDeleteEnd(${ntcList.brd_no},${ntcList.brd_cont_no})"><button class="btn btn-danger btn-circle mt-sweetalert" type="button"><i class="fa fa-times"></i> 삭제</button></a>
+                                          <img alt="메인배너 이미지" src="/upFile/${mainBannerList.main_banner_file_name}" width="150px" height="50px">                                          
+                                          </td>
+                                          <%-- <td style="line-height:60px">${bannerList.banner_url}</td> --%>
+                                          <td style="line-height:60px">${mainBannerList.main_banner_view}</td>                                                                                                                                                                                                                                                                                                                                                            
+                                          <td style="line-height:60px">
+                                          <a style="line-height:60px" onclick="mainBannerUpdateForm(${mainBannerList.main_banner_idx});"><button class="btn btn-default btn-circle mt-sweetalert" type="button"><i class="fa fa-paste"></i> 수정</button></a>
+                                          <a style="line-height:60px" onclick="mainBannerDeleteEnd(${mainBannerList.main_banner_idx})"><button class="btn btn-danger btn-circle mt-sweetalert" type="button"><i class="fa fa-times"></i> 삭제</button></a>
                                           </td>
                                           
                                       </tr>
@@ -234,20 +227,28 @@ $(function() {
 		$('#schFrm').submit();
 	})
 });
-function lawUpdateForm(no,cont){
-	$("#brd_no").val(no);
-	$("#brd_cont_no").val(cont);
-	$('#Frm').attr("action","/infoOpen/lawUpdateForm.do");
+function mainBannerUpdateForm(idx){
+	//수정 작업하자 upfile 경로 바꾸자
+	$("#banner_idx").val(idx);
+	$('#Frm').attr("action","/defaultSetting/bannerUpdateForm.p");
+	
+	var screenW = screen.availWidth;  
+    var screenH = screen.availHeight; 
+    var popW = 800; 
+    var popH = 350; 
+    var posL=( screenW-popW ) / 2;    
+    var posT=( screenH-popH ) / 2;    	
+	window.open(' ','popup_window','width='+ popW +',height='+ popH +',top='+ posT +',left='+ posL +',resizable=no,scrollbars=yes,status=no,titlebar=no');
+	
 	$('#Frm').submit();
 }
-function lawDeleteEnd(no,cont) {
+function mainBannerDeleteEnd(idx) {
     if(confirm('정말 삭제하시겠습니까? ')){
     	$.ajax({
-            url : "/infoOpen/lawDeleteEnd.do",
+            url : "/defaultSetting/bannerDeleteEnd.do",
             type: "POST",
             data:{
-            	brd_no : no,
-                brd_cont_no : cont
+            	banner_idx : idx
             },
             dataType:"json", 
             success : function(data, textStatus, jqXHR) {
@@ -259,5 +260,17 @@ function lawDeleteEnd(no,cont) {
             }
         });
     }
+}
+function mainBannerWriteForm(idx){
+	
+	var screenW = screen.availWidth;  
+    var screenH = screen.availHeight; 
+    var popW = 800; 
+    var popH = 350; 
+    var posL=( screenW-popW ) / 2;    
+    var posT=( screenH-popH ) / 2;
+    var url = "/defaultSetting/mainBannerWriteForm.p";
+	window.open(url,'_blank','width='+ popW +',height='+ popH +',top='+ posT +',left='+ posL +',resizable=no,scrollbars=yes,status=no,titlebar=no');
+	
 }
 </script>

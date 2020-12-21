@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -259,14 +260,7 @@ public class DefaultSettingController {
     private String genSaveFileName(String extName) {
 		String fileName = "";
 		
-		Calendar calendar = Calendar.getInstance();
-		fileName += calendar.get(Calendar.YEAR);
-		fileName += calendar.get(Calendar.MONTH);
-		fileName += calendar.get(Calendar.DATE);
-		fileName += calendar.get(Calendar.HOUR);
-		fileName += calendar.get(Calendar.MINUTE);
-		fileName += calendar.get(Calendar.SECOND);
-		fileName += calendar.get(Calendar.MILLISECOND);
+		fileName += UUID.randomUUID().toString().replaceAll("-", "");
 		fileName += extName;
 		
 		return fileName;
@@ -452,6 +446,97 @@ public class DefaultSettingController {
     	adminService.insertActHist("R", "[문자발송]목록 조회");
 		return "defaultSetting/basicMessage";	 	
 	}
+ 	
+ 	//메인 배너관리
+	@RequestMapping("/defaultSetting/mainBanner.do")
+	public String mainBanner(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{
+		
+		int limit = 10;    	
+		int page = 1;
+		
+		if(!EgovStringUtil.isEmpty(EgovStringUtil.isNullToString(commandMap.get("page")))) {
+			page = Integer.parseInt(commandMap.get("page").toString());
+		}
+		
+    	int offset = page > 0 ? (page-1) * limit : 0;
+    			    	
+    	commandMap.put("offset", offset);
+    	commandMap.put("limit", limit);
+    	
+    	List<Map<String, Object>> mainBannerList = defaultSettingService.mainBannerList(commandMap);
+    	int total_count = defaultSettingService.mainBannerListTotCnt(commandMap);
+    	
+    	model.addAttribute("mainBannerList_list", mainBannerList);
+    	model.addAttribute("total_count", total_count);
+    	model.addAttribute("currentPage",page); //현재 페이지 번호
+    	
+    	
+    	PaginationInfo paginationInfo = new PaginationInfo();
+    	paginationInfo.setCurrentPageNo(page);
+    	paginationInfo.setRecordCountPerPage(limit);    	
+    	paginationInfo.setPageSize(10);    	
+    	if(paginationInfo != null){ 
+    		paginationInfo.setTotalRecordCount(total_count); 
+    		model.addAttribute("paginationInfo", paginationInfo); 
+    	}    	    	
+    	
+    	AdminVO adminVO = SessionUtil.getAuthenticatedUser();    	
+    	model.addAttribute("admin_grade", adminVO.getAdmin_grade());
+    	model.addAttribute("param", commandMap);
+    	model.addAttribute("displayNum",paginationInfo.getPageSize()); //페이지당 게시물 출력 수
+    	
+    	adminService.insertActHist("R", "[메인배너관리]목록 조회");
+		return "defaultSetting/mainBanner";	 	
+	}
+
+ 	// 메인배너관리 등록 form
+ 	@RequestMapping("/defaultSetting/mainBannerWriteForm.p")
+	public String mainBannerWriteForm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{		    	
+		
+    	return "defaultSetting/write/mainBannerWriteForm";	 	
+	}
+	
+ 	// 메인배너관리 저장
+ 	@RequestMapping("/defaultSetting/mainBannerSave.do")
+ 	@ResponseBody
+ 	public Map<String, Object> mainBannerSave(ModelMap model, @RequestParam Map<String, Object> commandMap, @RequestParam("main_banner_file_org_name") MultipartFile multipartFile, HttpServletRequest request) throws Exception{
+ 		Map<String, Object> resultMap = new HashMap<String, Object>();
+ 		String msg="";
+ 		try {
+ 			// 파일 정보
+ 			String originFilename = multipartFile.getOriginalFilename();
+ 			
+ 			if(!"".equals(originFilename) && originFilename!=null){
+ 				String extName
+ 				= originFilename.substring(originFilename.lastIndexOf("."), originFilename.length());
+ 			Long size = multipartFile.getSize();
+ 			
+ 			// 서버에서 저장 할 파일 이름
+ 			String saveFileName = genSaveFileName(extName);
+ 			
+ 			commandMap.put("main_banner_file_org_name", originFilename);
+ 			commandMap.put("main_banner_file_name", saveFileName); 			
+ 			
+ 			writeFile(multipartFile, saveFileName, request);
+ 									
+ 			}
+ 			
+ 			if("main_banner_insert".equals(commandMap.get("type"))){ 				
+ 				defaultSettingService.mainBannerInsert(commandMap);
+ 				msg = "등록 완료";
+ 			}else if("main_banner_update".equals(commandMap.get("type"))){ 				 				 								
+ 				//defaultSettingService.mainBannerUpdate(commandMap); 				
+ 				msg = "수정 완료";
+ 			}
+ 		}
+ 		catch (IOException e) {
+ 			
+ 			throw new RuntimeException(e);
+ 		}
+ 		
+ 		resultMap.put("msg", msg);
+ 		return resultMap;
+ 	}
 }
 
         

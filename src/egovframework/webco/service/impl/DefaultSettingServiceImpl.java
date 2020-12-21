@@ -143,4 +143,21 @@ public class DefaultSettingServiceImpl implements DefaultSettingService {
 		return webcoDAO.searchKeywordListTotCnt("DefaultSettingDAO.searchKeywordListTotCnt",commandMap);
 	}
     
+	@Override
+	public List<Map<String, Object>> mainBannerList(Map<String, Object> commandMap) {
+
+		return webcoDAO.mainBannerList("DefaultSettingDAO.mainBannerList",commandMap);
+	}
+	
+	@Override
+	public int mainBannerListTotCnt(Map<String, Object> commandMap) {
+		
+		return webcoDAO.mainBannerListTotCnt("DefaultSettingDAO.mainBannerListTotCnt",commandMap);
+	}
+
+	@Override
+	public void mainBannerInsert(Map<String, Object> commandMap) {
+		webcoDAO.mainBannerInsert("DefaultSettingDAO.mainBannerInsert",commandMap);
+		
+	}
 }

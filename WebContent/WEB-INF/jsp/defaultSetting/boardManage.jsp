@@ -97,7 +97,7 @@ response.setDateHeader("Expires",0);
                                       <tr>
                                       	  <th>No</th>
 					                      <th>이름</th>
-					                      <th>첨부파일 수</th>
+					                      <!-- <th>첨부파일 수</th> -->
 					                      <th>유형</th>					                      
 					                      <th>덧글</th>					                      					                      					                      
 					                      <th>관리</th>
@@ -109,7 +109,7 @@ response.setDateHeader("Expires",0);
                                       <tr>
                                       	  <td>${(total_count - status.index) - ( (currentPage - 1)  *  displayNum ) }</td>                    	                                                                                 
                                           <td style="line-height:60px">${boardManageList.brd_nm}</td>
-                                          <td style="line-height:60px">${boardManageList.brd_file_cnt}</td>                                          
+                                          <%-- <td style="line-height:60px">${boardManageList.brd_file_cnt}</td> --%>                                          
                                           <td style="line-height:60px">
                                           	<c:if test="${boardManageList.brd_type=='5'}">
                                           		국민소통 게시판

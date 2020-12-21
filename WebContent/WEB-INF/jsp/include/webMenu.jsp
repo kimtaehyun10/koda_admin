@@ -136,7 +136,7 @@
 	    </c:forEach>
 	    <ul class="sub-menu">
 	    	<c:forEach items="${webMenuList}" var="webMenuList">
-	    		<c:if test="${webMenuList.menu_cd eq 1 and webMenuList.seq_cd ne 6 and webMenuList.seq_cd ne 7 and webMenuList.seq_cd ne 5}">
+	    		<c:if test="${webMenuList.menu_cd eq 1 and webMenuList.seq_cd ne 6 and webMenuList.seq_cd ne 5}">
 			        <li class="nav-item1" id="nav-item1">
 			            <a href="<c:url value='${webMenuList.menu_url}'/>" class="nav-link ">	                			                	
 			                <span class="title">${webMenuList.menu_nm}</span>		                		                	                
@@ -360,7 +360,7 @@
 	    </c:forEach>
 	    <ul class="sub-menu">
 	    	<c:forEach items="${webMenuList}" var="webMenuList">
-	    		<c:if test="${webMenuList.menu_cd eq 9}">
+	    		<c:if test="${webMenuList.menu_cd eq 9 and webMenuList.seq_cd ne 5}">
 			        <li class="nav-item9">
 			            <a href="<c:url value='${webMenuList.menu_url}'/>" class="nav-link ">	                			                	
 			                <span class="title">${webMenuList.menu_nm}</span>		                		                	                

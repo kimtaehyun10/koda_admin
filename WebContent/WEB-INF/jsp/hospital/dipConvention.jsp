@@ -69,9 +69,9 @@ response.setDateHeader("Expires",0);
                       			<td style="text-align:left;">
                       				<select name="search_area" id="search_area" style="width:200px;">
                       					<option value="">전체</option>
-                      					<option value="0" ${param.search_area=='0'?'selected':''}>중부권역</option>
-                      					<option value="1" ${param.search_area=='1'?'selected':''}>충청,호남권역</option>                      					                      					                     					
-                      					<option value="2" ${param.search_area=='2'?'selected':''}>영남권역</option>                      					                      					                     					
+                      					<option value="0" ${param.search_area=='0'?'selected':''}>중부지부</option>
+                      					<option value="1" ${param.search_area=='1'?'selected':''}>충청,호남지부</option>                      					                      					                     					
+                      					<option value="2" ${param.search_area=='2'?'selected':''}>영남지부</option>                      					                      					                     					
                       				</select>
                       			</td>
                       			
@@ -108,13 +108,13 @@ response.setDateHeader("Expires",0);
                                           <td style="line-height:60px">${hspList.hospital_name}</td>                                                                                   
                                           <td style="line-height:60px">
                                           	<c:if test="${hspList.hospital_area eq '0'}">
-                                          		중부권역
+                                          		중부지부
                                           	</c:if>
                                           	<c:if test="${hspList.hospital_area eq '1'}">
-                                          		충청,호남권역
+                                          		충청,호남지부
                                           	</c:if>
                                           	<c:if test="${hspList.hospital_area eq '2'}">
-                                          		영남권역
+                                          		영남지부
                                           	</c:if>
                                           </td>                                                                                                                                                                
                                           <td style="line-height:60px">
