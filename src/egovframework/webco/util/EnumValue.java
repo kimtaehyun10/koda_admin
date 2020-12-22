@@ -13,7 +13,7 @@ public class EnumValue {
 	public EnumValue() { 
 		enum_array.put("user_sex", new ArrayList<String>(){{add(0, ""); add(1, "남"); add(2, "여");}}); // 성별
         enum_array.put("user_recognize_type", new ArrayList<String>(){{add(0, ""); add(1, "서약자"); add(2, "탈퇴자"); add(3, "등록보류자"); add(4, "사망자"); add(5, "중복"); add(6, "타기관");}}); // 서약구분
-        enum_array.put("dp1_idx", new ArrayList<String>(){{add(0, ""); add(1, "장기·조직기증"); add(2, "기증자예우"); add(3, "국민소통"); add(4, "정보"); add(5, "KODA"); add(6, "생명나눔우체통"); add(7, "기증희망등록");}}); // 페이지 뷰
+        enum_array.put("dp1_idx", new ArrayList<String>(){{add(0, ""); add(1, "장기조직 기증"); add(2, "기증자예우"); add(3, "홍보·소식"); add(4, "정보공개"); add(5, "KODA"); add(6, "생명나눔우체통"); add(7, "기증희망등록");}}); // 페이지 뷰
         enum_array.put("user_is_driving_license", new ArrayList<String>(){{add(0, ""); add(1, "Y"); add(2, "N");}}); // 운전면허증 표시
         enum_array.put("user_konos_register_state", new ArrayList<String>(){{add(0, ""); add(1, "Y"); add(2, "N"); add(3, "등록대기");}});   // konos 등록상태
         enum_array.put("user_register_channel", new ArrayList<String>(){{add(0, ""); add(1, "온라인"); add(2, "우편"); add(3, "방문"); add(4, "캠페인/행사"); add(5, "팩스");}}); // 등록 분류

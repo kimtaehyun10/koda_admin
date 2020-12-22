@@ -175,7 +175,7 @@ var Layout = function () {
         }
 
         // handle sidebar link click
-        $('.page-sidebar-menu').on('mouseenter', 'li > a.nav-toggle, li > a > span.nav-toggle', function (e) {        	
+        $('.page-sidebar-menu').on('click', 'li > a.nav-toggle, li > a > span.nav-toggle', function (e) {        	
             var that = $(this).closest('.nav-item').children('.nav-link');
 
             if (App.getViewPort().width >= resBreakpointMd && !$('.page-sidebar-menu').attr("data-initialized") && $('body').hasClass('page-sidebar-closed') &&  that.parent('li').parent('.page-sidebar-menu').size() === 1) {
@@ -247,7 +247,7 @@ var Layout = function () {
             e.preventDefault();
         });
         
-        $('.page-sidebar-menu>.nav-item>ul').on('mouseleave', function (e) { // 문제점 나중에 수정하자       	
+        /*$('.page-sidebar-menu>.nav-item>ul').on('mouseleave', function (e) {    	
             var that = $(this).closest('.nav-item').children('.nav-link');
 
             if (App.getViewPort().width >= resBreakpointMd && !$('.page-sidebar-menu').attr("data-initialized") && $('body').hasClass('page-sidebar-closed') &&  that.parent('li').parent('.page-sidebar-menu').size() === 1) {
@@ -317,7 +317,7 @@ var Layout = function () {
             }
 
             e.preventDefault();
-        });
+        });*/
         
         // handle menu close for angularjs version
         if (App.isAngularJsApp()) {

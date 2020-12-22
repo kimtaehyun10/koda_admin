@@ -50,4 +50,8 @@ public interface DefaultSettingService {
 	int mainBannerListTotCnt(Map<String, Object> commandMap);
 
 	void mainBannerInsert(Map<String, Object> commandMap);
+
+	void mainBannerUpdate(Map<String, Object> commandMap);
+
+	void mainBannerDeleteEnd(Map<String, Object> commandMap);
 }

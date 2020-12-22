@@ -665,4 +665,14 @@ public class WebcoDefaultDAO extends EgovComAbstractDAO {
 		super.insert(queryId, commandMap);
 		
 	}
+
+	public void mainBannerUpdate(String queryId, Map<String, Object> commandMap) {
+		super.update(queryId, commandMap);
+		
+	}
+
+	public void mainBannerDeleteEnd(String queryId, Map<String, Object> commandMap) {
+		super.delete(queryId, commandMap);
+		
+	}
 }

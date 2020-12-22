@@ -35,7 +35,7 @@ response.setDateHeader("Expires",0);
         <!-- BEGIN CONTENT BODY -->
         <div class="page-content">            
             <!-- END PAGE HEADER-->
-            <div class="row" style="margin-top: 70px;">
+            <div class="row">
                 <div class="col-md-1"></div>
                 <div class="col-md-10 ">
                     <!-- BEGIN SAMPLE FORM PORTLET-->

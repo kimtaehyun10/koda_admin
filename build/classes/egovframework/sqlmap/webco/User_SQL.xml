@@ -1295,5 +1295,14 @@
  		from attach
  		where attach_type = #attach_type#
  		  and attach_no = #user_index#
+    </select>
+    
+    <select id="UserDAO.selectYearCount" resultClass="int">
+        <![CDATA[
+		SELECT COUNT(*)
+			FROM user
+		WHERE 1=1
+ 		]]>
+ 		and create_time between concat(date_format(CURDATE(),"%Y"),'-01-01') and date_format(CURDATE(),"%Y-%m-%d")
     </select> 
 </sqlMap>

@@ -103,8 +103,12 @@ public class StatisticsServiceImpl extends EgovAbstractServiceImpl implements St
             }            
         }
         commandMap.clear();
-        total_visit_count = Integer.parseInt(webcoDAO.selectByPk("VisitDAO.selectCount", commandMap).toString());
-        total_pledge_count = Integer.parseInt(webcoDAO.selectByPk("UserDAO.selectCount", commandMap).toString());
+        //누적 방문,서약 현황
+        /*total_visit_count = Integer.parseInt(webcoDAO.selectByPk("VisitDAO.selectCount", commandMap).toString());
+        total_pledge_count = Integer.parseInt(webcoDAO.selectByPk("UserDAO.selectCount", commandMap).toString());*/
+        
+        total_visit_count = Integer.parseInt(webcoDAO.selectByPk("VisitDAO.selectYearCount", commandMap).toString());
+        total_pledge_count = Integer.parseInt(webcoDAO.selectByPk("UserDAO.selectYearCount", commandMap).toString());
         
         Collections.reverse(dashboard_column_chart_data1);
         Collections.reverse(dashboard_column_chart_data2); 
@@ -967,10 +971,10 @@ public class StatisticsServiceImpl extends EgovAbstractServiceImpl implements St
 		ArrayList<Map<String, Object>> chart_data = new ArrayList<Map<String, Object>>();
         ArrayList<Map<String, Object>> list_data = new ArrayList<Map<String, Object>>();
         
-        int total_donate_count = 0; //장기 조직 기증
+        int total_donate_count = 0; //장기조직 기증
         int total_remembrance_count = 0; //기증자예우
-        int total_notification_count = 0; //국민소통
-        int total_info_count = 0; //정보
+        int total_notification_count = 0; //홍보·소식
+        int total_info_count = 0; //정보공개
         int total_koda_count = 0; //koda
         int total_mailbox_count = 0; //생명나눔우체통
         int total_hopeDonateStats_count = 0; //기증희망등록

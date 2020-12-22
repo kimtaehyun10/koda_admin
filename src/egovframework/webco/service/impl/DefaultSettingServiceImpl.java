@@ -160,4 +160,16 @@ public class DefaultSettingServiceImpl implements DefaultSettingService {
 		webcoDAO.mainBannerInsert("DefaultSettingDAO.mainBannerInsert",commandMap);
 		
 	}
+
+	@Override
+	public void mainBannerUpdate(Map<String, Object> commandMap) {
+		webcoDAO.mainBannerUpdate("DefaultSettingDAO.mainBannerUpdate",commandMap);
+		
+	}
+
+	@Override
+	public void mainBannerDeleteEnd(Map<String, Object> commandMap) {
+		webcoDAO.mainBannerDeleteEnd("DefaultSettingDAO.mainBannerDeleteEnd",commandMap);
+		
+	}
 }

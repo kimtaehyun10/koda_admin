@@ -39,7 +39,7 @@ response.setDateHeader("Expires",0);
     <div class="page-content">    	 
         
         <!-- BEGIN PAGE TITLE-->
-        <div class="row" style="margin-top: 70px;">
+        <div class="row">
             <div class="col-md-7">            	
                 <h1 class="page-title"> 학술자료실 수정</h1>                
             </div>

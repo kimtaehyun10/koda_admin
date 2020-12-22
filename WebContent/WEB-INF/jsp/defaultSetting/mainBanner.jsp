@@ -40,7 +40,7 @@ response.setDateHeader("Expires",0);
       <div class="page-content">
           <!-- BEGIN PAGE HEADER-->                    
           <!-- END PAGE HEADER-->
-          <div class="row" style="margin-top: 70px;">
+          <div class="row">
               <div class="col-md-12">
                   <!-- BEGIN SAMPLE TABLE PORTLET-->
                   <div class="portlet light portlet-fit bordered">
@@ -228,13 +228,12 @@ $(function() {
 	})
 });
 function mainBannerUpdateForm(idx){
-	//수정 작업하자 upfile 경로 바꾸자
-	$("#banner_idx").val(idx);
-	$('#Frm').attr("action","/defaultSetting/bannerUpdateForm.p");
+	$("#main_banner_idx").val(idx);
+	$('#Frm').attr("action","/defaultSetting/mainBannerUpdateForm.p");
 	
 	var screenW = screen.availWidth;  
     var screenH = screen.availHeight; 
-    var popW = 800; 
+    var popW = 750; 
     var popH = 350; 
     var posL=( screenW-popW ) / 2;    
     var posT=( screenH-popH ) / 2;    	
@@ -245,10 +244,10 @@ function mainBannerUpdateForm(idx){
 function mainBannerDeleteEnd(idx) {
     if(confirm('정말 삭제하시겠습니까? ')){
     	$.ajax({
-            url : "/defaultSetting/bannerDeleteEnd.do",
+            url : "/defaultSetting/mainBannerDeleteEnd.do",
             type: "POST",
             data:{
-            	banner_idx : idx
+            	main_banner_idx : idx
             },
             dataType:"json", 
             success : function(data, textStatus, jqXHR) {
@@ -265,7 +264,7 @@ function mainBannerWriteForm(idx){
 	
 	var screenW = screen.availWidth;  
     var screenH = screen.availHeight; 
-    var popW = 800; 
+    var popW = 750; 
     var popH = 350; 
     var posL=( screenW-popW ) / 2;    
     var posT=( screenH-popH ) / 2;

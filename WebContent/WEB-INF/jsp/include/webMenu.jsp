@@ -4,11 +4,11 @@
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags"%>
 <%@taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <%@taglib prefix="ajax" uri="http://ajaxtags.sourceforge.net/tags/ajaxtags"%>
-<style>
+<!-- <style>
 	.nav-item{
 		float: left;						
-	}			
-</style>
+	}		
+</style> -->
 <!-- BEGIN HEADER -->
 <div class="page-header navbar navbar-fixed-top">
 <!-- BEGIN HEADER INNER -->
@@ -92,7 +92,7 @@
 <!-- BEGIN CONTAINER -->
 <div class="page-container">
 <!-- BEGIN SIDEBAR -->
-<!-- <div class="page-sidebar-wrapper"> 작업중-->
+<div class="page-sidebar-wrapper">
  
 <!-- BEGIN SIDEBAR -->
 <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
@@ -105,7 +105,7 @@
 <!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 <!-- DOC: Set data-keep-expand="true" to keep the submenues expanded -->
 <!-- DOC: Set data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-<ul class="page-sidebar-menu  page-header-fixed " data-keep-expanded="false" data-slide-speed="200" style="padding-top: 20px">
+<ul class="page-sidebar-menu page-header-fixed " data-keep-expanded="false" data-slide-speed="200" style="padding-top: 20px">
 <!-- DOC: To remove the sidebar toggler from the sidebar you just need to completely remove the below "sidebar-toggler-wrapper" LI element -->
 <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
     <li class="sidebar-toggler-wrapper hide">

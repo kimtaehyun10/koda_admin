@@ -40,7 +40,7 @@ response.setDateHeader("Expires",0);
 <div class="page-content">
 <!-- BEGIN PAGE HEADER-->
 <!-- BEGIN PAGE TITLE-->
-<div class="row" style="margin-top: 70px;">
+<div class="row">
     <div class="col-md-7">
         <h1 class="page-title"> 대시보드</h1>
     </div>
@@ -113,7 +113,7 @@ response.setDateHeader("Expires",0);
         </div>
         <div class="col-md-3 dashboard-display-1" style="">
             <div class="col-md-6 dashboard-display-upper">
-                <span class="vertical-align">누적 방문현황</span>
+                <span class="vertical-align">연간 방문현황</span>
             </div>
             <div class="col-md-6 dashboard-display-upper">
                 <span class="pull-right vertical-align" style="padding-left:7px;">명</span>
@@ -123,7 +123,7 @@ response.setDateHeader("Expires",0);
                 <hr class="purple-plum">
             </div>
             <div class="col-md-6 dashboard-display-lower">
-                <span class="vertical-align">누적 서약현황</span>
+                <span class="vertical-align">연간 서약현황</span>
             </div>
             <div class="col-md-6 dashboard-display-lower">
                 <span class="pull-right vertical-align" style="padding-left:7px;">명</span>

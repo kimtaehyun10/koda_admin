@@ -46,8 +46,8 @@ response.setDateHeader("Expires",0);
                   <div class="portlet light portlet-fit bordered">                     
                       <div class="portlet-body">
                       	<form name="Frm" id="Frm" method="post">
-                      	<input type="hidden" name="main_banner_idx" value="">                      	                      	
-                      	<input type="hidden" name="type" value="main_banner_insert">                      	                      	
+                      	<input type="hidden" name="main_banner_idx" value="${mainBannerList[0].main_banner_idx}">                      	                      	
+                      	<input type="hidden" name="type" value="main_banner_update">                      	                      	
                       	<table class="table table-bordered">
                       		<colgroup>
                        			<col width="10%"/>
@@ -58,11 +58,12 @@ response.setDateHeader("Expires",0);
                        		</colgroup>
                       		<tr>
                       			<th>메인배너 타이틀</th>
-                      			<td style="text-align:left;" colspan="3"><input type="text" size="90" name="main_banner_title" id="main_banner_title" class="form-control input-sm" value=""/></td>	
+                      			<td style="text-align:left;" colspan="3"><input type="text" size="90" name="main_banner_title" id="main_banner_title" class="form-control input-sm" value="${mainBannerList[0].main_banner_title}"/></td>	
                       		</tr>                        		
                       		<tr>                      			
                       			<th>메인배너 이미지</th>
                       			<td style="text-align:left;" colspan="3">
+                      				<span id="orgName">${mainBannerList[0].main_banner_file_org_name}</span>
 									<div class="form-group">                                                                       	
 										<input type="file" id="main_banner_file_org_name" name="main_banner_file_org_name" size="20"/>
                                     </div>
@@ -79,11 +80,11 @@ response.setDateHeader("Expires",0);
                       				<div class="form-group">                                  
 	                                    <div class="col-md-11">
 	                                       <label class="mt-checkbox" >사용                                       	                                       	
-	                                            <input id="main_banner_view" name="main_banner_view" type="radio" class="input-sm" value="Y" ><span></span>
+	                                            <input id="main_banner_view" name="main_banner_view" type="radio" class="input-sm" value="Y" ${mainBannerList[0].main_banner_view=="Y"?"checked":""}><span></span>
 	                                        </label>
 	                                        &nbsp;&nbsp;&nbsp;
 	                                        <label class="mt-checkbox" >미사용                                   	                                       	
-	                                            <input id="main_banner_view" name="main_banner_view" type="radio" class="input-sm" value="N" ><span></span>
+	                                            <input id="main_banner_view" name="main_banner_view" type="radio" class="input-sm" value="N" ${mainBannerList[0].main_banner_view=="N"?"checked":""}><span></span>
 	                                        </label>	                                       
 	                                    </div>
 	                                </div>
@@ -91,7 +92,7 @@ response.setDateHeader("Expires",0);
                       		</tr>
                       		<td colspan="2">
                   				<div class="btn-group">
-                              		<a id="btn" class="btn dark btn-outline btn-circle btn-sm">등록</a>
+                              		<a id="btn" class="btn dark btn-outline btn-circle btn-sm">수정</a>
                          		</div>
                   			</td>                  		
                       	</table>   
@@ -113,8 +114,8 @@ response.setDateHeader("Expires",0);
   
 <script>
 $("#btn").click(function(){
-    
-	if(!$("#main_banner_file_org_name").val()){
+	
+	if(!$("#main_banner_file_org_name").val() && !$("#orgName").html()){
 		alert("메인배너 이미지를 선택해주세요");
 		return;
 	}

@@ -37,7 +37,7 @@ response.setDateHeader("Expires",0);
       <div class="page-content">
           <!-- BEGIN PAGE HEADER-->                    
           <!-- END PAGE HEADER-->
-          <div class="row" style="margin-top: 70px;">
+          <div class="row">
               <div class="col-md-11" style="float: none; margin: 0 auto;">
                   <!-- BEGIN SAMPLE TABLE PORTLET-->
                   <div class="portlet light portlet-fit bordered">

@@ -367,6 +367,9 @@
     	and main_banner_type = 'W'
     	<isNotEmpty property="search_keyword">
 		and main_banner_title like "%$search_keyword$%"
+		</isNotEmpty>
+		<isNotEmpty property="main_banner_idx">
+		and main_banner_idx = #main_banner_idx#
 		</isNotEmpty>		
 		order by main_banner_idx desc
     	<isNotEmpty property="offset">
@@ -413,4 +416,24 @@
 		#main_banner_file_org_name#    		
 		)
 	</insert>
+	
+	<update id="DefaultSettingDAO.mainBannerUpdate" parameterClass="java.util.Map">
+    	update main_banner
+    	set
+    	 main_banner_title = #main_banner_title#
+    	,main_banner_view = #main_banner_view#
+    	<isNotEmpty property="main_banner_file_name">
+			,main_banner_file_name = #main_banner_file_name#
+    		,main_banner_file_org_name = #main_banner_file_org_name#
+		</isNotEmpty>    	    	
+    	where
+    	main_banner_idx = #main_banner_idx# 
+    </update>
+    
+    <delete id="DefaultSettingDAO.mainBannerDeleteEnd" parameterClass="java.util.Map">
+		delete from
+			main_banner
+		where
+			main_banner_idx = #main_banner_idx#
+    </delete>
 </sqlMap>

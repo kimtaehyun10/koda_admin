@@ -44,7 +44,7 @@ response.setDateHeader("Expires",0);
     <div class="page-content-wrapper">
         <!-- BEGIN CONTENT BODY -->
         <div class="page-content" >
-            <div class="row" style="margin-top: 70px;">
+            <div class="row">
                 <div class="col-md-2">
                     <h1 class="page-title"> 등록자관리 </h1>
                     <table class="table table-bordered" id="user_option_tab_table">

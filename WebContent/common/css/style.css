@@ -8,7 +8,7 @@
 @media (min-width: 992px) {
     .page-sidebar {
         /* width: 200px; */
-        width: 100%;
+        width: 12%;  /*상단 메뉴일때는 크리 100%로 하자*/
     }
     .page-content-wrapper .page-content {
         /* margin-left: 200px; */
@@ -147,6 +147,13 @@ hr.purple-plum{
     margin: 14px 0 20px 0;
     font-size: 20px;
 }
+/*사이드메뉴 본문 크기 테스트*/
+@media (min-width: 992px) {
+	.page-content{
+	    width: 88%;
+	}	
+}
+
 .page-title-element {
     margin: 10px;
 }
@@ -425,7 +432,7 @@ hr.purple-plum{
 }
 
 /*
-	��ü�� ���� css_2020.10.03
+	��ü�� ���� css_2020.10.03
 */
 
 .post_star {

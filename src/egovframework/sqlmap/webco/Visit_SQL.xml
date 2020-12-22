@@ -34,4 +34,13 @@
         SELECT LAST_INSERT_ID()
    		</selectKey> 	
     </insert>
+    
+     <select id="VisitDAO.selectYearCount" resultClass="Integer">
+        <![CDATA[
+		SELECT COUNT(*)
+			FROM visit
+		WHERE 1=1
+ 		]]>
+ 		AND create_date between concat(date_format(CURDATE(),"%Y"),'-01-01') and date_format(CURDATE(),"%Y-%m-%d")
+    </select>
 </sqlMap>

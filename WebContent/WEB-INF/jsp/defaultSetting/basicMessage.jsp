@@ -45,7 +45,7 @@ response.setDateHeader("Expires",0);
     <div class="page-content-wrapper">
         <!-- BEGIN CONTENT BODY -->
         <div class="page-content" >
-            <div class="row" style="margin-top: 70px;">
+            <div class="row">
                 
                 <button type="button" class="btn btn-sm btn-circle blue btn-outline page-title-element btn-sms align-left">일반 문자발송</button>
                     

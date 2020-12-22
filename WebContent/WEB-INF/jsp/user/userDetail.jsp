@@ -56,7 +56,7 @@ response.setDateHeader("Expires",0);
             <input id="is_here_after_save" name="is_here_after_save" type="hidden" value="0"/>
         <!-- BEGIN PAGE HEADER-->
         <!-- BEGIN PAGE TITLE-->
-        <div class="row" style="margin-top: 70px;">
+        <div class="row">
             <div class="col-md-7">            	
             	<c:choose>
 	            	<c:when test="${ !empty user_detail.user_num}">

@@ -54,7 +54,7 @@ response.setDateHeader("Expires",0);
     <div class="page-content">
         <!-- BEGIN PAGE HEADER-->
         <!-- BEGIN PAGE TITLE-->
-        <div class="row" style="margin-top: 70px;">
+        <div class="row">
             <div class="col-md-2">
                 <h1 class="page-title"> 상세조회</h1>
             </div>
@@ -157,10 +157,10 @@ response.setDateHeader("Expires",0);
                                 <div class="form-group">
                                     <div class="col-md-12">                                        
 					                    <select class="form-control input-sm" id="search_page_view_menu" style="width:200px;" onchange="getPageViewAjax();">	   					
-						   					<option value="1" >장기·조직기증</option>
+						   					<option value="1" >장기조직 기증</option>
 						   					<option value="2" >기증자예우</option>
-						   					<option value="3" >국민소통</option>
-						   					<option value="4" >정보</option>
+						   					<option value="3" >홍보·소식</option>
+						   					<option value="4" >정보공개</option>
 						   					<option value="5" >KODA</option>
 						   					<option value="6" >생명나눔우체통</option>
 						   					<option value="7" >기증희망등록</option>	   					                     					                    					                      					                     					                   					                      					                      					                     					
@@ -617,7 +617,7 @@ response.setDateHeader("Expires",0);
                             </div>
                             <div class="col-md-6 statistics_data_list" id="pie_chart_4_data_list_left">
                                 <div class="outer-line-box">
-                                    <p class="bold">장기 조직 기증</p>
+                                    <p class="bold">장기조직 기증</p>
                                     <table class="table table-condensed">
                                         <thead>
                                         <tr>
@@ -653,7 +653,7 @@ response.setDateHeader("Expires",0);
                             </div>
                             <div class="col-md-6 statistics_data_list" id="pie_chart_4_data_list_bottom_left">
                                 <div class="outer-line-box">
-                                    <p class="bold">국민소통</p>
+                                    <p class="bold">홍보·소식</p>
                                     <table class="table table-condensed">
                                         <thead>
                                         <tr>
@@ -671,7 +671,7 @@ response.setDateHeader("Expires",0);
                             </div>
                             <div class="col-md-6 statistics_data_list" id="pie_chart_4_data_list_bottom_right">
                                 <div class="outer-line-box">
-                                    <p class="bold">정보</p>
+                                    <p class="bold">정보공개</p>
                                     <table class="table table-condensed">
                                         <thead>
                                         <tr>
@@ -793,7 +793,7 @@ response.setDateHeader("Expires",0);
         	getRecognizeTypeAjax();
         } else if (selected_nav_menu == "detail_search_page_view"){
         	//페이지뷰 작업 하자
-        	$("#menu_selectbox").attr("style","display:block;");
+        	//$("#menu_selectbox").attr("style","display:block;");
         	getPageViewAjax();
         } else {
             getVisitPeriodAjax();

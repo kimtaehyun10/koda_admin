@@ -43,7 +43,7 @@ response.setDateHeader("Expires",0);
       <div class="page-content">
           <!-- BEGIN PAGE HEADER-->                    
           <!-- END PAGE HEADER-->
-          <div class="row" style="margin-top: 70px;">
+          <div class="row">
               <div class="col-md-12">
                   <!-- BEGIN SAMPLE TABLE PORTLET-->
                   <div class="portlet light portlet-fit bordered">
@@ -236,7 +236,7 @@ function annualUpdateForm(no,cont){
 	
 	var screenW = screen.availWidth;  
     var screenH = screen.availHeight; 
-    var popW = 800; 
+    var popW = 750; 
     var popH = 350; 
     var posL=( screenW-popW ) / 2;    
     var posT=( screenH-popH ) / 2;    	
@@ -268,7 +268,7 @@ function annualWriteForm(){
 	
 	var screenW = screen.availWidth;  
     var screenH = screen.availHeight; 
-    var popW = 800; 
+    var popW = 750; 
     var popH = 350; 
     var posL=( screenW-popW ) / 2;    
     var posT=( screenH-popH ) / 2;

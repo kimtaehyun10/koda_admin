@@ -503,7 +503,7 @@ public class DefaultSettingController {
  		Map<String, Object> resultMap = new HashMap<String, Object>();
  		String msg="";
  		try {
- 			// 파일 정보
+ 			// 파일 정보 			
  			String originFilename = multipartFile.getOriginalFilename();
  			
  			if(!"".equals(originFilename) && originFilename!=null){
@@ -525,7 +525,7 @@ public class DefaultSettingController {
  				defaultSettingService.mainBannerInsert(commandMap);
  				msg = "등록 완료";
  			}else if("main_banner_update".equals(commandMap.get("type"))){ 				 				 								
- 				//defaultSettingService.mainBannerUpdate(commandMap); 				
+ 				defaultSettingService.mainBannerUpdate(commandMap); 				
  				msg = "수정 완료";
  			}
  		}
@@ -537,6 +537,26 @@ public class DefaultSettingController {
  		resultMap.put("msg", msg);
  		return resultMap;
  	}
+
+ 	// 메인배너관리 수정 form
+ 	@RequestMapping("/defaultSetting/mainBannerUpdateForm.p")
+	public String mainBannerUpdateForm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{		    	
+ 		List<Map<String, Object>> mainBannerList = defaultSettingService.mainBannerList(commandMap);
+ 		model.addAttribute("mainBannerList", mainBannerList);
+    	return "defaultSetting/update/mainBannerUpdateForm";	 	
+	}
+
+	// 메인배너관리 삭제 end
+	@RequestMapping("/defaultSetting/mainBannerDeleteEnd.do")
+	@ResponseBody
+	public String mainBannerDeleteEnd(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{
+		
+		defaultSettingService.mainBannerDeleteEnd(commandMap);		
+		String msg="삭제완료";
+    	adminService.insertActHist("D", "[메인배너관리]삭제 완료");
+		
+    	return msg;	 	
+	}
 }
 
         
