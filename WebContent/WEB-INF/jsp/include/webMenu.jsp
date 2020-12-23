@@ -187,7 +187,7 @@
 		    		<c:when test="${webMenuList.menu_cd eq 3}">
 		    			<a href="javascript:;" class="nav-link nav-toggle" id="nav-toggle"> 
 					        <i class="glyphicon glyphicon-zoom-in"></i>
-					        <span class="title">국민소통 게시판</span>
+					        <span class="title">홍보·소식</span>
 					        <span class="arrow"></span>
 					    </a>
 					    <c:set var="doneLoop3" value="true"/>
@@ -219,7 +219,7 @@
 		    		<c:when test="${webMenuList.menu_cd eq 4}">
 		    			<a href="javascript:;" class="nav-link nav-toggle" id="nav-toggle"> 
 					        <i class="glyphicon glyphicon-file"></i>
-					        <span class="title">정보공개 게시판</span>
+					        <span class="title">정보공개</span>
 					        <span class="arrow"></span>
 					    </a>
 					    <c:set var="doneLoop4" value="true"/>
@@ -379,7 +379,7 @@
 		    		<c:when test="${webMenuList.menu_cd eq 10}">
     				    <a href="javascript:;" class="nav-link nav-toggle" id="nav-toggle"> 
 					        <i class="glyphicon glyphicon-star"></i>
-					        <span class="title">추모공간</span>
+					        <span class="title">기증자 예우</span>
 					        <span class="arrow"></span>
 					    </a>
 					    <c:set var="doneLoop10" value="true"/>

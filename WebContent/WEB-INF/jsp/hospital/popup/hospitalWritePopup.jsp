@@ -58,14 +58,7 @@ response.setDateHeader("Expires",0);
                        		</colgroup>
                       		<tr>
                       			<th>병원명</th>
-                      			<td style="text-align:left;" colspan="3"><input type="text" size=43" name="hospital_name" id="hospital_name" class="form-control input-sm" value=""/></td>
-                      			
-                      			
-                      			<td rowspan="2">
-                      				<div class="btn-group">
-                                  		<a id="btn" class="btn dark btn-outline btn-circle btn-sm" href="#">등록</a>
-                             		</div>
-                      			</td>
+                      			<td style="text-align:left;" colspan="3"><input type="text" size=43" name="hospital_name" id="hospital_name" class="form-control input-sm" value=""/></td>                      			                      			                      			
                       		</tr>  
                       		<tr>                      			
                       			<th>지역</th>
@@ -86,7 +79,30 @@ response.setDateHeader("Expires",0);
                                     </div>
                                 </div>	                                        
                       			</td>
-                      		</tr>                  		
+                      		</tr>
+                      		<tr>
+                      			<th>협약체결일</th>
+                      			<td style="text-align:left;" colspan="3"><input type="text" size="20" name="hospital_dt" id="hospital_dt" class="form-control input-sm form_datetime" value=""></td>
+                      		</tr>
+                      		<tr>
+                      			<th>위치</th>
+                      			<td style="text-align:left;" colspan="3"><input type="text" size=43" name="hospital_loc" id="hospital_loc" class="form-control input-sm" value=""/></td>                      			                      	                      			
+                      		</tr>
+                      		<tr>
+                      			<th>전화번호</th>
+                      			<td style="text-align:left;" colspan="3"><input type="text" size=43" name="hospital_tel" id="hospital_tel" class="form-control input-sm" value=""/></td>                      			                      	                      			
+                      		</tr>
+                      		<tr>
+                      			<th>홈페이지</th>
+                      			<td style="text-align:left;" colspan="3"><input type="text" size=43" name="hospital_link" id="hospital_link" class="form-control input-sm" value=""/></td>                      			                      	                      			
+                      		</tr>
+                      		<tr>
+                      			<td colspan="2">
+                      				<div class="btn-group">
+                                  		<a id="btn" class="btn dark btn-outline btn-circle btn-sm" href="#">등록</a>
+                             		</div>
+                      			</td>
+                      		</tr>                      		                  		
                       	</table>   
                       	</form>                   	
                       </div>                     
@@ -105,6 +121,21 @@ response.setDateHeader("Expires",0);
 <script src="${pageContext.request.contextPath}/common/global/plugins/jquery_redirect/jquery.redirect.js" type="text/javascript"></script>
   
 <script>
+$(document).ready(function(){
+	//날짜
+    $(".form_datetime").datetimepicker({
+        autoclose: true,
+        isRTL: App.isRTL(),
+        format: "yyyy-mm-dd",
+        minView: 2,
+        maxView: 3,
+        fontAwesome: true,
+        initialDate: new Date(),
+        pickerPosition: (App.isRTL() ? "bottom-right" : "bottom-left")
+    }).on('changeDate', function(ev){        
+    });
+});
+
 $("#btn").click(function(){
     	$.ajax({
             url : "/hospital/hospitalWriteEnd.do",

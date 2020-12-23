@@ -61,7 +61,11 @@
     	update hospital
     	set
     	hospital_name = #hospital_name#,
-    	hospital_area = #hospital_area#
+    	hospital_area = #hospital_area#,
+    	hospital_loc = #hospital_loc#,
+    	hospital_tel = #hospital_tel#,
+    	hospital_link = #hospital_link#,
+    	hospital_dt = #hospital_dt#    	
     	where
     	hospital_idx = #hospital_idx#
     </update>
@@ -78,13 +82,21 @@
 	    	(	    	
 	    	hospital_name,
 	    	hospital_area,
-	    	hospital_type
+	    	hospital_type,
+	    	hospital_loc,
+	    	hospital_tel,
+	    	hospital_link,
+	    	hospital_dt
 	    	) 
     	values 
     		(    		
     		#hospital_name#,
     		#hospital_area#,
-    		#hospital_type#
+    		#hospital_type#,
+    		#hospital_loc#,
+    		#hospital_tel#,
+    		#hospital_link#,
+    		#hospital_dt#
     		)
     </insert>
 </sqlMap>

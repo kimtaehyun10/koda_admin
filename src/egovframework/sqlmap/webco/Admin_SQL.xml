@@ -276,7 +276,7 @@
 		on M.menu_cd = G.menu_cd 
 		and M.seq_cd = G.seq_cd 
 		and G.admin_grade = #search_auth#
-		order by M.menu_sunbun
+		<!-- order by M.menu_sunbun -->
     </select>
     
     <delete id="AdminDAO.adminMenuDelete" parameterClass="java.util.Map">
@@ -309,7 +309,7 @@
 		on M.menu_cd = G.menu_cd 
 		and M.seq_cd = G.seq_cd 
 		where G.admin_grade = #admin_grade#
-		order by M.menu_sunbun
+		<!-- order by M.menu_sunbun -->
     </select>
    
     <insert id="AdminDAO.attachSave" parameterClass="java.util.Map">

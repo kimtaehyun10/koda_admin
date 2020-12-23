@@ -96,7 +96,11 @@ response.setDateHeader("Expires",0);
                                       <tr>
                                       	  <th>No</th>
 					                      <th>병원명</th>					                      
-					                      <th>지역</th>					                      					                      					                      				                      					                      
+					                      <th>지역</th>
+					                      <th>위치</th>					                      					                      					                      				                      					                      
+					                      <th>전화번호</th>					                      					                      					                      				                      					                      
+					                      <th>홈페이지</th>
+					                      <th>협약체결일</th>					                      					                      					                      				                      					                      
 					                      <th>관리</th>
 					                  </tr>
 					                  
@@ -116,7 +120,11 @@ response.setDateHeader("Expires",0);
                                           	<c:if test="${hspList.hospital_area eq '2'}">
                                           		영남지부
                                           	</c:if>
-                                          </td>                                                                                                                                                                
+                                          </td>
+                                          <td style="line-height:60px">${hspList.hospital_loc}</td>                                                                                                                                                                
+                                          <td style="line-height:60px">${hspList.hospital_tel}</td>                                                                                                                                                                
+                                          <td style="line-height:60px">${hspList.hospital_link}</td>
+                                          <td style="line-height:60px">${hspList.hospital_dt}</td>                                                                                                                                                                
                                           <td style="line-height:60px">
                                           <a style="line-height:60px" onclick="hospitalUpdate(${hspList.hospital_idx});"><button class="btn btn-default btn-circle mt-sweetalert" type="button"><i class="fa fa-paste"></i> 수정</button></a>
                                           <a style="line-height:60px" onclick="hospitalDelete(${hspList.hospital_idx},'${hspList.hospital_type}');"><button class="btn btn-danger btn-circle mt-sweetalert" type="button"><i class="fa fa-times"></i> 삭제</button></a>
@@ -167,7 +175,7 @@ function hospitalUpdate(idx){
 	var screenW = screen.availWidth;  
     var screenH = screen.availHeight; 
     var popW = 750; 
-    var popH = 240; 
+    var popH = 320; 
     var posL=( screenW-popW ) / 2;    
     var posT=( screenH-popH ) / 2;    
     var url = "/hospital/hospitalUpdatePopup.p?hospital_idx="+idx;	
@@ -196,7 +204,7 @@ function hospitalWrite(type){
 	var screenW = screen.availWidth;  
     var screenH = screen.availHeight; 
     var popW = 750; 
-    var popH = 240; 
+    var popH = 320; 
     var posL=( screenW-popW ) / 2;    
     var posT=( screenH-popH ) / 2;    
     var url = "/hospital/hospitalWritePopup.p?hospital_type="+type;	

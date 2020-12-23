@@ -128,7 +128,7 @@ response.setDateHeader("Expires",0);
 						 </li>
 						 <li id="show-netscape2">
 						  <input id="check-netscape2" type="checkbox" />
-						     등록자
+						     기증희망등록
 						  <span id="count-netscape2" class="count"></span>
 						  <ul id="tree-netscape2">
 						  	<c:forEach items="${adminMenuList}" var="adminMenuList">
@@ -140,7 +140,7 @@ response.setDateHeader("Expires",0);
 						 </li>
 						 <li id="show-netscape3">
 						  <input id="check-netscape3" type="checkbox" />
-						     국민소통 게시판
+						     홍보·소식
 						  <span id="count-netscape3" class="count"></span>
 						  <ul id="tree-netscape3">
 							  <c:forEach items="${adminMenuList}" var="adminMenuList">
@@ -152,7 +152,7 @@ response.setDateHeader("Expires",0);
 						 </li>
 						 <li id="show-netscape4">
 						  <input id="check-netscape4" type="checkbox" />
-						     정보공개 게시판
+						     정보공개
 						  <span id="count-netscape4" class="count"></span>
 						  <ul id="tree-netscape4">
 						  	<c:forEach items="${adminMenuList}" var="adminMenuList">
@@ -212,7 +212,7 @@ response.setDateHeader("Expires",0);
 						 </li>
 						 <li id="show-netscape10">
 						  <input id="check-netscape10" type="checkbox" />
-						     추모공간
+						     기증자 예우
 						  <span id="count-netscape10" class="count"></span>
 						  <ul id="tree-netscape10">
 						  	<c:forEach items="${adminMenuList}" var="adminMenuList">
