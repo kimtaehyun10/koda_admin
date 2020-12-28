@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import egovframework.com.cmm.service.EgovProperties;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import egovframework.webco.service.AdminService;
@@ -55,6 +57,9 @@ public class NotificationController {
 	
     @Resource(name = "statisticsService")
     private StatisticsService statisticsService; 
+    
+    private String fileStorePath = EgovProperties.getProperty("globals.fileStorePath");
+    
 	//영상 자료실
 	@RequestMapping("/notification/movie.do")
 	public String movie(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{
@@ -890,14 +895,7 @@ public class NotificationController {
     private String genSaveFileName(String extName) {
 		String fileName = "";
 		
-		Calendar calendar = Calendar.getInstance();
-		fileName += calendar.get(Calendar.YEAR);
-		fileName += calendar.get(Calendar.MONTH);
-		fileName += calendar.get(Calendar.DATE);
-		fileName += calendar.get(Calendar.HOUR);
-		fileName += calendar.get(Calendar.MINUTE);
-		fileName += calendar.get(Calendar.SECOND);
-		fileName += calendar.get(Calendar.MILLISECOND);
+		fileName += UUID.randomUUID().toString().replaceAll("-", "");
 		fileName += extName;
 		
 		return fileName;
@@ -906,7 +904,8 @@ public class NotificationController {
     // 파일을 실제로 write 하는 메서드
  	private boolean writeFile(MultipartFile multipartFile, String saveFileName, HttpServletRequest request)throws IOException{
  		boolean result = false;
- 		String path=request.getServletContext().getRealPath("/upFile");
+ 		//String path=request.getServletContext().getRealPath("/upFile");
+ 		String path = fileStorePath;
  		byte[] data = multipartFile.getBytes();
  		FileOutputStream fos = new FileOutputStream(path + "/" + saveFileName);
  		fos.write(data);

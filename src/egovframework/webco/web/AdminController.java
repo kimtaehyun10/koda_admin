@@ -36,6 +36,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import egovframework.com.cmm.service.EgovProperties;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import egovframework.webco.service.AdminService;
@@ -61,6 +62,9 @@ public class AdminController {
     
     @Resource(name = "statisticsService")
     private StatisticsService statisticsService;
+    
+    private String fileStorePath = EgovProperties.getProperty("globals.fileStorePath");
+    private String ckeditorFileStorePath = EgovProperties.getProperty("globals.ckeditorFileUpload");
     /**
      * 관리자 목록 조회
      * @return String
@@ -705,14 +709,7 @@ public class AdminController {
     private String genSaveFileName(String extName) {
 		String fileName = "";
 		
-		Calendar calendar = Calendar.getInstance();
-		fileName += calendar.get(Calendar.YEAR);
-		fileName += calendar.get(Calendar.MONTH);
-		fileName += calendar.get(Calendar.DATE);
-		fileName += calendar.get(Calendar.HOUR);
-		fileName += calendar.get(Calendar.MINUTE);
-		fileName += calendar.get(Calendar.SECOND);
-		fileName += calendar.get(Calendar.MILLISECOND);
+		fileName += UUID.randomUUID().toString().replaceAll("-", "");
 		fileName += extName;
 		
 		return fileName;
@@ -721,7 +718,8 @@ public class AdminController {
     // 파일을 실제로 write 하는 메서드
  	private boolean writeFile(MultipartFile multipartFile, String saveFileName, HttpServletRequest request)throws IOException{
  		boolean result = false;
- 		String path=request.getServletContext().getRealPath("/upFile");
+ 		//String path=request.getServletContext().getRealPath("/upFile");
+ 		String path = fileStorePath;
  		byte[] data = multipartFile.getBytes();
  		FileOutputStream fos = new FileOutputStream(path + "/" + saveFileName);
  		fos.write(data);
@@ -753,7 +751,9 @@ public class AdminController {
 	         byte[] bytes = upload.getBytes();	         	         	         
 	         
 	         //이미지 경로 생성
-	         String path = request.getServletContext().getRealPath("/common/ckeditor/ckupload/"); // fileDir는 전역 변수라 그냥 이미지 경로 설정해주면 된다.
+	         //String path = request.getServletContext().getRealPath("/common/ckeditor/ckupload/"); // fileDir는 전역 변수라 그냥 이미지 경로 설정해주면 된다.
+	         String path = ckeditorFileStorePath+"/";
+	         
 	         String ckUploadPath = path + uid + "_" + fileName;
 	         File folder = new File(path);
 	         
@@ -796,8 +796,9 @@ public class AdminController {
                             , HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
         
         //서버에 저장된 이미지 경로
- 		String path = request.getServletContext().getRealPath("/common/ckeditor/ckupload/");
-    
+ 		//String path = request.getServletContext().getRealPath("/common/ckeditor/ckupload/");
+ 		String path = ckeditorFileStorePath+"/";
+ 		
         String sDirPath = path + uid + "_" + fileName;
     
         File imgFile = new File(sDirPath);
@@ -836,7 +837,55 @@ public class AdminController {
             }
         }
     }
-
+ 	
+ 	//imageView
+ 	@RequestMapping(value="/imageView.do")
+    public void imageView(@RequestParam(value="imageName") String imageName
+                            , HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException{
+        
+        //서버에 저장된 이미지 경로
+ 		//String path = request.getServletContext().getRealPath("/common/ckeditor/ckupload/");
+ 		String path = fileStorePath+"/";
+ 		
+        String sDirPath = path+imageName;
+    
+        File imgFile = new File(sDirPath);
+        
+        //사진 이미지 찾지 못하는 경우 예외처리로 빈 이미지 파일을 설정한다.
+        if(imgFile.isFile()){
+            byte[] buf = new byte[1024];
+            int readByte = 0;
+            int length = 0;
+            byte[] imgBuf = null;
+            
+            FileInputStream fileInputStream = null;
+            ByteArrayOutputStream outputStream = null;
+            ServletOutputStream out = null;
+            
+            try{
+                fileInputStream = new FileInputStream(imgFile);
+                outputStream = new ByteArrayOutputStream();
+                out = response.getOutputStream();
+                
+                while((readByte = fileInputStream.read(buf)) != -1){
+                    outputStream.write(buf, 0, readByte);
+                }
+                
+                imgBuf = outputStream.toByteArray();
+                length = imgBuf.length;
+                out.write(imgBuf, 0, length);
+                out.flush();
+                
+            }catch(IOException e){
+                //logger.info(e);
+            }finally {
+            	outputStream.close();
+                fileInputStream.close();
+                out.close();
+            }
+        }
+    }
+ 	
  	// 권한메뉴관리
  	@RequestMapping("/admin/adminMenu.do")
 	public String adminMenu(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{

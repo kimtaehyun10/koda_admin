@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import egovframework.com.cmm.service.EgovProperties;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import egovframework.webco.service.AdminService;
@@ -49,6 +51,7 @@ public class respectController {
     @Resource(name = "adminService")
     private AdminService adminService;
     
+    private String fileStorePath = EgovProperties.getProperty("globals.fileStorePath");
 	
 	//기증자 추모 & 유가족 행사
 	@RequestMapping("/respect/familyEvent.do")
@@ -157,14 +160,7 @@ public class respectController {
     private String genSaveFileName(String extName) {
 		String fileName = "";
 		
-		Calendar calendar = Calendar.getInstance();
-		fileName += calendar.get(Calendar.YEAR);
-		fileName += calendar.get(Calendar.MONTH);
-		fileName += calendar.get(Calendar.DATE);
-		fileName += calendar.get(Calendar.HOUR);
-		fileName += calendar.get(Calendar.MINUTE);
-		fileName += calendar.get(Calendar.SECOND);
-		fileName += calendar.get(Calendar.MILLISECOND);
+		fileName += UUID.randomUUID().toString().replaceAll("-", "");
 		fileName += extName;
 		
 		return fileName;
@@ -173,7 +169,8 @@ public class respectController {
     // 파일을 실제로 write 하는 메서드
  	private boolean writeFile(MultipartFile multipartFile, String saveFileName, HttpServletRequest request)throws IOException{
  		boolean result = false;
- 		String path=request.getServletContext().getRealPath("/upFile"); 		
+ 		//String path=request.getServletContext().getRealPath("/upFile"); 		
+ 		String path = fileStorePath;
  		byte[] data = multipartFile.getBytes();
  		FileOutputStream fos = new FileOutputStream(path + "/" + saveFileName);
  		fos.write(data);

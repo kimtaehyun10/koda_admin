@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -53,6 +54,8 @@ public class UserController {
     private AdminService adminService;
     
     private String menuId = "user";
+    
+    private String fileStorePath = EgovProperties.getProperty("globals.fileStorePath");
     
     /**
      * 서약자관리 화면
@@ -750,14 +753,7 @@ public class UserController {
     private String genSaveFileName(String extName) {
 		String fileName = "";
 		
-		Calendar calendar = Calendar.getInstance();
-		fileName += calendar.get(Calendar.YEAR);
-		fileName += calendar.get(Calendar.MONTH);
-		fileName += calendar.get(Calendar.DATE);
-		fileName += calendar.get(Calendar.HOUR);
-		fileName += calendar.get(Calendar.MINUTE);
-		fileName += calendar.get(Calendar.SECOND);
-		fileName += calendar.get(Calendar.MILLISECOND);
+		fileName += UUID.randomUUID().toString().replaceAll("-", "");
 		fileName += extName;
 		
 		return fileName;
@@ -766,7 +762,8 @@ public class UserController {
     // 파일을 실제로 write 하는 메서드
  	private boolean writeFile(MultipartFile multipartFile, String saveFileName, HttpServletRequest request)throws IOException{
  		boolean result = false;
- 		String path=request.getServletContext().getRealPath("/upFile");
+ 		//String path=request.getServletContext().getRealPath("/upFile");
+ 		String path = fileStorePath;
  		byte[] data = multipartFile.getBytes();
  		FileOutputStream fos = new FileOutputStream(path + "/" + saveFileName);
  		fos.write(data);

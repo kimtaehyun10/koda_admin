@@ -719,7 +719,7 @@ response.setDateHeader("Expires",0);
             '</li>';
         for(var page = start_page; page <= end_page; page++){
             pagintation_html += '<li>' +
-                '<a href="javascript:'+link_function_name+'('+page+')">'+page+'</a>' +
+                '<a href="javascript:'+link_function_name+'('+Math.floor(page)+')">'+Math.floor(page)+'</a>' +
                 '</li>'
         }
         pagintation_html += '<li class="page_next">' +
@@ -741,7 +741,7 @@ response.setDateHeader("Expires",0);
         $("#"+pagination_id).find("li:nth-of-type("+(cur_page-start_page+2)+")").addClass("active");
     }
 
-    function showUserListAjax(page) {
+    function showUserListAjax(page) {    	
         page = typeof page !== 'undefined' ? page : 1;
         window.selected_page = page;
         var search_keyword_type_array = [$("#search_keyword_type1").val(), $("#search_keyword_type2").val(), $("#search_keyword_type3").val()];
@@ -767,7 +767,7 @@ response.setDateHeader("Expires",0);
                 showUserList();
                 addPagination('pagination_div', 'showUserListAjax', parsedData.total_count, parsedData.search_value['limit'], 10, page);
                 */                
-            	if(data != null && data.rtnCode == "") {	                
+            	if(data != null && data.rtnCode == "") {            		
 	                window.user_list = data.user_list;            	
 	                showUserList();
 	                addPagination('pagination_div', 'showUserListAjax', data.total_count, data.search_value.limit, 5, page);

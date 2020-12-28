@@ -29,6 +29,9 @@ response.setDateHeader("Expires",0);
 <!-- END HEAD -->
 <body class="page-header-fixed page-sidebar-closed-hide-logo page-content-white">
 <c:import url="/webMenu.do" charEncoding="UTF-8"></c:import>
+<link href="${pageContext.request.contextPath}/common/css/card_style.css" rel="stylesheet" type="text/css" />
+<link href="${pageContext.request.contextPath}/common/global/plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+<link href="${pageContext.request.contextPath}/common/global/plugins/bootstrap-toastr/toastr.min.css" rel="stylesheet" type="text/css" />
 
 <!-- BEGIN CONTENT -->
 <div class="page-content-wrapper">
@@ -371,7 +374,8 @@ function fnExcel() {
 }
 
 function fnShowSmsModal(sender_phone_no, receiver_phone_no) {
-	$("#sms_sender_phone_no").val(sender_phone_no);
+	//$("#sms_sender_phone_no").val(sender_phone_no);
+	$("#sms_sender_phone_no").val("02-3785-3177");
 	$("#sms_receiver_phone_no").val(receiver_phone_no);
 	$('#sms_send_dialog').modal('show');
 }
@@ -403,11 +407,14 @@ function fnSendSms() {
 		alert('내용이 존재하지 않습니다.');
 		return;
 	}
+	
 	var regHp = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
+	/*
 	if(!regHp.test($('#sms_sender_phone_no').val().trim())) {
 	      alert("잘못된 휴대폰 번호입니다. 숫자, - 를 포함한 숫자만 입력하세요.");
 	      return;
 	}
+	*/
 	
 	if(!regHp.test($('#sms_receiver_phone_no').val().trim())) {
 	      alert("잘못된 휴대폰 번호입니다. 숫자, - 를 포함한 숫자만 입력하세요.");
@@ -425,12 +432,43 @@ function fnSendSms() {
         data: obj,
         dataType: "json",
         success: function(data) {
-             console.log(data);
-         },
-         error: function(xhr, desc, err) {
-             alert('전송 오류가 발생되었습니다.');
-         }
+            if(data != null && data.rtnCode == "") {
+                toastr.options = {"positionClass": "toast-bottom-center"};
+                toastr.success(data.rtnMsg);
+            } else {
+            	toastr.options = {"positionClass": "toast-bottom-center"};
+	            toastr.success(data.rtnMsg);
+            }
+        },
+        error: function(xhr, desc, err) {
+            alert('SMS 전송에 실패했습니다. 잠시후에 다시 해주시기 바랍니다.')
+        }
      });
-	
+}
+
+function showTotalSMSCount() {
+    $.ajax({
+        url: "<c:url value='/user/getSMSTotalCountAjax.do'/>",
+        type: 'post',
+        dataType: "json",
+        data: {
+        },
+        success: function(data) { 
+        	if(data != null && data.rtnCode == "") {
+                var sms_total_count = data.sms_total_count;
+                var today = new Date();
+                var dd = today.getDate();
+                var mm = today.getMonth()+1; //January is 0!
+                var yyyy = today.getFullYear();
+                var sms_total_count_sentence = "- 수량 "+yyyy+"년"+mm+"월"+dd+"일 "+sms_total_count+"개의 문자가 남아 있습니다.";
+                $("#sms_total_count_sentence").html(sms_total_count_sentence);
+        	} else {
+        		alert('잔여건수 조회에 실패하였습니다.')
+        	}
+        },
+        error: function(xhr, desc, err) {
+            alert('데이터 로딩이 안됩니다. 잠시후에 다시 해주시기 바랍니다.')
+        }
+    });
 }
 </script>

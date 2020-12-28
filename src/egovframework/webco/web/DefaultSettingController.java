@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import egovframework.com.cmm.service.EgovProperties;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import egovframework.webco.service.AdminService;
@@ -52,6 +53,7 @@ public class DefaultSettingController {
     
     private String menuId = "user";
 	
+    private String fileStorePath = EgovProperties.getProperty("globals.fileStorePath");
 	//팝업관리
 	@RequestMapping("/defaultSetting/popup.do")
 	public String popup(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{
@@ -269,7 +271,8 @@ public class DefaultSettingController {
     // 파일을 실제로 write 하는 메서드
  	private boolean writeFile(MultipartFile multipartFile, String saveFileName, HttpServletRequest request)throws IOException{
  		boolean result = false;
- 		String path=request.getServletContext().getRealPath("/upFile");
+ 		//String path=request.getServletContext().getRealPath("/upFile");
+ 		String path = fileStorePath;
  		byte[] data = multipartFile.getBytes();
  		FileOutputStream fos = new FileOutputStream(path + "/" + saveFileName);
  		fos.write(data);

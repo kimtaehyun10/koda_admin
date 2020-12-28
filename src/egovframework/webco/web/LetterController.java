@@ -24,6 +24,7 @@ import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import egovframework.webco.service.AdminService;
 import egovframework.webco.service.LetterService;
 import egovframework.webco.util.CommonUtil;
+import egovframework.webco.util.SMSManager;
 import egovframework.webco.util.SessionUtil;
 import egovframework.webco.vo.AdminVO;
 import net.sf.json.JSONObject;
@@ -42,9 +43,46 @@ public class LetterController {
 	 */
 	@RequestMapping("/mailbox/ajaxSendSms.do")
  	public @ResponseBody JSONObject ajaxSendSms(@RequestParam Map<String, Object> commandMap) throws Exception{
+ 		//sms_sender_phone_no : 보내는사람
+ 		//sms_receiverr_phone_no : 받는 사람
+ 		//sms_title : 제목
+ 		//sms_content : 내용
+ 		
  		Map<String, Object> rtnMap = new HashMap<String, Object>();
- 		System.out.println(commandMap.toString());
- 		rtnMap.put("code", "0");
+		rtnMap.put("rtnCode", "");		
+    	rtnMap.put("rtnMsg", "");
+    	
+		Map<String, Object> smsMap = new HashMap<String, Object>();
+		
+		if(EgovStringUtil.isEmpty(EgovStringUtil.isNullToString(commandMap.get("sms_content")))) {
+			rtnMap.put("rtnCode", "-1");		
+	    	rtnMap.put("rtnMsg", "메세지 내용을 입력해주세요.");
+		} else {
+			smsMap.put("msg", EgovStringUtil.isNullToString(commandMap.get("sms_send_msg")));
+		}
+		
+		if(EgovStringUtil.isEmpty(EgovStringUtil.isNullToString(commandMap.get("sms_receiver_phone_no")))) {
+			rtnMap.put("rtnCode", "-1");		
+	    	rtnMap.put("rtnMsg", "연락처를 선택해주세요.");
+		} else {
+			smsMap.put("rphone", EgovStringUtil.isNullToString(commandMap.get("sms_receiverr_phone_no")));
+		}
+		
+		if(EgovStringUtil.isEmpty(EgovStringUtil.isNullToString(commandMap.get("sms_sender_phone_no")))) {
+			rtnMap.put("rtnCode", "-1");		
+	    	rtnMap.put("rtnMsg", "보내는 이의 연락처를 선택해주세요.");
+		} else {
+			String sms_send_sender = EgovStringUtil.isNullToString(commandMap.get("sms_sender_phone_no"));
+			String[] sender = sms_send_sender.split("-");
+			smsMap.put("sphone1", sender[0]);
+			smsMap.put("sphone2", sender[1]);
+			smsMap.put("sphone3", sender[2]);
+		}
+		
+		SMSManager smsManager = new SMSManager();	
+		rtnMap = smsManager.sendSmsAsync(smsMap);
+				
+		rtnMap.put("search_value", commandMap);		    
 		return CommonUtil.getObjectToJSONObject(rtnMap);
  	}
 	
@@ -208,9 +246,8 @@ public class LetterController {
     	if(paginationInfo != null){ 
     		paginationInfo.setTotalRecordCount(total_count); 
     		model.addAttribute("paginationInfo", paginationInfo); 
-    	}    	   
+    	}    	    	
     	
-    	adminService.insertActHist("L", "[생명나눔 우체통] 우체통관리 > 보내는 사람 검색 조회");
     	AdminVO adminVO = SessionUtil.getAuthenticatedUser();    	
     	model.addAttribute("admin_grade", adminVO.getAdmin_grade());
     	model.addAttribute("param", commandMap);
@@ -254,7 +291,7 @@ public class LetterController {
     		paginationInfo.setTotalRecordCount(total_count); 
     		model.addAttribute("paginationInfo", paginationInfo); 
     	}    	    	
-    	adminService.insertActHist("L", "[생명나눔 우체통] 우체통 관리 > 관리자 찾기 리스트 조회");
+    	
     	AdminVO adminVO = SessionUtil.getAuthenticatedUser();    	
     	model.addAttribute("admin_grade", adminVO.getAdmin_grade());
     	model.addAttribute("param", commandMap);
@@ -314,7 +351,7 @@ public class LetterController {
     		paginationInfo.setTotalRecordCount(total_count); 
     		model.addAttribute("paginationInfo", paginationInfo); 
     	}    	    	
-    	adminService.insertActHist("L", "[생명나눔 우체통] 우체통관리 리스트 조회");
+    	
     	AdminVO adminVO = SessionUtil.getAuthenticatedUser();    	
     	model.addAttribute("admin_grade", adminVO.getAdmin_grade());
     	model.addAttribute("param", commandMap);
@@ -356,7 +393,6 @@ public class LetterController {
   			               ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		letterService.saveLetterWrite(commandMap, multipartFile1, multipartFile2, multipartFile3, request);
-  		adminService.insertActHist("C", "[생명나눔 우체통] 편지쓰기" + EgovStringUtil.isNullToString(commandMap.get("userId")));
   		return "redirect:/mailbox/letterList.do";
   	}
   	
@@ -398,7 +434,6 @@ public class LetterController {
   			                  ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		letterService.letterUpdate(commandMap, multipartFile1, multipartFile2, multipartFile3, request);
-  		adminService.insertActHist("U", "[생명나눔 우체통] 우체통관리 편지 수정 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		return "redirect:/mailbox/letterView.do?letter_id="+commandMap.get("letter_id");
   	}
   	
@@ -419,7 +454,6 @@ public class LetterController {
   			                 ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		letterService.letterDelete(commandMap);
-  		adminService.insertActHist("D", "[생명나눔 우체통] 우체통관리 편지 삭제 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		return "redirect:/mailbox/letterList.do";
   	}
   	
@@ -438,7 +472,6 @@ public class LetterController {
   		model.addAttribute("letter", letter);
   		model.addAttribute("letterSkinList", letterSkinList);
   		model.addAttribute("letterFileList", letterFileList);
-  		adminService.insertActHist("R", "[생명나눔 우체통] 우체통관리 편지 상세 조회 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		return "letter/view/letterViewForm";
   	}
 
@@ -478,7 +511,6 @@ public class LetterController {
   			                     ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		letterService.saveLetterReplyWrite(commandMap, multipartFile1, multipartFile2, multipartFile3, request);
-  		adminService.insertActHist("C", "[생명나눔 우체통] 우체통관리 답글 저장 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		return "redirect:/mailbox/letterList.do";
   	}
   	
@@ -522,7 +554,7 @@ public class LetterController {
     		paginationInfo.setTotalRecordCount(total_count); 
     		model.addAttribute("paginationInfo", paginationInfo); 
     	}    	    	
-    	adminService.insertActHist("L", "[생명나눔 우체통] 발신대기함 리스트 조회");
+    	
     	AdminVO adminVO = SessionUtil.getAuthenticatedUser();    	
     	model.addAttribute("admin_grade", adminVO.getAdmin_grade());
     	model.addAttribute("param", commandMap);
@@ -564,7 +596,6 @@ public class LetterController {
   			               ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		letterService.saveLetterWrite(commandMap, multipartFile1, multipartFile2, multipartFile3, request);
-  		adminService.insertActHist("C", "[생명나눔 우체통] 발신대기함 편지 저장 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		return "redirect:/mailbox/letterWaitList.do";
   	}
   	
@@ -606,7 +637,6 @@ public class LetterController {
   			                  ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		letterService.letterUpdate(commandMap, multipartFile1, multipartFile2, multipartFile3, request);
-  		adminService.insertActHist("U", "[생명나눔 우체통] 발신대기함 편지 수정 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		return "redirect:/mailbox/letterWaitView.do?letter_id="+commandMap.get("letter_id");
   	}
   	
@@ -627,7 +657,6 @@ public class LetterController {
   			                 ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		letterService.letterDelete(commandMap);
-  		adminService.insertActHist("D", "[생명나눔 우체통] 발신대기함 편지 삭제 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		return "redirect:/mailbox/letterWaitList.do";
   	}
   	
@@ -643,7 +672,6 @@ public class LetterController {
   		Map<String, Object> letter = letterService.selectLetterView(commandMap);
   		List<Map<String, Object>> letterFileList = letterService.selectLetterFileList(commandMap);
   		List<Map<String, Object>> letterSkinList = letterService.selectLetterSkinList(commandMap);
-  		adminService.insertActHist("R", "[생명나눔 우체통] 발신대기함 편지 조회 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		model.addAttribute("letter", letter);
   		model.addAttribute("letterSkinList", letterSkinList);
   		model.addAttribute("letterFileList", letterFileList);
@@ -686,7 +714,6 @@ public class LetterController {
   			                     ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		letterService.saveLetterReplyWrite(commandMap, multipartFile1, multipartFile2, multipartFile3, request);
-  		adminService.insertActHist("C", "[생명나눔 우체통] 발신대기함 답글 저장 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		return "redirect:/mailbox/letterWaitList.do";
   	}
   	
@@ -729,7 +756,7 @@ public class LetterController {
     		paginationInfo.setTotalRecordCount(total_count); 
     		model.addAttribute("paginationInfo", paginationInfo); 
     	}    	    	
-    	adminService.insertActHist("L", "[생명나눔 우체통] 미승인 대기목록 조회");
+    	
     	AdminVO adminVO = SessionUtil.getAuthenticatedUser();    	
     	model.addAttribute("admin_grade", adminVO.getAdmin_grade());
     	model.addAttribute("param", commandMap);
@@ -771,7 +798,6 @@ public class LetterController {
   			               ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		letterService.saveLetterWrite(commandMap, multipartFile1, multipartFile2, multipartFile3, request);
-  		adminService.insertActHist("C", "[생명나눔 우체통] 미승인대기목록 편지 저장 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		return "redirect:/mailbox/letterNotApprovalList.do";
   	}
   	
@@ -813,7 +839,6 @@ public class LetterController {
   			                  ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		letterService.letterUpdate(commandMap, multipartFile1, multipartFile2, multipartFile3, request);
-  		adminService.insertActHist("U", "[생명나눔 우체통] 미승인대기목록 편지 수정 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		return "redirect:/mailbox/letterNotApprovalView.do?letter_id="+commandMap.get("letter_id");
   	}
   	
@@ -834,7 +859,6 @@ public class LetterController {
   			                 ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		letterService.letterDelete(commandMap);
-  		adminService.insertActHist("D", "[생명나눔 우체통] 미승인대기목록 편지 삭제 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		return "redirect:/mailbox/letterNotApprovalList.do";
   	}
   	
@@ -853,7 +877,6 @@ public class LetterController {
   		model.addAttribute("letter", letter);
   		model.addAttribute("letterSkinList", letterSkinList);
   		model.addAttribute("letterFileList", letterFileList);
-  		adminService.insertActHist("R", "[생명나눔 우체통] 미승인대기목록 편지 조회 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		return "letter/view/letterNotApprovalViewForm";
   	}
 
@@ -893,7 +916,6 @@ public class LetterController {
   			                     ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		letterService.saveLetterReplyWrite(commandMap, multipartFile1, multipartFile2, multipartFile3, request);
-  		adminService.insertActHist("C", "[생명나눔 우체통] 미승인대기목록 답글 저장 LETTER_ID : " + EgovStringUtil.isNullToString(commandMap.get("letter_id")));
   		return "redirect:/mailbox/letterNotApprovalList.do";
   	}
   	
@@ -985,7 +1007,7 @@ public class LetterController {
     		paginationInfo.setTotalRecordCount(total_count); 
     		model.addAttribute("paginationInfo", paginationInfo); 
     	}    	    	
-    	adminService.insertActHist("L", "[생명나눔 우체통] 관리자 예시찾기 조회");
+    	
     	AdminVO adminVO = SessionUtil.getAuthenticatedUser();    	
     	model.addAttribute("admin_grade", adminVO.getAdmin_grade());
     	model.addAttribute("param", commandMap);
@@ -1007,7 +1029,6 @@ public class LetterController {
   			                     ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		String letter_admin_id = letterService.saveLetterAdmin(commandMap, request);
-  		adminService.insertActHist("C", "[생명나눔 우체통] 관리자 예시글 등록");
   		return "redirect:/mailbox/letterAdminView.do?letter_admin_id="+letter_admin_id;
   	}
   	
@@ -1041,7 +1062,6 @@ public class LetterController {
   			                     ,HttpServletRequest request) throws Exception {
   		commandMap.put("create_id", SessionUtil.getAdminId());
   		letterService.updateLetterAdmin(commandMap, request);
-  		adminService.insertActHist("U", "[생명나눔 우체통] 관리자 예시글 수정" + EgovStringUtil.isNullToString(commandMap.get("letter_admin_id")));
   		return "redirect:/mailbox/letterAdminView.do?letter_admin_id="+commandMap.get("letter_admin_id");
   	}
   	
