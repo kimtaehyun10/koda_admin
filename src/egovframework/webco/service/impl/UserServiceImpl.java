@@ -1,8 +1,13 @@
 package egovframework.webco.service.impl;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +17,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -918,6 +924,50 @@ public class UserServiceImpl extends EgovAbstractServiceImpl implements UserServ
 	@Override
 	public Map<String, Object> userAttach(Map<String, Object> commandMap) {
 		return (Map<String, Object>) webcoDAO.userAttach("UserDAO.userAttach", commandMap);
+	}
+
+	@Override
+	public void fileDownload(Map<String, Object> requestMap, HttpServletRequest request, HttpServletResponse response) {
+		String orignFileNm = (String) requestMap.get("org_file_name");
+		final String downFileNm = (String) requestMap.get("re_file_name");
+		if (orignFileNm == null || "".equals(orignFileNm)) {
+			orignFileNm = downFileNm;
+		}
+		try {
+			final String browser = request.getHeader("User-Agent");              
+			if (browser.contains("MSIE") || browser.contains("Trident") || browser.contains("Chrome")) {
+				orignFileNm = URLEncoder.encode(orignFileNm, "UTF-8").replaceAll("\\+", "%20");
+			} else {
+				orignFileNm = new String(orignFileNm.getBytes("UTF-8"), "ISO-8859-1");
+			}
+		} catch (final UnsupportedEncodingException ex) {
+			log.info("UnsupportedEncodingException");
+		}
+		final String realPath = requestMap.get("fileStorePath")+ "/" + downFileNm;
+		final File file1 = new File(realPath);
+		if (file1.exists()) {
+			response.setContentType("application/octer-stream");
+			response.setHeader("Content-Transfer-Encoding", "binary;");
+			response.setHeader("Content-Disposition", "attachment; filename=\"" + orignFileNm + "\"");
+			try ( OutputStream os = response.getOutputStream();
+					final FileInputStream fis = new FileInputStream(realPath)) {
+				int ncount = 0;
+				final byte[] bytes = new byte[512];
+				while ((ncount = fis.read(bytes)) != -1 ) {
+					os.write(bytes, 0, ncount);
+				}
+			} catch (final FileNotFoundException ex) {
+				log.info("FileNotFoundException");
+			} catch (final IOException ex) {
+				log.info("IOException");
+			}
+		} else {
+			try {
+				response.sendError(HttpServletResponse.SC_NOT_FOUND);
+			} catch (final IOException ex) {
+				log.info("IOException");
+			}
+		}	
 	}
 	
 }

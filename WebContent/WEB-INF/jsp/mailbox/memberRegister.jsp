@@ -700,108 +700,132 @@ var fnPop = {
 
 var fnObj = {
 	fnValidSet:function() {
+		var flag = true;
 		if($("#userId").val() == "") {
 			alert("ID는 필수 입력 사항입니다.");
-			return false;
+			flag = false;
+			return flag;
 		}
 		if($("#inpType").val() == "I") {
 			if($("#userPassword").val() == "") {
 				alert("패스워드는 필수 입력 사항입니다.");
-				return false;
+				flag = false;
+				return flag;
 			}
 		}
 		if($("#userName").val() == "") {
 			alert("이름은 필수 입력 사항입니다.");
-			return false;
+			flag = false;
+			return flag;
 		}
 		if($("#userNickName").val() == "") {
 			alert("닉네임은 필수 입력 사항입니다.");
-			return false;
+			flag = false;
+			return flag;
 		}
 		if($("#gender").val() == "") {
 			alert("성별은 필수 입력 사항입니다.");
-			return false;
+			flag = false;
+			return flag;
 		}
 		if($("#birthday").val() == "") {
 			alert("생년월일은 필수 입력 사항입니다.");
-			return false;
+			flag = false;
+			return flag;
 		}
 		if($("#phone").val() == "") {
 			alert("연락처는 필수 입력 사항입니다.");
-			return false;
+			flag = false;
+			return flag;
 		}
 		if($("#email").val() == "") {
 			alert("이메일주소 #1은 필수 입력 사항입니다.");
-			return false;
+			flag = false;
+			return flag;
 		}
 		if($("#post").val() == "") {
 			alert("주소는 필수 입력 사항입니다.");
-			return false;
+			flag = false;
+			return flag;
 		}
 		if($("#address").val() == "") {
 			alert("주소는 필수 입력 사항입니다.");
-			return false;
+			flag = false;
+			return flag;
 		}
 		if($("#addressDetail").val() == "") {
 			alert("주소는 필수 입력 사항입니다.");
-			return false;
+			flag = false;
+			return flag;
 		}
 		
 		if($("#adultFlag") == "N") {
 			if($("#parentName").val() == "") {
 				alert("보호자 정보(보호자이름)은 필수 입력 사항입니다.");
-				return false;
+				flag = false;
+				return flag;
 			}
 			if($("#parentBirthday").val() == "") {
 				alert("보호자 정보(보호자 생년월일)은 필수 입력 사항입니다.");
-				return false;
+				flag = false;
+				return flag;
 			}
 			if($("#parentGender").val() == "") {
 				alert("보호자 정보(보호자 성별)은 필수 입력 사항입니다.");
-				return false;
+				flag = false;
+				return flag;
 			}
 			if($("#parentPhone").val() == "") {
 				alert("보호자 정보(휴대전화)은 필수 입력 사항입니다.");
-				return false;
+				flag = false;
+				return flag;
 			}
 		}
-		
-		if($("#gubn option:selected").val() == "D") {
+		if($('input:radio[name="gubn"]:checked').val() == "D") {
 			if($("#dDonorName").val() == "") {
 				alert("기증자 정보(기증자명)은 필수 입력 사항입니다.");
-				return false;
+				flag = false;
+				return flag;
 			}
 			if($("#dDonorHospital").val() == "") {
 				alert("기증자 정보(기증병원)은 필수 입력 사항입니다.");
-				return false;
+				flag = false;
+				return flag;
 			}
 			if($("#dDonorBirthday").val() == "") {
 				alert("기증자 정보(생년월일)은 필수 입력 사항입니다.");
-				return false;
+				flag = false;
+				return flag;
 			}
 			if($("#dDonorDate").val() == "") {
 				alert("기증자 정보(기증일)은 필수 입력 사항입니다.");
-				return false;
+				flag = false;
+				return flag;
 			}
 		} else {
 			if($("#bBenefiName").val() == "") {
 				alert("수혜자 정보(수혜자명)은 필수 입력 사항입니다.");
-				return false;
+				flag = false;
+				return flag;
 			}
 			if($("#bBenefiHospital").val() == "") {
 				alert("수혜자 정보(기증병원)은 필수 입력 사항입니다.");
-				return false;
+				flag = false;
+				return flag;
 			}
 			if($("#bBenefiBirthday").val() == "") {
 				alert("수혜자 정보(생년월일)은 필수 입력 사항입니다.");
-				return false;
+				flag = false;
+				return flag;
 			}
 			if($("#bBenefiParts").val() == "") {
 				alert("수혜자 정보(기증장기)은 필수 입력 사항입니다.");
-				return false;
+				flag = false;
+				return flag;
 			}
 		}
 		
+		return flag;
 		
 	},
 	fnDatePicker:function(){
@@ -927,7 +951,6 @@ var fnObj = {
 		}
 		
 		var flag = this.fnValidSet();
-		
 		if(!flag) {
 			return;
 		}
@@ -986,7 +1009,13 @@ var fnObj = {
 		var trCnt = $("#dBenefiTable tr").length;
 		
 		if(trCnt > 1) {
-			$("#dBenefiTable > tbody:last > tr:last").remove();
+			var result = confirm('행 삭제시 매칭회원이 초기화 됩니다.');
+			
+			if(result) {
+				$("#dBenefiTable > tbody:last > tr:last").remove();
+				fnPop.fnMatchingInit();	
+			}
+			
 		} else {
 			alert("삭제할 수혜자 정보가 없습니다.");
 			return false;

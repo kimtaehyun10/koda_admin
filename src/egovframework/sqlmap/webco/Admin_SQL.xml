@@ -330,4 +330,12 @@
     		NOW()    		    		
     		)
     </insert>
+    
+    <update id="AdminDAO.attachUpdate" parameterClass="java.util.Map">
+    	UPDATE attach
+    		SET org_file_name = #org_file_name#
+    		   ,re_file_name = #re_file_name#
+    	WHERE attach_type = #attach_type#
+ 		  AND attach_no = #user_index#
+    </update>
 </sqlMap>

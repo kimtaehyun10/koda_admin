@@ -46,7 +46,7 @@ response.setDateHeader("Expires",0);
                   <div class="portlet light portlet-fit bordered">
                       <div class="portlet-title">
                           <div class="caption">
-                              <span class="caption-subject font-dark bold uppercase">인기검색어</span>
+                              <span class="caption-subject font-dark bold uppercase">검색내역</span>
                               </div>
                               <div class="actions">
                               

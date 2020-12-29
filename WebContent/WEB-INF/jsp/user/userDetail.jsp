@@ -307,7 +307,14 @@ response.setDateHeader("Expires",0);
                                 <div class="form-group">
                                     <label class="col-md-3 control-label important-form-mark">법정대리인 정보</label>
                                     <div class="col-md-9">
-                                        <input id="user_legal_representative_info" name="user_legal_representative_info" type="text" class="form-control input-sm" placeholder="" value="${user_detail.user_legal_representative_info}">
+                                        <%-- <input id="user_legal_representative_info" name="user_legal_representative_info" type="text" class="form-control input-sm" placeholder="" value="${user_detail.user_legal_representative_info}"> --%>
+                                    	<select id="user_legal_representative_info" name="user_legal_representative_info" class="form-control input-sm">
+                                    	    <option value="" ></option>                                    	
+                                        	<option value="부" ${user_detail.user_legal_representative_info eq '부'?'selected':''}>부</option>
+                                        	<option value="모" ${user_detail.user_legal_representative_info eq '모'?'selected':''}>모</option>
+                                        	<option value="조부모" ${user_detail.user_legal_representative_info eq '조부모'?'selected':''}>조부모</option>
+                                        	<option value="형제" ${user_detail.user_legal_representative_info eq '형제'?'selected':''}>형제</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="form-group" hidden>
@@ -319,28 +326,15 @@ response.setDateHeader("Expires",0);
                                             <input id="user_is_legal_representative_text" name="user_is_legal_representative_text" type="checkbox" class="input-sm" value="1" ${user_detail.user_is_legal_representative_text == 1?"checked":""}><span></span>
                                         </label>
                                     </div>
-                                </div>                                                                                               
-                                <c:choose>
-					            	<c:when test="${ !empty user_detail.user_num}">
-					                	<div class="form-group">
-		                                    <label class="col-md-3 control-label important-form-mark">첨부파일</label>
-		                                    <div class="col-md-9">
-		                                    	${userAttach.org_file_name}
-		                                    </div>
-		                                </div>
-					                </c:when>
-					                <c:otherwise>
-					                	<div class="form-group">
-		                                    <label class="col-md-3 control-label important-form-mark">첨부파일</label>
-		                                    <div class="col-md-9">
-		                                    	<input type="file" id="org_file_name" name="org_file_name" onchange="fileYN();">
-		                                    </div>
-		                                </div>
-					                </c:otherwise>
-				                </c:choose>
-                                
-                                
-                                
+                                </div>                                                                                                                               
+			                	<div class="form-group">
+                                    <label class="col-md-3 control-label important-form-mark">첨부파일</label>
+                                    <div class="col-md-9">
+                                    	<a href="/user/fileDownload.do?org_file_name=${userAttach.org_file_name}&re_file_name=${userAttach.re_file_name}">${userAttach.org_file_name}</a>
+                                    	<input type="file" id="org_file_name" name="org_file_name" onchange="fileYN();">
+                                    </div>
+                                </div>
+ 
                                 
                             </div>
                             <!-- /.col-md-6 -->

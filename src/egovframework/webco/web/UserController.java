@@ -177,8 +177,15 @@ public class UserController {
 			
 			writeFile(multipartFile, saveFileName, request);
 			
-			//attach 테이블 수정
-			adminService.attachSave(commandMap);
+			//첨부파일존재 여부	        
+	        Map<String, Object> userAttach = userService.userAttach(commandMap);
+	        if(!"".equals(userAttach) && userAttach!=null){
+				//attach 테이블 수정
+	        	adminService.attachUpdate(commandMap);
+	        }else{
+				//attach 테이블 등록
+				adminService.attachSave(commandMap);
+	        }	     
 			
 			}										
 
@@ -770,6 +777,13 @@ public class UserController {
  		fos.close();
  		
  		return result;
+ 	}
+ 	
+ 	//파일 다운로드
+ 	@RequestMapping("/user/fileDownload.do")
+ 	public void fileDownload(@RequestParam Map<String, Object> requestMap, HttpServletRequest request, HttpServletResponse response){
+ 		requestMap.put("fileStorePath", fileStorePath);
+ 		userService.fileDownload(requestMap, request, response);
  	}
 }
 

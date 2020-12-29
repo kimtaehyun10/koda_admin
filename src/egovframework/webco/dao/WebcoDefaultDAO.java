@@ -675,4 +675,9 @@ public class WebcoDefaultDAO extends EgovComAbstractDAO {
 		super.delete(queryId, commandMap);
 		
 	}
+
+	public void attachUpdate(String queryId, Map<String, Object> commandMap) {
+		super.update(queryId, commandMap);
+		
+	}
 }

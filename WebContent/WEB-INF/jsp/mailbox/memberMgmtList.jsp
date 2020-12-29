@@ -144,13 +144,56 @@ response.setDateHeader("Expires",0);
 		</div>
 		<input type="button" onclick="page.apprFlagUpdate();" value="선택항목 일괄변경"/>
 	</div>
+	
+	<div id="sms_send_dialog" class="modal fade" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog">
+	    	<div class="modal-content">
+	        	<div class="modal-header">
+	            	<button type="button" class="close" data-dismiss="modal" aria-hidden="true"></button>
+	               	<h4 class="modal-title">※ 문자발송</h4>
+	           	</div>
+	           	<div class="modal-body">
+	            	<div class="" style="height:300px" data-always-visible="1" data-rail-visible1="1">
+	                	<div class="row">
+	                    	<div class="col-md-4"><h5>수신번호</h5></div>
+	                       	<div class="col-md-8">
+	                       		<input type="text" id="sms_sender_phone_no" name="sms_sender_phone_no" class="form-control col-md-12 input-sm" readonly="readonly"/>
+	                       	</div>
+	                   	</div>
+	                   	<div class="row">
+	                    	<div class="col-md-4"><h5>발신번호</h5></div>
+	                       	<div class="col-md-8">
+	                       		<input type="text" id="sms_receiver_phone_no" name="sms_receiver_phone_no" class="form-control col-md-12 input-sm" readonly="readonly"/>
+	                       	</div>
+	                   	</div>
+	                   	<div class="row">
+	                    	<div class="col-md-4"><h5>제목</h5></div>
+	                       	<div class="col-md-8">
+	                       		<input type="text" id="sms_title" name="sms_title" class="form-control col-md-12 input-sm" />
+	                      	</div>
+	                   	</div>
+	                   	<div class="row">
+	                    	<div class="col-md-4"><h5>내용</h5></div>
+	                       	<div class="col-md-8">
+	                       		<textarea id="sms_content" name="sms_content" class="form-control col-md-12 input-sm" rows="9"></textarea>
+	                       	</div>
+	                   	</div>
+	               	</div>
+	           	</div>
+	           	<div class="modal-footer">
+	            	<input type="button" type="button" class="btn blue" onclick="fnSms.fnSendSms();" value="보내기"></input>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+	
 	<!-- END CONTENT BODY -->
 </div>
   
 <form id="frm_detail" class="form-horizontal" role="form" method="post" enctype="multipart/form-data" action="">
-<input type="hidden" id="id" name="id" value=""/>
-<input type="hidden" id="userId" name="userId" value=""/>
-<input type="hidden" id="inpType" name="inpType" value=""/>
+	<input type="hidden" id="id" name="id" value=""/>
+	<input type="hidden" id="userId" name="userId" value=""/>
+	<input type="hidden" id="inpType" name="inpType" value=""/>
 </form>
 
 <form name="matchPopupFrm" id="matchPopupFrm" method="post" action="" target="popup_window">
@@ -168,7 +211,6 @@ response.setDateHeader("Expires",0);
 	<input type="hidden" id="benefiHospitalNames" name="benefiHospitalNames" value=""/>
 	<input type="hidden" id="benefiPartsIdxs" name="benefiPartsIdxs" value=""/>
 	<input type="hidden" id="benefiPartsNames" name="benefiPartsNames" value=""/>
-	
 </form>
   
 <c:import url="/webBottom.do" charEncoding="UTF-8"></c:import>
@@ -183,6 +225,91 @@ $(document).ready(function(){
 	page.fnAllCheckbox();
 	tabAction.fnTabMove();	
 });
+
+var fnSms = {
+	fnShowSmsModal:function(sender_phone_no, receiver_phone_no) {
+		//$("#sms_sender_phone_no").val(sender_phone_no);
+		$("#sms_sender_phone_no").val("02-3785-3177");
+		$("#sms_receiver_phone_no").val(receiver_phone_no);
+		$('#sms_send_dialog').modal('show');
+
+	},
+	fnSendSms:function() {
+		fnSms.fnSendSmsAjax();
+        $('#sms_send_dialog').modal('hide');
+	},
+	fnSendSmsAjax:function() {
+		var obj = {};
+		if($('#sms_sender_phone_no').val().trim() === '') {
+			alert('수신번호가 존재하지 않습니다.');
+			return;
+		}
+		if($('#sms_receiver_phone_no').val().trim() === '') {
+			alert('발신번호가 존재하지 않습니다.');
+			return;
+		}
+		if($('#sms_title').val().trim() === '') {
+			alert('제목이 존재하지 않습니다.');
+			return;
+		}
+		if($('#sms_content').val().trim() === '') {
+			alert('내용이 존재하지 않습니다.');
+			return;
+		}
+		var regHp = /^01([0|1|6|7|8|9]?)-?([0-9]{3,4})-?([0-9]{4})$/;
+		/* if(!regHp.test($('#sms_sender_phone_no').val().trim())) {
+		      alert("잘못된 휴대폰 번호입니다. 숫자, - 를 포함한 숫자만 입력하세요.");
+		      return;
+		} */
+		
+		if(!regHp.test($('#sms_receiver_phone_no').val().trim())) {
+		      alert("잘못된 휴대폰 번호입니다. 숫자, - 를 포함한 숫자만 입력하세요.");
+		      return;
+		}
+		
+		obj.sms_sender_phone_no = $('#sms_sender_phone_no').val().trim();
+		obj.sms_receiver_phone_no = $('#sms_receiver_phone_no').val().trim();
+		obj.sms_title = $('#sms_title').val().trim();
+		obj.sms_content = $('#sms_content').val().trim();
+		obj.smsType = fnSms.fnGetSmsType();
+		
+		$.ajax({
+			url: "<c:url value='/mailbox/ajaxSendSms.do'/>",
+	        type: 'post',
+	        contentType: "application/x-www-form-urlencoded; charset=UTF-8", 
+	        data: obj,
+	        dataType: "json",
+	        success: function(data) {
+	        	if(data != null && data.rtnCode == "") {
+	            	toastr.options = {"positionClass": "toast-bottom-center"};
+	                toastr.success(data.rtnMsg);
+	            } else {
+	            	toastr.options = {"positionClass": "toast-bottom-center"};
+	            	toastr.success(data.rtnMsg);
+	            }
+	        },
+	        error: function(xhr, desc, err) {
+	            alert('SMS 전송에 실패했습니다. 잠시후에 다시 해주시기 바랍니다.')
+	        }
+	     });
+	},
+	fnGetSmsType:function() {
+		var count_num = fnSms.fnCountUtf8Bytes($("#sms_content").val());
+        if (count_num >= 90) {
+            return 'L';
+        } else {
+            return 'S';
+        }
+	},
+	fnCountUtf8Bytes:function(s) {
+		var length = s.length;
+		var charLength = 0;
+		for (var i=0; i < length; i++) {
+		    charLength += s.charCodeAt(i) > 0x00ff ? 2 : 1;
+		}
+		return charLength;
+	}
+}
 
 var page = {
 	fnInit:function(pageNo) {
@@ -272,7 +399,7 @@ var page = {
 		        	if(data.result > 0) {
 			        	alert("저장 성공하였습니다.");
 			        	
-			        	fnObj.fnSendSms();
+			        	//fnObj.fnSendSms();
 			        	
 			        	location.href = "/mailbox/memberMgmtList.do";
 		        	} else {
@@ -303,10 +430,32 @@ var page = {
 	},
 	fnMemberUpdate:function(id, type) {
 		$('#userId').val(id);
+		
 		if(type == "D") {
+			
 			$("#inpType").val("D");
-			$('#frm_detail').attr("action","/mailbox/memberSave.do");
-			$('#frm_detail').submit();
+			var param = $("#frm_detail").serialize();			
+			
+			$.ajax({
+		        url: "<c:url value='/mailbox/memberSave.do'/>",
+		        type: "POST",
+		        async: false,
+		        dataType: "json",
+		        data: param,
+		        success: function(data) {    
+		        	if(data.flag) {
+		        		alert(data.msg);
+		        		location.href = "/mailbox/memberMgmtList.do";
+		        	} else {
+		        		alert(data.msg);
+		        		return false;
+		        	}
+		        },
+		        error: function(xhr, desc, err) {
+		            alert("저장 실패");
+		        }
+		    });  
+			
 		} else if(type == "U") {
 			$('#frm_detail').attr("action","/mailbox/memberRegister.do");
 			$('#frm_detail').submit();	
@@ -366,45 +515,6 @@ var fnPop = {
 		$('#matchPopupFrm').submit();	
 		
 	}	
-}
-
-var fnObj = {
-	fnSendSms:function() {
-		jQuery.ajaxSettings.traditional = true;
-        $.ajax({
-            url: "<c:url value='/user/sendSMSAjax.do'/>",
-            type: 'post',
-            contentType: "application/x-www-form-urlencoded; charset=UTF-8",           
-            dataType: "json",
-            data: {
-                'sms_send_user_list': window.sms_send_user_list,
-                'sms_send_mobile_list': window.sms_send_mobile_list,
-                'sms_send_msg': $("#sms_send_msg").val(),
-                'sms_send_sender': $("#sms_send_sender").val(),
-                'sms_send_mobile_list_sentence':window.sms_send_mobile_list_sentence,
-                'smsType': getSMSType()
-            },
-            success: function(data) {
-                /* var parsedData = $.parseJSON(data); */
-                if(data != null && data.rtnCode == "") {
-	                showTotalSMSCount();
-	                toastr.options = {
-	                    "positionClass": "toast-bottom-center"
-	                };
-	                toastr.success(data.rtnMsg);
-                } else {
-                	toastr.options = {
-   	                    "positionClass": "toast-bottom-center"
-   	                };
-   	                toastr.success(data.rtnMsg);
-                }
-            },
-            error: function(xhr, desc, err) {
-                alert('SMS 전송에 실패했습니다. 잠시후에 다시 해주시기 바랍니다.')
-            }
-        });
-	}
-	
 }
 
 var tabAction = {

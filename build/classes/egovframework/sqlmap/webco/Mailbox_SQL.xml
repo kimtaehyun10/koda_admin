@@ -131,7 +131,7 @@
     		   END AS gubnNm
     		 , KM.GUBN AS gubn
     		 , KM.ID AS id
-    		 , KM.NAME AS name
+    		 , KM.NAME AS name수유우태하피부과의원
     		 , KM.PHONE AS phone
     		 , DL.DONOR_NAME AS donorName
     		 , DL.DONOR_BIRTH AS donorBirth
@@ -571,5 +571,12 @@
     	DELETE FROM RELA_MATCH_LIST
     	 WHERE 1 = 1
     	   AND ID = #userId#
+    </delete>
+    
+    <!-- 연계, 매칭회원 삭제 -->
+    <delete id="MailboxDAO.deleteRelaMatchSubList">
+    	DELETE FROM RELA_MATCH_LIST
+    	 WHERE 1 = 1
+    	   AND CHILD_ID = #userId#
     </delete>
 </sqlMap>

@@ -186,4 +186,10 @@ public class AdminServiceImpl extends EgovAbstractServiceImpl implements AdminSe
 		
 		webcoDAO.attachSave("AdminDAO.attachSave",commandMap);
 	}
+
+	@Override
+	public void attachUpdate(Map<String, Object> commandMap) {
+
+		webcoDAO.attachUpdate("AdminDAO.attachUpdate",commandMap);
+	}
 }

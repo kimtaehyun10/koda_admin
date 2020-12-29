@@ -3,6 +3,9 @@ package egovframework.webco.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 public interface UserService {	
 	Object insert(Map<String, Object> commandMap) throws Exception;
 	
@@ -29,5 +32,7 @@ public interface UserService {
 	public String sendAutoSMS(String messageCode, String user_mobile, String user_is_sms_agree) throws Exception;
 
 	Map<String, Object> userAttach(Map<String, Object> commandMap);
+
+	void fileDownload(Map<String, Object> requestMap, HttpServletRequest request, HttpServletResponse response);
 }
   

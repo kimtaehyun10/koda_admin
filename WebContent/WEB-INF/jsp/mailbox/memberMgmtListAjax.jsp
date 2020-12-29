@@ -46,7 +46,7 @@
 					<td><a href="#" onclick="page.fnMemberDetail('${kodaMemberList.id}');">${kodaMemberList.id}</a></td>
 					<td>${kodaMemberList.name}</td>
 					<td><input type="hidden" id="phone_${status.count}"/>${kodaMemberList.phone}</td>
-					<td><input type="button" onclick="fnPop.fnSmsPop();" value="SMS" class="btn blue"></td>
+					<td><input type="button" onclick="fnSms.fnShowSmsModal('', '${kodaMemberList.phone}');" value="SMS" class="btn blue"></td>
 					<td>${kodaMemberList.email}</td>
 					<td>${kodaMemberList.matchNameList }</td>
 					<td><input type="button" onclick="fnPop.fnMatchingPop('${status.index}');" value="매칭검색" class="btn blue"></td>

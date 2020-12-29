@@ -187,11 +187,12 @@ public class MailboxController {
     	}
     	
     	
-    	String gubn = commandMap.get("gubn").toString();
     	
     	// 기증자 정보 및 수혜자 정보, 연계회원, 매칭회원 삭제 후 삽입
      	if("I".equals(inpType) || "U".equals(inpType)) {
-    		// 기증자 정보 및 수혜자 정보 삭제 후 재 삽입
+     		String gubn = commandMap.get("gubn").toString();
+
+     		// 기증자 정보 및 수혜자 정보 삭제 후 재 삽입
     		result += mailboxService.delete("MailboxDAO.deleteDonorList", commandMap);
     		result += mailboxService.delete("MailboxDAO.deleteBenefiList", commandMap);
     		result += mailboxService.delete("MailboxDAO.deleteRelaMatchList", commandMap);
@@ -269,6 +270,10 @@ public class MailboxController {
 					}
 				}
 			}
+    	} else {
+    		// 기증자 정보 및 수혜자 정보 삭제 후 재 삽입
+    		result += mailboxService.delete("MailboxDAO.deleteRelaMatchList", commandMap);
+    		result += mailboxService.delete("MailboxDAO.deleteRelaMatchSubList", commandMap);
     	}
     	
 		if(result > 0) {

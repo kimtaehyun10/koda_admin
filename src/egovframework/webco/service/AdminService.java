@@ -37,5 +37,7 @@ public interface AdminService {
 	void adminMenuChange(Map<String, Object> commandMap);
 
 	void attachSave(Map<String, Object> commandMap);
+
+	void attachUpdate(Map<String, Object> commandMap);
 }
   
