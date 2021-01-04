@@ -129,7 +129,7 @@ response.setDateHeader("Expires",0);
                 <span class="pull-right vertical-align" style="padding-left:7px;">명</span>
                 <span class="pull-right vertical-align font-purple-plum" style="font-size: 22px;"><fmt:formatNumber value="${total_pledge_count}" pattern="#,###" /></span>
             </div>
-        </div>
+        </div>       
     </div>
 </div>
 <div class="row">

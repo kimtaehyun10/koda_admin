@@ -56,15 +56,24 @@ response.setDateHeader("Expires",0);
                            	<div class="col-md-12">
                            		<div class="form-group">
                            			<label class="col-md-1 control-label">보내는사람</label>
-                                   	<div class="col-md-11">${letter.sender_name }</div>
+                                   	<div class="col-md-11">
+                                   		<input type="hidden" id="sender_name" value="${letter.sender_name }" />
+                                   		${letter.sender_name }
+                                   	</div>
                            		</div>                               
                                	<div class="form-group">                         
                                    	<label class="col-md-1 control-label">받는사람</label>
-                                   	<div class="col-md-11">${letter.receiver_name }</div>                                                                
+                                   	<div class="col-md-11">
+                                   		<input type="hidden" id="receiver_name" value="${letter.receiver_name }" />
+                                   		${letter.receiver_name }
+                                   	</div>                                                                
                                	</div>
 								<div class="form-group">
                            			<label class="col-md-1 control-label">제목</label>
-                                   	<div class="col-md-11">${letter.title }</div>
+                                   	<div class="col-md-11">
+                                   		<input type="hidden" id="title" value="${letter.title }" />
+                                   		${letter.title }
+                                   	</div>
                            		</div>
                            	
                            		<div class="form-group">
@@ -79,6 +88,7 @@ response.setDateHeader("Expires",0);
                            		<div class="form-group">
 		                        	<label class="col-md-1 control-label">내용</label>
 	                           		<div class="col-md-11">
+	                           			<textarea rows="10" cols="10" id="content" style="display: none;">${letter.content }</textarea>
 			                        	${letter.content }
                           			</div>
                       			</div>
@@ -88,6 +98,7 @@ response.setDateHeader("Expires",0);
                                     <div class="col-md-11">                                        
 										<c:forEach var="letterFile" items="${letterFileList }">
                                     		<c:if test="${letterFile.letter_file_seq eq '1' }">
+                                    			<input type="hidden" id="delFile1Name" name="delFile1Name" value="${letterFile.letter_file_org_nm  }" />
                                     			<a href="javascript:fnFiledown('letter', '${letterFile.letter_id}', '${letterFile.letter_file_seq }')">${letterFile.letter_file_org_nm }</a>
                                     		</c:if>
                                     	</c:forEach>
@@ -99,6 +110,7 @@ response.setDateHeader("Expires",0);
                                     <div class="col-md-11">                                        
 										<c:forEach var="letterFile" items="${letterFileList }">
                                     		<c:if test="${letterFile.letter_file_seq eq '2' }">
+                                    			<input type="hidden" id="delFile2Name" name="delFile2Name" value="${letterFile.letter_file_org_nm  }" />
                                     			<a href="javascript:fnFiledown('letter', '${letterFile.letter_id}', '${letterFile.letter_file_seq }')">${letterFile.letter_file_org_nm }</a>
                                     		</c:if>
                                     	</c:forEach>
@@ -110,6 +122,7 @@ response.setDateHeader("Expires",0);
                                     <div class="col-md-11">                                        
 										<c:forEach var="letterFile" items="${letterFileList }">
                                     		<c:if test="${letterFile.letter_file_seq eq '3' }">
+                                    			<input type="hidden" id="delFile3Name" name="delFile3Name" value="${letterFile.letter_file_org_nm  }" />
                                     			<a href="javascript:fnFiledown('letter', '${letterFile.letter_id}', '${letterFile.letter_file_seq }')">${letterFile.letter_file_org_nm }</a>
                                     		</c:if>
                                     	</c:forEach>
@@ -140,6 +153,7 @@ response.setDateHeader("Expires",0);
 								</c:if>
 								<input type="button" class="btn green" name="btnReply" id="btnReply" onClick="javascript:fnLetterReplyForm();" value="답장">
 								<input type="button" class="btn green" name="btnList" id="btnList" onClick="javascript:fnList();" value="목록으로">
+								<input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기">
 							</div>
 						</div>
 						</form>
@@ -151,6 +165,50 @@ response.setDateHeader("Expires",0);
     <!-- END CONTENT BODY -->
 </div>
 <!-- END CONTENT -->
+
+
+<div id="preview_dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    	<div class="modal-content">
+        	<div class="modal-header">
+            	<h4 class="modal-title">※ 미리보기</h4>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		        	<span aria-hidden="true">&times;</span>
+		        </button>
+           	</div>
+           	<div class="modal-body">
+           		<div class="row">
+                      	<div class="col-md-2"><strong>보내는 사람</strong></div>
+                      	<div class="col-md-10"><span id="letter_preview_sender"></span></div>
+                   </div>
+                   <div class="row">
+                      	<div class="col-md-2"><strong>받는 사람</strong></div>
+                      	<div class="col-md-10"><span id="letter_preview_receiver"></span></div>
+                   </div>
+                   <div class="row">
+                      	<div class="col-md-2"><strong>내용</strong></div>
+                      	<div class="col-md-10"><span id="letter_preview_content"></span></div>
+                   </div>
+                   <div class="row">
+                      	<div class="col-md-2"><strong>파일 #1</strong></div>
+                      	<div class="col-md-10"><span id="letter_preview_file1"></span></div>
+                   </div>
+                   <div class="row">
+                      	<div class="col-md-2"><strong>파일 #2</strong></div>
+                      	<div class="col-md-10"><span id="letter_preview_file2"></span></div>
+                   </div>
+                   <div class="row">
+                      	<div class="col-md-2"><strong>파일 #3</strong></div>
+                      	<div class="col-md-10"><span id="letter_preview_file3"></span></div>
+                   </div>
+           	</div>
+           	<div class="modal-footer">
+		    	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		    </div>
+        </div>
+    </div>
+</div>
+
 <!-- END CONTAINER -->
 <c:import url="/webBottom.do" charEncoding="UTF-8"></c:import>
 <script src="${pageContext.request.contextPath}/common/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
@@ -162,7 +220,6 @@ response.setDateHeader("Expires",0);
 
 <script>
 $(document).ready(function() {
-    CKEDITOR.replace('letter_content', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:200});
     CKEDITOR.replace('letter_return_reason', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:150});
 });
 
@@ -193,4 +250,29 @@ function fnFiledown(type, letter_id, letter_file_seq) {
 	newForm.submit();
 }
 
+function fnPreview() {
+	$.ajax({
+		url: "<c:url value='/mailbox/letterPreview.do'/>",
+	    type: 'post',
+	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",           
+	    dataType: "json",
+	    data: {
+	    	letter_id: '${letter.letter_id}',
+	    	letter_skin_id: $(':radio[name="letter_skin_id"]:checked').val()
+		},
+	    success: function(data) {
+	    	var cont = data.letter_content.replace('{내용}', $("#content").val());
+	    	$('#letter_preview_content').html(cont);
+	    	$('#letter_preview_sender').text($('#sender_name').val());
+	    	$('#letter_preview_receiver').text($('#receiver_name').val());
+	    	$('#letter_preview_file1').text($("#delFile1Name").val());
+	    	$('#letter_preview_file2').text($("#delFile2Name").val());
+	    	$('#letter_preview_file3').text($("#delFile3Name").val());
+	   	},
+	   	error: function(xhr, desc, err) {
+	    	
+	    }
+	});
+	$('#preview_dialog').modal('show');
+}
 </script>

@@ -59,11 +59,11 @@ response.setDateHeader("Expires",0);
                            	<div class="col-md-12">
                            		<div class="form-group">
                            			<label class="col-md-1 control-label">보내는사람</label>
-                                   	<div class="col-md-9">
-                                    	<input id="sender_id" name="sender_id" type="text" class="form-control input-sm" placeholder="" value=""/>
+                                   	<div class="col-md-8">
+                                    	<input id="sender_id" name="sender_id" type="hidden" class="form-control input-sm" placeholder="" value=""/>
                                         <input id="sender_name" name="sender_name" type="text" class="form-control input-sm" placeholder="" value=""/>
                                     </div>
-                                    <div class="col-md-2">
+                                    <div class="col-md-3">
                                     	<input type="button" class="btn green" onClick="javscript:fnLetterAdminSearchPopup();" value="예시글 불러오기" />
                                     	<input type="button" class="btn green" onClick="javscript:fnLetterAdminSearchReset();" value="초기화" />
                                     </div>
@@ -153,6 +153,7 @@ response.setDateHeader("Expires",0);
                             <div class="col-md-offset-5 col-md-7">
 								<input type="submit" class="btn green" value="저장"/>
 								<input type="button" class="btn green" name="list" id="list" onClick="javascript:fnList();" value="목록으로">
+								<input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기">
 							</div>
 						</div>
 						</form>
@@ -164,6 +165,50 @@ response.setDateHeader("Expires",0);
     <!-- END CONTENT BODY -->
 </div>
 <!-- END CONTENT -->
+
+
+<div id="preview_dialog" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    	<div class="modal-content">
+        	<div class="modal-header">
+            	<h4 class="modal-title">※ 미리보기</h4>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+		        	<span aria-hidden="true">&times;</span>
+		        </button>
+           	</div>
+           	<div class="modal-body">
+           		<div class="row">
+                      	<div class="col-md-2"><strong>보내는 사람</strong></div>
+                      	<div class="col-md-10"><span id="letter_preview_sender"></span></div>
+                   </div>
+                   <div class="row">
+                      	<div class="col-md-2"><strong>받는 사람</strong></div>
+                      	<div class="col-md-10"><span id="letter_preview_receiver"></span></div>
+                   </div>
+                   <div class="row">
+                      	<div class="col-md-2"><strong>내용</strong></div>
+                      	<div class="col-md-10"><span id="letter_preview_content"></span></div>
+                   </div>
+                   <div class="row">
+                      	<div class="col-md-2"><strong>파일 #1</strong></div>
+                      	<div class="col-md-10"><span id="letter_preview_file1"></span></div>
+                   </div>
+                   <div class="row">
+                      	<div class="col-md-2"><strong>파일 #2</strong></div>
+                      	<div class="col-md-10"><span id="letter_preview_file2"></span></div>
+                   </div>
+                   <div class="row">
+                      	<div class="col-md-2"><strong>파일 #3</strong></div>
+                      	<div class="col-md-10"><span id="letter_preview_file3"></span></div>
+                   </div>
+           	</div>
+           	<div class="modal-footer">
+		    	<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		    </div>
+        </div>
+    </div>
+</div>
+
 <!-- END CONTAINER -->
 <c:import url="/webBottom.do" charEncoding="UTF-8"></c:import>
 <script src="${pageContext.request.contextPath}/common/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
@@ -219,4 +264,40 @@ function fnLetterAdminSearchReset() {
 	$('#sender_id').val('');
 	$('#sender_name').val('');
 }
+
+function fnPreview() {
+	$.ajax({
+		url: "<c:url value='/mailbox/letterPreview.do'/>",
+	    type: 'post',
+	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",           
+	    dataType: "json",
+	    data: {
+	    	letter_id: '${letter.letter_id}',
+	    	letter_skin_id: $(':radio[name="letter_skin_id"]:checked').val()
+		},
+	    success: function(data) {
+	    	var cont = data.letter_content.replace('{내용}',  CKEDITOR.instances.letter_content.getData());
+	    	$('#letter_preview_content').html(cont);
+	    	$('#letter_preview_sender').text($('#sender_name').val());
+	    	$('#letter_preview_receiver').text($('#letter_receiver_name').val());
+	    	
+	    	if($("#letter_file_org_nm1")[0].files.length > 0) {
+	    		$('#letter_preview_file1').text($("#letter_file_org_nm1")[0].files[0].name);
+	    	} 
+	    	
+	    	if($("#letter_file_org_nm2")[0].files.length > 0) {
+	    		$('#letter_preview_file2').text($("#letter_file_org_nm2")[0].files[0].name);
+	    	}
+	    	
+	    	if($("#letter_file_org_nm3")[0].files.length > 0) {
+	    		$('#letter_preview_file3').text($("#letter_file_org_nm3")[0].files[0].name);
+	    	}
+	   	},
+	   	error: function(xhr, desc, err) {
+	    	
+	    }
+	});
+	$('#preview_dialog').modal('show');
+}
+
 </script>

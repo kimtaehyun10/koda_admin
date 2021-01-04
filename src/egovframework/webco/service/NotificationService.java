@@ -27,6 +27,10 @@ public interface NotificationService {
 
 	int scheduleEndIdx();
 
+	List<Map<String, Object>> surveyList(Map<String, Object> commandMap);
+
+	int surveyListTotalCnt(Map<String, Object> commandMap);
+
 	
 
 }

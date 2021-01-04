@@ -50,7 +50,7 @@ response.setDateHeader("Expires",0);
                         <div class="caption">우체통 글쓰기(수정)</div>
                     </div>
                     <div class="portlet-body">
-                    	<form name="fileFrm" id="fileFrm" class="form-horizontal" method="post" enctype="multipart/form-data" action="<c:url value='/mailbox/letterUpdate.do'/>">
+                    	<form name="fileFrm" id="fileFrm" class="form-horizontal" method="post" enctype="multipart/form-data" action="<c:url value='/mailbox/lettercUpdate.do'/>">
                     	<input type="hidden" name="letter_id" id="letter_id" value="${letter.letter_id }" />
 				        <div class="row">
                            	<div class="col-md-12">
@@ -325,9 +325,8 @@ function fnPreview() {
 	    	var cont = data.letter_content.replace('{내용}', CKEDITOR.instances.letter_content.getData());
 	    	$('#letter_preview_content').html(cont);
 	    	$('#letter_preview_sender').text($('#sender_name').val());
-	    	$('#letter_preview_receiver').text($('#receiver_name').val());
+	    	$('#letter_preview_receiver').text($('#letter_receiver_name').val());
 	    	
-	    	console.log($("#letter_file_org_nm1")[0].files.length);
 	    	if($("#letter_file_org_nm1")[0].files.length > 0) {
 	    		$('#letter_preview_file1').text($("#letter_file_org_nm1")[0].files[0].name);
 	    	} else {

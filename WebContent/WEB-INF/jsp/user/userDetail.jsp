@@ -618,10 +618,10 @@ response.setDateHeader("Expires",0);
             <div class="col-md-12">
                 <div class="portlet box blue-hoki ">
                     <div class="portlet-title">
-                        <div class="caption">상담정보</div>
+                        <div class="caption">특이사항</div>
                     </div>
                     <div class="portlet-body">
-                        <div class="row">
+                        <div class="row" hidden>
                             <div class="col-md-12">
                                 <h5 class="form-title-line">신규상담</h5>
                                 <div class="form-group">
@@ -646,12 +646,12 @@ response.setDateHeader("Expires",0);
                                         <input id="new_consult_consultor" name="consult_consultor" type="text" class="form-control input-sm" placeholder="" >
                                     </div>
                                 </div>
-                                <div class="form-group">
+                                <!-- <div class="form-group">
                                     <label class="col-md-1 control-label">상담메모</label>
                                     <div class="col-md-11">
                                         <textarea id="new_consult_memo" name="consult_memo" class="form-control input-sm" rows="5"></textarea>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="form-group">
                                     <label class="col-md-1 control-label">처리결과</label>
                                     <div class="col-md-11">
@@ -668,6 +668,16 @@ response.setDateHeader("Expires",0);
                                 </c:if>
                             </div>
                             <!-- /.col-md-6 -->
+                        </div>
+                        <div class="row">
+                        	<div class="col-md-12">
+                        		<div class="form-group">
+                                    <label class="col-md-1 control-label">비고</label>
+                                    <div class="col-md-11">                                    
+                                        <textarea id="new_consult_memo" name="consult_memo" class="form-control input-sm" rows="5">${consult.consult_memo}</textarea>
+                                    </div>                                    
+                                </div>
+                        	</div>                        	
                         </div>
                         <!-- /.row -->
                     </div>

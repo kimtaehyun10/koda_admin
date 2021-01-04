@@ -201,4 +201,21 @@
     	select ifnull(max(sch_no),1) 
  		from schedule
     </select>
+    
+    <select id="NotificationDAO.surveyList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	  	select survey_idx
+	  		  ,survey_title
+	  		  ,survey_writer
+	  		  ,survey_regdate
+	  		  ,survey_hit
+	  		  ,start_date
+	  		  ,end_date
+	    from survey
+	  	order by survey_idx desc		
+    </select>
+    
+    <select id="NotificationDAO.surveyListTotalCnt" resultClass="int">
+    	select count(*)
+ 		from survey;
+    </select>
 </sqlMap>

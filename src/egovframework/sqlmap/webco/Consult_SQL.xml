@@ -21,6 +21,9 @@
  		]]> 
  		<isNotEmpty property="consult_index">
  		AND consult_index = #consult_index#
+ 		</isNotEmpty>
+ 		<isNotEmpty property="user_index">
+ 		AND user_index = #user_index#
  		</isNotEmpty>		 		
     </select>
     
@@ -70,7 +73,7 @@
     		,consult_consultor = #consult_consultor#
     		,consult_memo = #consult_memo#
     		,consult_result = #consult_result#
-	    WHERE consult_index = #consult_index#	 	    
+	    WHERE user_index = #user_index#	 	    
     </update> 
     
     <delete id="ConsultDAO.delete">

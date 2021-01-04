@@ -328,7 +328,7 @@ function fnPreview() {
 	    	var cont = data.letter_content.replace('{내용}', CKEDITOR.instances.letter_content.getData());
 	    	$('#letter_preview_content').html(cont);
 	    	$('#letter_preview_sender').text($('#sender_name').val());
-	    	$('#letter_preview_receiver').text($('#receiver_name').val());
+	    	$('#letter_preview_receiver').text($('#letter_receiver_name').val());
 	    	
 	    	console.log($("#letter_file_org_nm1")[0].files.length);
 	    	if($("#letter_file_org_nm1")[0].files.length > 0) {

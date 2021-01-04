@@ -116,5 +116,17 @@ public class NotificationServiceImpl implements NotificationService {
 		return webcoDAO.scheduleEndIdx("NotificationDAO.scheduleEndIdx");
 	}
 
+	@Override
+	public List<Map<String, Object>> surveyList(Map<String, Object> commandMap) {
+		
+		return webcoDAO.surveyList("NotificationDAO.surveyList",commandMap);
+	}
+
+	@Override
+	public int surveyListTotalCnt(Map<String, Object> commandMap) {
+
+		return webcoDAO.surveyListTotalCnt("NotificationDAO.surveyListTotalCnt", commandMap);
+	}
+
 
 }

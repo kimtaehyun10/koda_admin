@@ -200,7 +200,7 @@ public class UserServiceImpl extends EgovAbstractServiceImpl implements UserServ
 		    		commandMap.put("consult_time", format1.format(time));
 		    	
 		    			
-					// 서약자 index가 존재하는 경우에만 insert/update 실행
+					/*// 서약자 index가 존재하는 경우에만 insert/update 실행
 					if(!EgovStringUtil.isEmpty(EgovStringUtil.isNullToString(commandMap.get("user_index")))) {
 						// consult_index가 있는 경우 업데이트 수행
 						
@@ -210,7 +210,13 @@ public class UserServiceImpl extends EgovAbstractServiceImpl implements UserServ
 							result =  Integer.parseInt(webcoDAO.insert("ConsultDAO.insert", commandMap).toString());				
 							commandMap.put("consult_index", result);
 						}					
-					}
+					}*/
+		    		if(flag.equals("U")){
+		    			result =  webcoDAO.update("ConsultDAO.update", commandMap);
+		    		}else{
+		    			result =  Integer.parseInt(webcoDAO.insert("ConsultDAO.insert", commandMap).toString());
+		    		}
+		    		
 		    	}
 			
 	            EnumValue enumValue = new EnumValue();

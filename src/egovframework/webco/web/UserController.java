@@ -88,12 +88,17 @@ public class UserController {
     	if(commandMap.get("user_index") != null && !("").equals(commandMap.get("user_index").toString())) {
     		Map<String, Object> userInfo = userService.selectUserInfo(commandMap);		    		    	
     		model.addAttribute("user_detail",     CommonUtil.getObjectToJSONObject(userInfo));
-    		user_name=(String)userInfo.get("user_name"); 
-    		List<Map<String, Object>> consultList =  webcoService.list_map("ConsultDAO.selectUserConsultList", commandMap);
+    		user_name=(String)userInfo.get("user_name");
+    		
+    		/*List<Map<String, Object>> consultList =  webcoService.list_map("ConsultDAO.selectUserConsultList", commandMap);
 	    	for( Map<String, Object> consult : consultList ) {
 	    		consult.put("consult_date", CommonUtil.DateFormat(consult.get("consult_date").toString(), "yyyy.MM.dd"));
 	    	}
-	        model.addAttribute("consult_list",     CommonUtil.getJsonArrayFromList(consultList));
+	    	model.addAttribute("consult_list",     CommonUtil.getJsonArrayFromList(consultList));*/
+    		
+    		Map<String, Object> consult = webcoService.selectByPk("ConsultDAO.select", commandMap);
+    		model.addAttribute("consult",consult);
+    		
 	        //첨부파일
 	        commandMap.put("attach_type", "USR");
 	        Map<String, Object> userAttach = userService.userAttach(commandMap);

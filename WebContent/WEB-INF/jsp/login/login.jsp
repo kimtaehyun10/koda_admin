@@ -41,7 +41,7 @@ response.setDateHeader("Expires",0);
 </head>
 <body class="login">
     <div class="logo">
-        <h2>한국장기조직기증원 관리자페이지</h2>
+        <h2>기증희망서약 관리자페이지</h2>
     </div>
     <div class="content">
         <!-- BEGIN LOGIN FORM -->

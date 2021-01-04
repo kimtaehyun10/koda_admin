@@ -1118,6 +1118,48 @@ public class NotificationController {
     	return "notification/write/noticeWriteForm";	 	
 	}
  	
+ 	// 설문조사
+	@RequestMapping("/notification/survey.do")
+	public String survey(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{
+		
+		int limit = 10;    	
+		int page = 1;
+		
+		if(!EgovStringUtil.isEmpty(EgovStringUtil.isNullToString(commandMap.get("page")))) {
+			page = Integer.parseInt(commandMap.get("page").toString());
+		}
+		
+    	int offset = page > 0 ? (page-1) * limit : 0;
+    			    	
+    	commandMap.put("offset", offset);
+    	commandMap.put("limit", limit);    	    	    	
+    	
+    	List<Map<String, Object>> surveyList = notificationService.surveyList(commandMap);
+    	int total_count = notificationService.surveyListTotalCnt(commandMap);
+    	
+    	
+    	model.addAttribute("surveyList_list", surveyList);
+    	model.addAttribute("total_count", total_count);
+    	model.addAttribute("currentPage",page); //현재 페이지 번호
+    	
+    	
+    	PaginationInfo paginationInfo = new PaginationInfo();
+    	paginationInfo.setCurrentPageNo(page);
+    	paginationInfo.setRecordCountPerPage(limit);    	
+    	paginationInfo.setPageSize(10);    	
+    	if(paginationInfo != null){ 
+    		paginationInfo.setTotalRecordCount(total_count); 
+    		model.addAttribute("paginationInfo", paginationInfo); 
+    	}    	    	
+    	
+    	AdminVO adminVO = SessionUtil.getAuthenticatedUser();    	
+    	model.addAttribute("admin_grade", adminVO.getAdmin_grade());
+    	model.addAttribute("param", commandMap);
+    	model.addAttribute("displayNum",paginationInfo.getPageSize()); //페이지당 게시물 출력 수
+    	
+    	adminService.insertActHist("R", "[설문조사]목록 조회");
+		return "notification/survey";	 	
+	}
 }
 
         
