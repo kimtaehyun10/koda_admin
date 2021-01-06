@@ -50,7 +50,7 @@ response.setDateHeader("Expires",0);
                               </div>
                               <div class="actions">
                               <div class="btn-group">
-                                  <a class="btn dark btn-outline btn-circle btn-sm" href="/notification/surveyWriteForm.do">설문조사 등록</a>                                  
+                                  <a class="btn dark btn-outline btn-circle btn-sm" onclick="surveyWriteForm();">설문조사 등록</a>                                  
                               </div>
                           </div>    
                       </div>
@@ -100,7 +100,7 @@ response.setDateHeader("Expires",0);
                       	</table>   
                       	</form>                   	
                       </div>
-                      <form name="Frm" id="Frm" method="post" action="">                                            
+                      <form name="Frm" id="Frm" method="post" action="">                                                                  
                       <div class="portlet-body">
                           <div class="table-scrollable">
                               <table class="table table-hover">
@@ -109,7 +109,7 @@ response.setDateHeader("Expires",0);
                                       	  <th>No</th>
 					                      <th>제목</th>					                      
 					                      <th>작성자</th>					                      					                      					                      
-					                      <th>등록일</th>					                      
+					                      <th>기간</th>					                      
 					                      <th>조회수</th>					                      
 					                      <th>관리</th>
 					                  </tr>
@@ -121,10 +121,10 @@ response.setDateHeader("Expires",0);
                                       	  <td>${(total_count - status.index) - ( (currentPage - 1)  *  displayNum ) }</td>                    	                                                                                 
                                           <td style="line-height:60px; text-align: left;">${surveyList.survey_title}</td>                                                                                   
                                           <td style="line-height:60px">${surveyList.survey_writer}</td>
-                                          <td style="line-height:60px"><fmt:formatDate value="${surveyList.survey_regdate}" pattern="yyyy-MM-dd" /></td>                                        
+                                          <td style="line-height:60px">${surveyList.start_date} ~ ${surveyList.end_date}</td>                                        
                                           <td style="line-height:60px">${surveyList.survey_hit}</td>                                                                               
                                           <td style="line-height:60px">
-                                          <a style="line-height:60px" onclick="surveyUpdateForm(${surveyList.survey_idx});"><button class="btn btn-default btn-circle mt-sweetalert" type="button"><i class="fa fa-paste"></i> 수정</button></a>
+                                          <a style="line-height:60px" onclick="surveyUpdateForm(${surveyList.survey_idx});"><button class="btn btn-default btn-circle mt-sweetalert" type="button"><i class="fa fa-paste"></i> 상세보기</button></a>
                                           <a style="line-height:60px" onclick="surveyDeleteEnd(${surveyList.survey_idx});"><button class="btn btn-danger btn-circle mt-sweetalert" type="button"><i class="fa fa-times"></i> 삭제</button></a>
                                           </td>
                                           
@@ -230,10 +230,15 @@ $(function() {
 		$('#schFrm').submit();
 	})
 });
-function freeUpdateForm(idx){
-	$("#story_idx").val(idx);
-	$('#Frm').attr("action","/notification/freeUpdateForm.do");
-	$('#Frm').submit();
+function surveyUpdateForm(survey_idx){		
+	var screenW = screen.availWidth;  
+    var screenH = screen.availHeight; 
+    var popW = 750; 
+    var popH = 600; 
+    var posL=( screenW-popW ) / 2;    
+    var posT=( screenH-popH ) / 2;
+    var url = "/notification/surveyUpdateForm.p?survey_idx="+survey_idx;
+	window.open(url,'_blank','width='+ popW +',height='+ popH +',top='+ posT +',left='+ posL +',resizable=no,scrollbars=yes,status=no,titlebar=no');
 }
 function freeDeleteEnd(idx,gubun) {
     if(confirm('정말 삭제하시겠습니까? ')){
@@ -254,5 +259,16 @@ function freeDeleteEnd(idx,gubun) {
             }
         });
     }
+}
+function surveyWriteForm(){	
+	var screenW = screen.availWidth;  
+    var screenH = screen.availHeight; 
+    var popW = 750; 
+    var popH = 600; 
+    var posL=( screenW-popW ) / 2;    
+    var posT=( screenH-popH ) / 2;
+    var url = "/notification/surveyWriteForm.p";
+	window.open(url,'_blank','width='+ popW +',height='+ popH +',top='+ posT +',left='+ posL +',resizable=no,scrollbars=yes,status=no,titlebar=no');
+
 }
 </script>

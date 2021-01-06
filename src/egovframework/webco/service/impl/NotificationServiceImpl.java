@@ -128,5 +128,23 @@ public class NotificationServiceImpl implements NotificationService {
 		return webcoDAO.surveyListTotalCnt("NotificationDAO.surveyListTotalCnt", commandMap);
 	}
 
+	@Override
+	public void surveyWriteEnd(Map<String, Object> commandMap) {
+
+		webcoDAO.surveyWriteEnd("NotificationDAO.surveyWriteEnd",commandMap);
+	}
+
+	@Override
+	public void surveyItemWriteEnd(Map<String, Object> commandMap) {
+
+		webcoDAO.surveyItemWriteEnd("NotificationDAO.surveyItemWriteEnd",commandMap);
+	}
+
+	@Override
+	public List<Map<String, Object>> surveyItemList(Map<String, Object> commandMap) {
+
+		return webcoDAO.surveyItemList("NotificationDAO.surveyItemList",commandMap);
+	}
+
 
 }

@@ -211,6 +211,10 @@
 	  		  ,start_date
 	  		  ,end_date
 	    from survey
+	    where 1=1
+	    <isNotEmpty	property="survey_idx">
+	    	and survey_idx = #survey_idx#
+	    </isNotEmpty>
 	  	order by survey_idx desc		
     </select>
     
@@ -218,4 +222,72 @@
     	select count(*)
  		from survey;
     </select>
+    
+    <insert id="NotificationDAO.surveyWriteEnd" parameterClass="java.util.Map">    	
+    	<selectKey resultClass="int" keyProperty="survey_idx">
+			SELECT IFNULL(MAX(survey_idx),0)+1 AS survey_idx											
+			FROM survey						
+		</selectKey>
+		    	    	
+    	insert into survey
+	    	(
+	    	survey_idx,
+	    	survey_title,
+	    	survey_writer,
+	    	survey_regdate,
+	    	survey_hit,
+	    	start_date,
+	    	end_date
+	    	) 
+    	values 
+    		(
+    		#survey_idx#,
+    		#survey_title#,
+    		#survey_writer#,
+    		now(),
+    		0,
+    		#start_date#,    		
+    		#end_date#    		
+    		)
+    </insert>
+    
+    <insert id="NotificationDAO.surveyItemWriteEnd" parameterClass="java.util.Map">    	    			    	    	
+    	insert into survey_item
+	    	(
+	    	survey_idx,
+	    	item_idx,
+	    	item_title,
+	    	item_que1,
+	    	item_que2,
+	    	item_que3,
+	    	item_que4,
+	    	item_que5
+	    	) 
+    	values 
+    		(
+    		#survey_idx#,
+    		#item_idx#,
+    		#item_title#,
+    		#item_que1#,
+    		#item_que2#,
+    		#item_que3#,
+    		#item_que4#,
+    		#item_que5#    		    		
+    		)
+    </insert>
+    
+    <select id="NotificationDAO.surveyItemList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+	  	select survey_idx
+	  		  ,item_idx
+	  		  ,item_title
+	  		  ,item_que1
+	  		  ,item_que2
+	  		  ,item_que3
+	  		  ,item_que4
+	  		  ,item_que5
+	    from survey_item
+	    where 
+	    survey_idx = #survey_idx#
+	  	order by item_idx		
+    </select>    
 </sqlMap>

@@ -1160,6 +1160,60 @@ public class NotificationController {
     	adminService.insertActHist("R", "[설문조사]목록 조회");
 		return "notification/survey";	 	
 	}
+
+ 	// 설문조사 등록 form
+ 	@RequestMapping("/notification/surveyWriteForm.p")
+	public String surveyWriteForm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{		    	
+		
+    	return "notification/write/surveyWriteForm";	 	
+	}
+
+ 	// 설문조사 등록 end
+ 	@RequestMapping("/notification/surveyWriteEnd.do")
+	@ResponseBody
+	public Map<String, Object> surveyWriteEnd(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletRequest request) throws Exception{
+		Map<String, Object> resultMap = new HashMap<String, Object>();
+		
+ 		//설문조사 등록
+		notificationService.surveyWriteEnd(commandMap);
+		
+		//설문조사 질문지 등록
+		int item_idx=1;
+		String[] item_title = request.getParameterValues("item_title");
+		String[] item_que1 = request.getParameterValues("item_que1");
+		String[] item_que2 = request.getParameterValues("item_que2");
+		String[] item_que3 = request.getParameterValues("item_que3");
+		String[] item_que4 = request.getParameterValues("item_que4");
+		String[] item_que5 = request.getParameterValues("item_que5");
+		for(int i=0;i<item_title.length;i++){
+			commandMap.put("item_idx", item_idx);
+			commandMap.put("item_title", item_title[i]);
+			commandMap.put("item_que1", item_que1[i]);
+			commandMap.put("item_que2", item_que2[i]);
+			commandMap.put("item_que3", item_que3[i]);
+			commandMap.put("item_que4", item_que4[i]);
+			commandMap.put("item_que5", item_que5[i]);
+			notificationService.surveyItemWriteEnd(commandMap);
+			item_idx++;
+		}
+		
+		resultMap.put("msg", "등록완료");
+		adminService.insertActHist("C", "[설문조사]등록 완료");
+		
+    	return resultMap;	 	
+	}
+
+ 	// 설문조사 수정 form
+ 	@RequestMapping("/notification/surveyUpdateForm.p")
+	public String surveyUpdateForm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{		    	
+		//설문조사
+ 		List<Map<String, Object>> surveyList = notificationService.surveyList(commandMap); 		
+ 		model.addAttribute("survey",surveyList.get(0));
+ 		//설문조사 질문지
+ 		List<Map<String, Object>> surveyItemList = notificationService.surveyItemList(commandMap);
+ 		model.addAttribute("surveyItemList",surveyItemList);
+    	return "notification/update/surveyUpdateForm";	 	
+	}
 }
 
         

@@ -31,6 +31,12 @@ public interface NotificationService {
 
 	int surveyListTotalCnt(Map<String, Object> commandMap);
 
+	void surveyWriteEnd(Map<String, Object> commandMap);
+
+	void surveyItemWriteEnd(Map<String, Object> commandMap);
+
+	List<Map<String, Object>> surveyItemList(Map<String, Object> commandMap);
+
 	
 
 }

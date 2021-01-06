@@ -690,4 +690,19 @@ public class WebcoDefaultDAO extends EgovComAbstractDAO {
 		
 		return (int)super.select(queryId,commandMap);
 	}
+
+	public void surveyWriteEnd(String queryId, Map<String, Object> commandMap) {
+		super.insert(queryId, commandMap);
+		
+	}
+
+	public void surveyItemWriteEnd(String queryId, Map<String, Object> commandMap) {
+		super.insert(queryId, commandMap);
+		
+	}
+
+	public List<Map<String, Object>> surveyItemList(String queryId, Map<String, Object> commandMap) {
+
+		return (List<Map<String, Object>>)super.list(queryId,commandMap);
+	}
 }
