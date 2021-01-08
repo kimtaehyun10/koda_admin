@@ -76,12 +76,16 @@ response.setDateHeader("Expires",0);
                                 <div class="form-group">
                                     <label class="col-md-1 control-label">구분</label>
                                     <div class="col-md-11">
-                                       <label class="mt-checkbox" >채용·입찰                                       	                                       	
+                                       <label class="mt-checkbox" >공지사항                                       	                                       	
+                                            <input id="brd_etc1" name="brd_etc1" type="radio" class="input-sm" value="1" ${selectedBoard.brd_etc1=='1'?'checked':''}><span></span>
+                                        </label>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <label class="mt-checkbox" >입찰                                      	                                       	
                                             <input id="brd_etc1" name="brd_etc1" type="radio" class="input-sm" value="2" ${selectedBoard.brd_etc1=='2'?'checked':''}><span></span>
                                         </label>
                                         &nbsp;&nbsp;&nbsp;
-                                        <label class="mt-checkbox" >공지사항                                      	                                       	
-                                            <input id="brd_etc1" name="brd_etc1" type="radio" class="input-sm" value="1" ${selectedBoard.brd_etc1=='1'?'checked':''}><span></span>
+                                        <label class="mt-checkbox" >홍보                                      	                                       	
+                                            <input id="brd_etc1" name="brd_etc1" type="radio" class="input-sm" value="3" ${selectedBoard.brd_etc1=='3'?'checked':''}><span></span>
                                         </label> 
                                     </div>
                                 </div>

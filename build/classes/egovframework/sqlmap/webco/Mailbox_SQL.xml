@@ -131,7 +131,7 @@
     		   END AS gubnNm
     		 , KM.GUBN AS gubn
     		 , KM.ID AS id
-    		 , KM.NAME AS name수유우태하피부과의원
+    		 , KM.NAME AS name
     		 , KM.PHONE AS phone
     		 , DL.DONOR_NAME AS donorName
     		 , DL.DONOR_BIRTH AS donorBirth
@@ -221,62 +221,9 @@
 			 , KM.PRT_GENDER          				AS prtGender
 			 , KM.PRT_PHONE           				AS prtPhone
 			 , KM.USE_FLAG            				AS useFlag
-			 , DL.DONOR_NAME 						AS donorName
-			 , DL.DONOR_BIRTH						AS donorBirth
-			 , (SELECT HOSPITAL_NAME FROM HOSPITAL WHERE HOSPITAL_IDX = DL.HOSPITAL_IDX) AS donorHospitalNm
-			 , DL.DONOR_DATE						AS donorDate
-			 , (SELECT NAME FROM COMMON WHERE CODE = DL.DONOR_RELATION AND GUBN = '01') AS donorRelationNm
-			 , BL.BENEFI_NAME						AS benefiName
-			 , BL.BENEFI_BIRTH						AS benefiBirth
-			 , (SELECT HOSPITAL_NAME FROM HOSPITAL WHERE HOSPITAL_IDX = BL.HOSPITAL_IDX) AS benefiHospitalNm
-			 , (SELECT NAME FROM COMMON WHERE GUBN = '02' AND CODE = BL.BENEFI_PARTS) AS benefiPartsNm 
 			 , KM.INP_DATE AS inpDate
-			 , RML.relationList
-			 , RML.relationNameDetail
-			 , RML.relationIdDetail
-			 , MML.matchList
-			 , MML.matchNameDetail
-			 , MML.matchIdDetail
 		  FROM KODA_MEMBER KM
-		   LEFT JOIN (
-		   		SELECT GROUP_CONCAT(KMM.NAME, '(', KMM.ID, ')', '[', KMM.PHONE, ']' SEPARATOR ' | ') AS relationList
-		   			 , GROUP_CONCAT(KMM.NAME SEPARATOR '|') AS relationNameDetail
-		   			 , GROUP_CONCAT(KMM.ID SEPARATOR ', ') AS relationIdDetail
-		   			 , A.ID
-				  FROM (
-					SELECT RML.CHILD_ID
-						 , KM.ID
-					  FROM KODA_MEMBER KM
-					   	 , RELA_MATCH_LIST RML
-					 WHERE KM.ID = RML.ID
-					   AND RML.GUBN = 'R'
-				  ) A
-				  , KODA_MEMBER KMM
-				 WHERE A.CHILD_ID = KMM.ID
-				 GROUP BY A.ID ) RML
-		          ON KM.ID = RML.ID
-		   LEFT JOIN (
-		   		SELECT GROUP_CONCAT(KMM.NAME, '(', KMM.ID, ')', '[', KMM.PHONE, ']' SEPARATOR ' | ') AS matchList
-		   			 , GROUP_CONCAT(KMM.NAME SEPARATOR '|') AS matchNameDetail
-		   			 , GROUP_CONCAT(KMM.ID SEPARATOR ', ') AS matchIdDetail
-		   			 , A.ID
-				  FROM (
-					SELECT RML.CHILD_ID
-						 , KM.ID
-					  FROM KODA_MEMBER KM
-					   	 , RELA_MATCH_LIST RML
-					 WHERE KM.ID = RML.ID
-					   AND RML.GUBN = 'M'
-					  ) A
-					  , KODA_MEMBER KMM
-					 WHERE A.CHILD_ID = KMM.ID
-					 GROUP BY A.ID ) MML
-			   	      ON KM.ID = MML.ID
-			   LEFT JOIN DONOR_LIST DL
-			          ON KM.ID = DL.ID
-			   LEFT JOIN BENEFI_LIST BL
-			          ON KM.ID = BL.ID
-		  WHERE KM.ID = #userId#
+	     WHERE KM.ID = #userId#
 	</select>  
 	
 	<select id="MailboxDAO.selectDonorRelationList" parameterClass="java.util.Map" resultClass="java.util.HashMap">

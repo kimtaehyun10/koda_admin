@@ -84,7 +84,7 @@ response.setDateHeader("Expires",0);
                       			</td>
                       		</tr>
                       		<tr>                      			
-                      			<th>기증일</th>
+                      			<th>등록일</th>
                       			<td style="text-align:left;" colspan="3">
 									<input type="text" size="20" name="search_start_date" id="search_start_date" class="form_datetime" value="${param.search_start_date}">	                                                           
 	                                ~	                                        

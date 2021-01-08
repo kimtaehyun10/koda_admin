@@ -46,10 +46,12 @@ public class StatisticsServiceImpl extends EgovAbstractServiceImpl implements St
     private final Log log = LogFactory.getLog(this.getClass());
     
     @Override
-    public Map<String, Object> getDashboard(Map commandMap) throws Exception {
+    public Map<String, Object> getDashboard(Map commandMap) throws Exception {    	    	    	
     	// TODO Auto-generated method stub
     	Map<String, Object> rtnMap = new HashMap<String, Object>();
     			
+    	String toDate = CommonUtil.DateAddDay("M", 0); //현재 날짜 기준 월
+    	
     	int today_visit_count = 0;
         int today_pledge_count = 0;
         int week_visit_count = 0;
@@ -84,7 +86,12 @@ public class StatisticsServiceImpl extends EgovAbstractServiceImpl implements St
         	chartMap.put("visit", visit_count);
         	chartMap.put("pledge", pledge_count);	        	
         	
-        	dashboard_column_chart_data1.add(chartMap);
+        	//월간서약 방문 통계 해당월만 보이도록
+        	String data1[] = curDate2.split("[.]");
+        	if(data1[0].equals(toDate)){
+        		dashboard_column_chart_data1.add(chartMap);
+        	}        	        	
+        	//
         	
         	if(idx<7) {
         		dashboard_column_chart_data2.add(chartMap);

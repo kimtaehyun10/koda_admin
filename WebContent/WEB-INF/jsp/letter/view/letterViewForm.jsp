@@ -79,6 +79,7 @@ response.setDateHeader("Expires",0);
                            		<div class="form-group">
                             		<label class="col-md-1 control-label">스킨명</label>
                                     <div class="col-md-11">
+                                    	<input type="hidden" id="skin_id" value="${letter.skin_id }" />
                                     	<c:forEach var="letterSkin" items="${letterSkinList }" varStatus="status">
                                     		<c:if test="${letterSkin.letter_skin_id eq letter.skin_id }">${letterSkin.letter_skin_name }</c:if>
                                     	</c:forEach>
@@ -257,8 +258,7 @@ function fnPreview() {
 	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",           
 	    dataType: "json",
 	    data: {
-	    	letter_id: '${letter.letter_id}',
-	    	letter_skin_id: $(':radio[name="letter_skin_id"]:checked').val()
+	    	letter_skin_id: $('#skin_id').val()
 		},
 	    success: function(data) {
 	    	var cont = data.letter_content.replace('{내용}', $("#content").val());

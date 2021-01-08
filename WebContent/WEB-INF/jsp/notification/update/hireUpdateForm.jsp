@@ -41,22 +41,22 @@ response.setDateHeader("Expires",0);
         <!-- BEGIN PAGE TITLE-->
         <div class="row">
             <div class="col-md-7">            	
-                <h1 class="page-title"> 공지사항 등록</h1>                
+                <h1 class="page-title">채용 수정</h1>                
             </div>
             
         </div>
         <!-- END PAGE TITLE-->
         <!-- END PAGE HEADER-->
         <form name="fileFrm" id="fileFrm" class="form-horizontal">
-        <input type="hidden" name="brd_no" value="7">
-        <input type="hidden" name="brd_cont_no" value="">
-        <input type="hidden" name="type" value="board_insert">
+        <input type="hidden" name="brd_no" value="${selectedBoard.brd_no}">
+        <input type="hidden" name="brd_cont_no" value="${selectedBoard.brd_cont_no}">
+        <input type="hidden" name="type" value="board_update">
         
         <div class="row">
             <div class="col-md-12">
                 <div class="portlet box blue-hoki ">
                     <div class="portlet-title">
-                        <div class="caption">공지사항 정보</div>
+                        <div class="caption">채용 정보</div>
                     </div>
                     <div class="portlet-body">
                         <div class="row">
@@ -64,34 +64,19 @@ response.setDateHeader("Expires",0);
                             	<div class="form-group">
                             		<label class="col-md-1 control-label">제목</label>
                                     <div class="col-md-5">
-                                        <input id="brd_title" name="brd_title" type="text" class="form-control input-sm" placeholder="" value="">
+                                        <input id="brd_title" name="brd_title" type="text" class="form-control input-sm" placeholder="" value="${selectedBoard.brd_title}">
                                     </div>
                             	</div>                               
                                 <div class="form-group">                         
                                     <label class="col-md-1 control-label">작성자</label>
                                     <div class="col-md-5">
-                                        <input id="brd_mkr_nm" name="brd_mkr_nm" type="text" class="form-control input-sm" placeholder="" value="">
+                                        <input id="brd_mkr_nm" name="brd_mkr_nm" type="text" class="form-control input-sm" placeholder="" value="${selectedBoard.brd_mkr_nm}">
                                     </div>                                                                                                         
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-1 control-label">구분</label>
-                                    <div class="col-md-11">
-                                       <label class="mt-checkbox" >공지사항                                       	                                       	
-                                            <input id="brd_etc1" name="brd_etc1" type="radio" class="input-sm" value="1" ><span></span>
-                                        </label>
-                                        &nbsp;&nbsp;&nbsp;
-                                        <label class="mt-checkbox" >입찰                                      	                                       	
-                                            <input id="brd_etc1" name="brd_etc1" type="radio" class="input-sm" value="2" ><span></span>
-                                        </label>
-                                        &nbsp;&nbsp;&nbsp;
-                                        <label class="mt-checkbox" >홍보                                      	                                       	
-                                            <input id="brd_etc1" name="brd_etc1" type="radio" class="input-sm" value="3" ><span></span>
-                                        </label>  
-                                    </div>
-                                </div>
+                                </div>                                
                                 <div class="form-group">                         
                                     <label class="col-md-1 control-label">첨부파일</label>
-                                    <div class="col-md-5">                                        
+                                    <div class="col-md-5">
+                                        ${selectedBoard.brd_file_org_nm}
 										<input type="file" id="brd_file_org_nm" name="brd_file_org_nm" size="34"/>
                                     </div>                                                                                                          
                                 </div>                                
@@ -100,10 +85,10 @@ response.setDateHeader("Expires",0);
 	                                <div class="form-group">
 	                                    <label class="col-md-1 control-label">내용</label>
 	                                    <div class="col-md-11">
-	                                    	<input type="hidden" name="brd_no" value="7">
-        									<input type="hidden" id="brd_cont_no" name="brd_cont_no" value="">
-        									<input type="hidden" name="type" value="notice">	                                                          
-	                                    	<textarea class="ckeditor" id="brd_contents" name="brd_contents" ></textarea>
+	                                    	<input type="hidden" name="brd_no" value="${selectedBoard.brd_no}">
+        									<input type="hidden" name="brd_cont_no" value="${selectedBoard.brd_cont_no}">
+        									<input type="hidden" name="type" value="hire">	                                                          
+	                                    	<textarea class="ckeditor" id="brd_contents" name="brd_contents" >${selectedBoard.brd_contents}</textarea>
 	                                    </div>
 	                                </div>
                                 </form>
@@ -114,7 +99,7 @@ response.setDateHeader("Expires",0);
                     </div>
                     <div class="col-md-12 text-center">
                         <br>
-                        <a id="fileBtn" class="btn green btn-outline btn-circle btn-sm" href="#">등록하기</a>
+                        <a id="fileBtn" class="btn green btn-outline btn-circle btn-sm" href="#">수정하기</a>
                         <br>&nbsp
                     </div>
                 </div>
@@ -164,7 +149,6 @@ $("#fileBtn").click(function(){
         	var reData = data.replace(/"/gi,"");
         	alert(reData.split(",")[0]);        	
         	//window.location.reload(true);
-        	$("#brd_cont_no").val(reData.split(",")[1]);
         	
         	$("#contentsUpdate").submit();
         },

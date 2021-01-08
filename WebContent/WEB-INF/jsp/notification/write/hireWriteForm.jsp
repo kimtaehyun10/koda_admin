@@ -41,14 +41,14 @@ response.setDateHeader("Expires",0);
         <!-- BEGIN PAGE TITLE-->
         <div class="row">
             <div class="col-md-7">            	
-                <h1 class="page-title"> 공지사항 등록</h1>                
+                <h1 class="page-title">채용 등록</h1>                
             </div>
             
         </div>
         <!-- END PAGE TITLE-->
         <!-- END PAGE HEADER-->
         <form name="fileFrm" id="fileFrm" class="form-horizontal">
-        <input type="hidden" name="brd_no" value="7">
+        <input type="hidden" name="brd_no" value="43">
         <input type="hidden" name="brd_cont_no" value="">
         <input type="hidden" name="type" value="board_insert">
         
@@ -56,7 +56,7 @@ response.setDateHeader("Expires",0);
             <div class="col-md-12">
                 <div class="portlet box blue-hoki ">
                     <div class="portlet-title">
-                        <div class="caption">공지사항 정보</div>
+                        <div class="caption">채용 정보</div>
                     </div>
                     <div class="portlet-body">
                         <div class="row">
@@ -72,23 +72,7 @@ response.setDateHeader("Expires",0);
                                     <div class="col-md-5">
                                         <input id="brd_mkr_nm" name="brd_mkr_nm" type="text" class="form-control input-sm" placeholder="" value="">
                                     </div>                                                                                                         
-                                </div>
-                                <div class="form-group">
-                                    <label class="col-md-1 control-label">구분</label>
-                                    <div class="col-md-11">
-                                       <label class="mt-checkbox" >공지사항                                       	                                       	
-                                            <input id="brd_etc1" name="brd_etc1" type="radio" class="input-sm" value="1" ><span></span>
-                                        </label>
-                                        &nbsp;&nbsp;&nbsp;
-                                        <label class="mt-checkbox" >입찰                                      	                                       	
-                                            <input id="brd_etc1" name="brd_etc1" type="radio" class="input-sm" value="2" ><span></span>
-                                        </label>
-                                        &nbsp;&nbsp;&nbsp;
-                                        <label class="mt-checkbox" >홍보                                      	                                       	
-                                            <input id="brd_etc1" name="brd_etc1" type="radio" class="input-sm" value="3" ><span></span>
-                                        </label>  
-                                    </div>
-                                </div>
+                                </div>                                
                                 <div class="form-group">                         
                                     <label class="col-md-1 control-label">첨부파일</label>
                                     <div class="col-md-5">                                        
@@ -100,9 +84,9 @@ response.setDateHeader("Expires",0);
 	                                <div class="form-group">
 	                                    <label class="col-md-1 control-label">내용</label>
 	                                    <div class="col-md-11">
-	                                    	<input type="hidden" name="brd_no" value="7">
+	                                    	<input type="hidden" name="brd_no" value="43">
         									<input type="hidden" id="brd_cont_no" name="brd_cont_no" value="">
-        									<input type="hidden" name="type" value="notice">	                                                          
+        									<input type="hidden" name="type" value="hire">	                                                          
 	                                    	<textarea class="ckeditor" id="brd_contents" name="brd_contents" ></textarea>
 	                                    </div>
 	                                </div>

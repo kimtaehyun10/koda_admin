@@ -23,6 +23,9 @@
 	    <isEqual property="search_gubun" compareValue="N">
 	    	and BC.brd_etc1 = '1'	
 	    </isEqual>
+	    <isEqual property="search_gubun" compareValue="H">
+	    	and BC.brd_etc1 = '3'	
+	    </isEqual>
 		<isNotEmpty property="search_start_date">
 			<![CDATA[
  			and BC.reg_dm>= #search_start_date#
@@ -56,6 +59,9 @@
 	    </isEqual>
 	    <isEqual property="search_gubun" compareValue="N">
 	    	and BC.brd_etc1 = '1'	
+	    </isEqual>
+	    <isEqual property="search_gubun" compareValue="H">
+	    	and BC.brd_etc1 = '3'	
 	    </isEqual>
 		<isNotEmpty property="search_start_date">
 			<![CDATA[

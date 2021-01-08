@@ -10,12 +10,7 @@ response.setHeader("Cache-Control","no-store");
 response.setHeader("Pragma","no-cache");   
 response.setDateHeader("Expires",0);
 %>
-<%
-/*
-	-공지사항
-	1.수정,등록기능 보완필요
-*/
-%>
+
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
 <!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
@@ -51,16 +46,16 @@ response.setDateHeader("Expires",0);
                   <div class="portlet light portlet-fit bordered">
                       <div class="portlet-title">
                           <div class="caption">
-                              <span class="caption-subject font-dark bold uppercase">공지사항</span>
+                              <span class="caption-subject font-dark bold uppercase">채용 게시판</span>
                               </div>
                               <div class="actions">
                               <div class="btn-group">
-                                  <a class="btn dark btn-outline btn-circle btn-sm" href="/notification/noticeWriteForm.do">공지사항 등록</a>                                  
+                                  <a class="btn dark btn-outline btn-circle btn-sm" href="/notification/hireWriteForm.do">채용 게시판 등록</a>                                  
                               </div>
                           </div>    
                       </div>
                       <div class="portlet-body">
-                      	<form name="schFrm" id="schFrm" method="post" action="<c:url value="/notification/notice.do"/>">
+                      	<form name="schFrm" id="schFrm" method="post" action="<c:url value="/notification/hire.do"/>">
                       	<input type="hidden" name="page" id="page" value="${param.page}"/>
                       	<table class="table table-bordered">
                       		<colgroup>
@@ -72,17 +67,7 @@ response.setDateHeader("Expires",0);
                        		</colgroup>
                       		<tr>
                       			<th>제목</th>
-                      			<td style="text-align:left;"><input type="text" size=20" name="search_keyword" id="search_keyword" value="${param.search_keyword}"/></td>
-                      			<th>구분</th>
-                      			<td style="text-align:left;">
-                      				<select name="search_gubun" id="search_gubun" style="width:200px;">
-                      					<option value="">전체</option>
-                      					<option value="N" ${param.search_gubun=='N'?'selected':''}>공지사항</option>
-                      					<option value="C" ${param.search_gubun=='C'?'selected':''}>입찰</option>                      					                      					                      					                     					
-                      					<option value="H" ${param.search_gubun=='H'?'selected':''}>홍보</option>                      					                      					                      					                     					
-                      				</select>
-                      			</td>
-                      			
+                      			<td style="text-align:left;" colspan="3"><input type="text" size=20" name="search_keyword" id="search_keyword" value="${param.search_keyword}"/></td>           			
                       			<td rowspan="2">
                       				<div class="btn-group">
                                   		<a id="btnSearch" class="btn dark btn-outline btn-circle btn-sm" href="#">검색</a>
@@ -94,7 +79,7 @@ response.setDateHeader("Expires",0);
                       			<td style="text-align:left;" colspan="3">
 									<input type="text" size="20" name="search_start_date" id="search_start_date" class="form_datetime" value="${param.search_start_date}">	                                                           
 	                                ~	                                        
-									<input type="text" size="20" name="search_end_date"  id="search_end_date" class="form_datetime" value="${param.search_end_date}">
+									<input type="text" size="20" name="search_end_date" id="search_end_date" class="form_datetime" value="${param.search_end_date}">
 									<div class="btn-group">
 									<a id="user_period_search_day" class="btn dark btn-outline btn-circle btn-sm" href="#" style="margin-right:5px;">일간</a>
                                		<a id="user_period_search_week" class="btn dark btn-outline btn-circle btn-sm" href="#" style="margin-right:5px;">주간</a>
@@ -116,8 +101,7 @@ response.setDateHeader("Expires",0);
                                       <tr>
                                       	  <th>No</th>
 					                      <th>제목</th>
-					                      <th>작성자</th>
-					                   	  <th>구분</th>					                   	  			                      					                      					                      
+					                      <th>작성자</th>					                   	  					                   	  			                      					                      					                      
 					                      <th>등록일</th>					                      
 					                      <th>조회수</th>					                      
 					                      <th>관리</th>
@@ -129,23 +113,12 @@ response.setDateHeader("Expires",0);
                                       <tr>
                                       	  <td>${(total_count - status.index) - ( (currentPage - 1)  *  displayNum ) }</td>                    	                                                                                 
                                           <td style="line-height:60px; text-align: left;">${ntcList.brd_title}</td>
-                                          <td style="line-height:60px">${ntcList.brd_mkr_nm}</td>                                                                                                                             
-                                          <td style="line-height:60px">
-                                          	<c:if test="${ntcList.brd_etc1==1}">
-                                          		공지사항
-                                          	</c:if>
-                                          	<c:if test="${ntcList.brd_etc1==2}">
-                                          		입찰
-                                          	</c:if>
-                                          	<c:if test="${ntcList.brd_etc1==3}">
-                                          		홍보
-                                          	</c:if>                                          	
-                                          </td>                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+                                          <td style="line-height:60px">${ntcList.brd_mkr_nm}</td>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
                                           <td style="line-height:60px">${fn:substring(ntcList.reg_dm,0,10)}</td>                                                                               
                                           <td style="line-height:60px">${ntcList.brd_read_num}</td>                                                                               
                                           <td style="line-height:60px">
-                                          <a style="line-height:60px" onclick="noticeUpdateForm(${ntcList.brd_no},${ntcList.brd_cont_no});"><button class="btn btn-default btn-circle mt-sweetalert" type="button"><i class="fa fa-paste"></i> 수정</button></a>
-                                          <a style="line-height:60px" onclick="noticeDeleteEnd(${ntcList.brd_no},${ntcList.brd_cont_no});"><button class="btn btn-danger btn-circle mt-sweetalert" type="button"><i class="fa fa-times"></i> 삭제</button></a>
+                                          <a style="line-height:60px" onclick="hireUpdateForm(${ntcList.brd_no},${ntcList.brd_cont_no});"><button class="btn btn-default btn-circle mt-sweetalert" type="button"><i class="fa fa-paste"></i> 수정</button></a>
+                                          <a style="line-height:60px" onclick="hireDeleteEnd(${ntcList.brd_no},${ntcList.brd_cont_no});"><button class="btn btn-danger btn-circle mt-sweetalert" type="button"><i class="fa fa-times"></i> 삭제</button></a>
                                           </td>
                                           
                                       </tr>
@@ -250,13 +223,13 @@ $(function() {
 		$('#schFrm').submit();
 	})
 });
-function noticeUpdateForm(no,cont){
+function hireUpdateForm(no,cont){
 	$("#brd_no").val(no);
 	$("#brd_cont_no").val(cont);
-	$('#Frm').attr("action","/notification/noticeUpdateForm.do");
+	$('#Frm').attr("action","/notification/hireUpdateForm.do");
 	$('#Frm').submit();
 }
-function noticeDeleteEnd(no,cont) {
+function hireDeleteEnd(no,cont) {
     if(confirm('정말 삭제하시겠습니까? ')){
     	$.ajax({
             url : "/notification/noticeDeleteEnd.do",

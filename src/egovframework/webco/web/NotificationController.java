@@ -1214,6 +1214,72 @@ public class NotificationController {
  		model.addAttribute("surveyItemList",surveyItemList);
     	return "notification/update/surveyUpdateForm";	 	
 	}
+
+ 	// koda인재채용
+	@RequestMapping("/notification/hire.do")
+	public String hire(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{
+		
+		int limit = 10;    	
+		int page = 1;
+		
+		if(!EgovStringUtil.isEmpty(EgovStringUtil.isNullToString(commandMap.get("page")))) {
+			page = Integer.parseInt(commandMap.get("page").toString());
+		}
+		
+    	int offset = page > 0 ? (page-1) * limit : 0;
+    			    	
+    	commandMap.put("offset", offset);
+    	commandMap.put("limit", limit);
+    	
+    	commandMap.put("brd_no", "43"); //koda인재채용 구분
+    	
+    	
+    	List<Map<String, Object>> ntcList = notificationService.notificationList(commandMap);
+    	int total_count = notificationService.notificationListTotCnt(commandMap);
+    	
+    	model.addAttribute("ntcList_list", ntcList);
+    	model.addAttribute("total_count", total_count);
+    	model.addAttribute("currentPage",page); //현재 페이지 번호
+    	
+    	
+    	PaginationInfo paginationInfo = new PaginationInfo();
+    	paginationInfo.setCurrentPageNo(page);
+    	paginationInfo.setRecordCountPerPage(limit);    	
+    	paginationInfo.setPageSize(10);    	
+    	if(paginationInfo != null){ 
+    		paginationInfo.setTotalRecordCount(total_count); 
+    		model.addAttribute("paginationInfo", paginationInfo); 
+    	}    	    	
+    	
+    	AdminVO adminVO = SessionUtil.getAuthenticatedUser();    	
+    	model.addAttribute("admin_grade", adminVO.getAdmin_grade());
+    	model.addAttribute("param", commandMap);
+    	model.addAttribute("displayNum",paginationInfo.getPageSize()); //페이지당 게시물 출력 수
+    	
+    	adminService.insertActHist("R", "[koda인재채용]목록 조회");
+    	
+		return "notification/hire";	 	
+	}
+	// koda인재채용 등록 form
+ 	@RequestMapping("/notification/hireWriteForm.do")
+	public String hireWriteForm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{
+		
+    	adminService.insertActHist("R", "[KODA인재채용]등록 조회");
+		
+    	return "notification/write/hireWriteForm";	 	
+	}
+
+ 	// koda인재채용 수정 form
+ 	@RequestMapping("/notification/hireUpdateForm.do")
+	public String hireUpdateForm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{
+		
+		Map<String, Object> selectedBoard = statisticsService.selectedBoard(commandMap);
+		model.addAttribute("selectedBoard",selectedBoard);
+		
+    	adminService.insertActHist("R", "[koda인재채용]수정 조회");
+		
+    	return "notification/update/hireUpdateForm";	 	
+	}
 }
 
         
