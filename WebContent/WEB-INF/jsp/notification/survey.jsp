@@ -240,14 +240,13 @@ function surveyUpdateForm(survey_idx){
     var url = "/notification/surveyUpdateForm.p?survey_idx="+survey_idx;
 	window.open(url,'_blank','width='+ popW +',height='+ popH +',top='+ posT +',left='+ posL +',resizable=no,scrollbars=yes,status=no,titlebar=no');
 }
-function freeDeleteEnd(idx,gubun) {
+function surveyDeleteEnd(survey_idx) {
     if(confirm('정말 삭제하시겠습니까? ')){
     	$.ajax({
-            url : "/remembrance/letterStoryDeleteEnd.do",
+            url : "/notification/surveyDeleteEnd.do",
             type: "POST",
             data:{
-            	story_idx : idx,
-            	story_gubun : gubun
+            	survey_idx : survey_idx
             },
             dataType:"json", 
             success : function(data, textStatus, jqXHR) {

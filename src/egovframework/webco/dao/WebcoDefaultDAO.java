@@ -705,4 +705,14 @@ public class WebcoDefaultDAO extends EgovComAbstractDAO {
 
 		return (List<Map<String, Object>>)super.list(queryId,commandMap);
 	}
+
+	public void surveyDeleteEnd(String queryId, Map<String, Object> commandMap) {
+
+		super.delete(queryId, commandMap);
+	}
+
+	public void surveyItemDeleteEnd(String queryId, Map<String, Object> commandMap) {
+
+		super.delete(queryId, commandMap);
+	}
 }

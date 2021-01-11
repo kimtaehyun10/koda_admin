@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.web.multipart.MultipartFile;
 
@@ -234,6 +235,14 @@ public interface LetterService {
 	 */
 	int selectLetterReplyCheck(Map<String, Object> commandMap);
 
+	// 생명나눔우체통 > 발신통계
+	
+	public int selectCreateLetterMinYearLetter();
+	
+	List<Map<String, Object>> selectLetterStatisticList(Map<String, Object> commandMap);
+	
+	public void exporLetterStatisticList(HttpServletResponse response, Map<String, Object> commandMap) throws Exception;
+	
 	
 
 	

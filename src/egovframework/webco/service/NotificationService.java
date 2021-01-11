@@ -37,6 +37,10 @@ public interface NotificationService {
 
 	List<Map<String, Object>> surveyItemList(Map<String, Object> commandMap);
 
+	void surveyDeleteEnd(Map<String, Object> commandMap);
+
+	void surveyItemDeleteEnd(Map<String, Object> commandMap);
+
 	
 
 }

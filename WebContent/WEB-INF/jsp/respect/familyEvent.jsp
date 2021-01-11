@@ -115,7 +115,7 @@ response.setDateHeader("Expires",0);
 									<c:forEach var="feList" items="${feList_list}" varStatus="status">                                      
                                       <tr>
                                       	  <td>${(total_count - status.index) - ( (currentPage - 1)  *  displayNum ) }</td>                    	                                                                                 
-                                          <td style="line-height:60px">${feList.fam_evnt_title}</td>
+                                          <td style="line-height:60px; text-align: left;">${feList.fam_evnt_title}</td>
                                           <td style="line-height:60px"><fmt:formatDate value="${feList.fam_evnt_regdate}" pattern="yyyy-MM-dd" /></td>
                                           <td style="line-height:60px">${feList.fam_evnt_hitcnt}</td>                                                                             
                                           <td style="line-height:60px">

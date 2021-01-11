@@ -152,7 +152,8 @@
     		sch_link_title = #sch_link_title#,
     		sch_link_no = #sch_link_no#,
     		sch_file_name = #sch_file_name#,
-    		sch_file_org_name = #sch_file_org_name# 		
+    		sch_file_org_name = #sch_file_org_name#,
+    		sch_skin = #sch_skin# 		
     	where
     		sch_no = #sch_no#
     		 
@@ -186,7 +187,8 @@
 	    	sch_read_num,
 	    	sch_reg_dm,
 	    	sch_file_name,
-	    	sch_file_org_name
+	    	sch_file_org_name,
+	    	sch_skin
 	    	) 
     	values 
     		(
@@ -199,7 +201,8 @@
     		0,
     		now(),
     		#sch_file_name#,
-    		#sch_file_org_name#    		
+    		#sch_file_org_name#,
+    		#sch_skin#    		
     		)
     </insert>
     
@@ -295,5 +298,19 @@
 	    where 
 	    survey_idx = #survey_idx#
 	  	order by item_idx		
-    </select>    
+    </select>
+    
+    <delete id="NotificationDAO.surveyDeleteEnd" parameterClass="java.util.Map">
+		delete from
+			survey
+		where
+			survey_idx = #survey_idx#
+    </delete>
+    
+    <delete id="NotificationDAO.surveyItemDeleteEnd" parameterClass="java.util.Map">
+		delete from
+			survey_item
+		where
+			survey_idx = #survey_idx#
+    </delete>   
 </sqlMap>

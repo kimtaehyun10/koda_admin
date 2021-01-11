@@ -162,6 +162,52 @@ public class LetterDAO extends EgovComAbstractDAO {
 		return (int) super.select("LetterDao.selectLetterReplyCheck", commandMap);
 	}
 
+	//--------------------- 통계쿼리 -----------------------------------------------
+	@SuppressWarnings("unchecked")
+	public List<Map<String, Object>> selectCode(String gubn) {
+		return (List<Map<String, Object>>) super.list("LetterDao.selectCode", gubn);
+	}
+	
+	public int selectCreateLetterMinYearLetter() {
+		return (int) super.select("LetterDao.selectCreateLetterMinYearLetter");
+	}
+	
+	public int selectMonthSelectedLastDay(Map<String, Object> commandMap) {
+		return (int) super.select("LetterDao.selectMonthSelectedLastDay", commandMap);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> selectStatisticMailList(Map<String, Object> commandMap) {
+		return (Map<String, Object>) super.select("LetterDao.selectStatisticMailList", commandMap);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> selectStatisticGenderList(Map<String, Object> commandMap) {
+		return (Map<String, Object>) super.select("LetterDao.selectStatisticGenderList", commandMap);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> selectStatisticAgeList(Map<String, Object> commandMap) {
+		return (Map<String, Object>) super.select("LetterDao.selectStatisticAgeList", commandMap);
+	}
+
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> selectStatisticMemberTypeList(Map<String, Object> commandMap) {
+		return (Map<String, Object>) super.select("LetterDao.selectStatisticMemberTypeList", commandMap);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> selectStatisticDonorRelationList(Map<String, Object> commandMap) {
+		return (Map<String, Object>) super.select("LetterDao.selectStatisticDonorRelationList", commandMap);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public Map<String, Object> selectStatisticBenefitOrganList(Map<String, Object> commandMap) {
+		return (Map<String, Object>) super.select("LetterDao.selectStatisticBenefitOrganList", commandMap);
+	}
+	
+	
+
 	
 
 

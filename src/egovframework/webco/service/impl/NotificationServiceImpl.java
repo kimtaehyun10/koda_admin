@@ -146,5 +146,17 @@ public class NotificationServiceImpl implements NotificationService {
 		return webcoDAO.surveyItemList("NotificationDAO.surveyItemList",commandMap);
 	}
 
+	@Override
+	public void surveyDeleteEnd(Map<String, Object> commandMap) {
+
+		webcoDAO.surveyDeleteEnd("NotificationDAO.surveyDeleteEnd",commandMap);
+	}
+
+	@Override
+	public void surveyItemDeleteEnd(Map<String, Object> commandMap) {
+
+		webcoDAO.surveyItemDeleteEnd("NotificationDAO.surveyItemDeleteEnd",commandMap);
+	}
+
 
 }

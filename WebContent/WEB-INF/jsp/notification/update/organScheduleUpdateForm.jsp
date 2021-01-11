@@ -80,6 +80,25 @@ response.setDateHeader("Expires",0);
 										<input type="text" size="20" name="sch_end_dt" id="sch_end_dt" class="form-control input-sm form_datetime" value="${selectedOrganSchedule.sch_end_dt}">
                                     </div>                                                                                                          
                                 </div>
+                                <div class="form-group">
+                            		<label class="col-md-1 control-label" style="margin-top: 8px;">범주</label>
+                                    <div class="col-md-11">
+                                       	<label class="mt-checkbox"><input name="sch_skin" type="radio" class="input-sm" value="1" ${selectedOrganSchedule.sch_skin == 1 ?'checked':''}><span style="background-color: #f86786"></span></label>
+                                        
+                                        <label class="mt-checkbox"><input name="sch_skin" type="radio" class="input-sm" value="2" ${selectedOrganSchedule.sch_skin == 2 ?'checked':''}><span style="background-color: #ffb400"></span></label>
+                                        
+                                        <label class="mt-checkbox"><input name="sch_skin" type="radio" class="input-sm" value="3" ${selectedOrganSchedule.sch_skin == 3 ?'checked':''}><span style="background-color: #459609"></span></label>
+                                        
+                                        <label class="mt-checkbox"><input name="sch_skin" type="radio" class="input-sm" value="4" ${selectedOrganSchedule.sch_skin == 4 ?'checked':''}><span style="background-color: #0e9fa2"></span></label>
+                                        
+                                        <label class="mt-checkbox"><input name="sch_skin" type="radio" class="input-sm" value="5" ${selectedOrganSchedule.sch_skin == 5 ?'checked':''}><span style="background-color: #0581ff"></span></label>
+                                        
+                                        <label class="mt-checkbox"><input name="sch_skin" type="radio" class="input-sm" value="6" ${selectedOrganSchedule.sch_skin == 6 ?'checked':''}><span style="background-color: #9b6dae"></span></label>
+                                        
+                                        <label class="mt-checkbox"><input name="sch_skin" type="radio" class="input-sm" value="7" ${selectedOrganSchedule.sch_skin == 7 ?'checked':''}><span style="background-color: #333333"></span></label>
+                                    </div>
+                            	</div>
+                            	<br>
                                 <div class="form-group">                         
                                     <label class="col-md-1 control-label">첨부파일</label>
                                     <div class="col-md-5">
@@ -88,7 +107,7 @@ response.setDateHeader("Expires",0);
                                     </div>                                                                                                          
                                 </div>
                                 <div class="form-group">
-                            		<label class="col-md-1 control-label">관련글</label>
+                            		<label class="col-md-1 control-label">관련 행사</label>
                                     <div class="col-md-5">
                                         <input id="sch_link_title" name="sch_link_title" type="text" class="form-control input-sm" placeholder="" value="${selectedOrganSchedule.sch_link_title}" readonly>
                                         <input type="hidden" name="sch_link_no" id="sch_link_no" value="${selectedOrganSchedule.sch_link_no}">                                 	
@@ -136,7 +155,17 @@ response.setDateHeader("Expires",0);
 <script src="${pageContext.request.contextPath}/common/global/plugins/bootstrap-toastr/toastr.min.js" type="text/javascript"></script>
 <script src="${pageContext.request.contextPath}/common/global/plugins/printThis/printThis.js" type="text/javascript"></script>
 <script type="text/javascript" charset="utf-8" src="/common/ckeditor/ckeditor.js"></script>
-
+<style>
+	.mt-checkbox>span:after {
+	    left: 6px;
+	    top: 2px;
+	    width: 5px;
+	    height: 10px;
+	    border: solid #FFFFFF;
+	    border-width: 0 2px 2px 0;
+	    transform: rotate(45deg);
+	}
+</style>
 <script language="JavaScript" type="text/javascript">
 
 
@@ -194,7 +223,7 @@ function organEventPopup(){
     
 	var screenW = screen.availWidth;  
 	    var screenH = screen.availHeight; 
-	    var popW = 800; 
+	    var popW = 750; 
 	    var popH = 500; 
 	    var posL=( screenW-popW ) / 2;    
 	    var posT=( screenH-popH ) / 2;    

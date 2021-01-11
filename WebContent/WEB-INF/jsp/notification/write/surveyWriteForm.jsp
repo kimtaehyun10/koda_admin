@@ -91,31 +91,31 @@ response.setDateHeader("Expires",0);
                       			</td>	
                       		</tr>
                       		<tr>
-                      			<th>답변1</th>
+                      			<th>1</th>
                       			<td>
                       				<input type="text" name="item_que1" class="form-control input-sm" value=""/>
                       			</td>	
                       		</tr>
                       		<tr>
-                      			<th>답변2</th>
+                      			<th>2</th>
                       			<td>
                       				<input type="text" name="item_que2" class="form-control input-sm" value=""/>
                       			</td>	
                       		</tr>
                       		<tr>
-                      			<th>답변3</th>
+                      			<th>3</th>
                       			<td>
                       				<input type="text" name="item_que3" class="form-control input-sm" value=""/>
                       			</td>	
                       		</tr>
                       		<tr>
-                      			<th>답변4</th>
+                      			<th>4</th>
                       			<td>
                       				<input type="text" name="item_que4" class="form-control input-sm" value=""/>
                       			</td>	
                       		</tr>
                       		<tr>
-                      			<th>답변5</th>
+                      			<th>5</th>
                       			<td>
                       				<input type="text" name="item_que5" class="form-control input-sm" value=""/>
                       			</td>	
@@ -186,14 +186,14 @@ $("#btn").click(function(){
 });
 
 $("#surveyBtn").click(function(){
-	var html="";
+	var html="";	
 	html += '<tr><th colspan="2">질문지</th></tr>';
 	html += '<tr><th>문항</th><td><input type="text" name="item_title" class="form-control input-sm" value=""/></td></tr>';
-	html += '<tr><th>답변1</th><td><input type="text" name="item_que1" class="form-control input-sm" value=""/></td></tr>';
-	html += '<tr><th>답변2</th><td><input type="text" name="item_que2" class="form-control input-sm" value=""/></td></tr>';
-	html += '<tr><th>답변3</th><td><input type="text" name="item_que3" class="form-control input-sm" value=""/></td></tr>';
-	html += '<tr><th>답변4</th><td><input type="text" name="item_que4" class="form-control input-sm" value=""/></td></tr>';
-	html += '<tr><th>답변5</th><td><input type="text" name="item_que5" class="form-control input-sm" value=""/></td></tr>';
+	html += '<tr><th>1</th><td><input type="text" name="item_que1" class="form-control input-sm" value=""/></td></tr>';
+	html += '<tr><th>2</th><td><input type="text" name="item_que2" class="form-control input-sm" value=""/></td></tr>';
+	html += '<tr><th>3</th><td><input type="text" name="item_que3" class="form-control input-sm" value=""/></td></tr>';
+	html += '<tr><th>4</th><td><input type="text" name="item_que4" class="form-control input-sm" value=""/></td></tr>';
+	html += '<tr><th>5</th><td><input type="text" name="item_que5" class="form-control input-sm" value=""/></td></tr>';	
 	$("#surveyTable").append(html);
 	
 });

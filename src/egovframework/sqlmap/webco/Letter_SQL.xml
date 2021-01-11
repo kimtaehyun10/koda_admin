@@ -479,5 +479,143 @@
 		DELETE FROM LETTER_ADMIN
 		 WHERE LETTER_ADMIN_ID = #letter_admin_id#
 	</delete>
+	
+	<!-- 통계 쿼리  -->
+	<select id="LetterDao.selectCode" parameterClass="String" resultClass="java.util.HashMap">
+		SELECT a.*
+		  FROM common a
+		 WHERE a.gubn = #gubn#
+		   AND a.use_flag = 'Y'
+		 ORDER BY CAST(a.code AS INTEGER)
+	</select>
+	
+	<select id="LetterDao.selectCreateLetterMinYearLetter" resultClass="int">
+		SELECT CONVERT(DATE_FORMAT(MIN(CREATE_TIME), '%Y'), UNSIGNED) AS createMinYear
+		  FROM LETTER
+	</select>
+	
+	<select id="LetterDao.selectMonthSelectedLastDay" resultClass="int">
+		SELECT DATE_FORMAT(LAST_DAY(STR_TO_DATE(#basicDate#, '%Y%m')), '%d')
+	</select>
+	
+	<select id="LetterDao.selectStatisticMailList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT CAST(#basic# as char(10)) AS type
+		      ,IFNULL(SUM(CASE WHEN a.status = 'approval' AND DATE_FORMAT(a.sender_date, #format#) = #basic# THEN 1 END), 0) AS SENDER_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'return' AND DATE_FORMAT(a.return_date, #format#) = #basic# THEN 1 END), 0) AS RETURN_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'approval' AND a.sender_date IS NOT NULL AND DATE_FORMAT(b.receiver_date, #format#) = #basic# THEN 1 END), 0) AS RECEIVER_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'notApproval' AND DATE_FORMAT(a.create_time, #format#) = #basic# THEN 1 END), 0) AS SENDER_STAY_CNT
+		  FROM letter a
+		  LEFT OUTER JOIN letter_receiver b ON a.letter_id = b.letter_id
+	</select>
+	
+	<select id="LetterDao.selectStatisticGenderList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT #basic# AS gubun
+		      ,CASE WHEN #gender# = 'M' THEN '남성'
+		            WHEN #gender# = 'F' THEN '여성'
+		       END AS type
+		      ,IFNULL(SUM(CASE WHEN a.status = 'approval' AND DATE_FORMAT(a.sender_date, #format#) = #basic# AND s.gender = #gender# THEN 1 END), 0) AS SENDER_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'return' AND DATE_FORMAT(a.return_date, #format#) = #basic#  AND s.gender = #gender# THEN 1 END), 0) AS RETURN_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'approval' AND a.sender_date IS NOT NULL AND DATE_FORMAT(b.receiver_date, #format#) = #basic#  AND R.gender = #gender# THEN 1 END), 0) AS RECEIVER_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'notApproval' AND DATE_FORMAT(a.create_time, #format#) = #basic# AND s.gender = #gender# THEN 1 END), 0) AS SENDER_STAY_CNT
+		  FROM letter a
+		  LEFT OUTER JOIN letter_receiver b ON a.letter_id = b.letter_id
+		  LEFT OUTER JOIN koda_member s ON a.sender_id = s.id 
+		  LEFT OUTER JOIN koda_member r ON b.receiver_id = r.id
+	</select>
+	
+	<select id="LetterDao.selectStatisticAgeList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT #basic# AS gubun
+		      ,CASE WHEN #age# = '10' THEN '0~19'
+		            WHEN #age# = '20' THEN '20대'
+		            WHEN #age# = '30' THEN '30대'
+		            WHEN #age# = '40' THEN '40대'
+		            WHEN #age# = '50' THEN '50대'
+		            WHEN #age# = '60' THEN '60대 이상'
+		       END AS type
+		      ,IFNULL(SUM(CASE WHEN aaa.status = 'approval' AND DATE_FORMAT(aaa.sender_date, #format#) = #basic# AND aaa.s_age=#age# THEN 1 END), 0) AS SENDER_CNT
+		      ,IFNULL(SUM(CASE WHEN aaa.status = 'return' AND DATE_FORMAT(aaa.return_date, #format#) = #basic#  AND aaa.s_age = #age# THEN 1 END), 0) AS RETURN_CNT
+		      ,IFNULL(SUM(CASE WHEN aaa.status = 'approval' AND aaa.sender_date IS NOT NULL AND DATE_FORMAT(aaa.receiver_date, #format#) = #basic#  AND aaa.r_age = #age# THEN 1 END), 0) AS RECEIVER_CNT
+		      ,IFNULL(SUM(CASE WHEN aaa.status = 'notApproval' AND DATE_FORMAT(aaa.create_time, #format#) = #basic# AND aaa.s_age = #age# THEN 1 END), 0) AS SENDER_STAY_CNT
+		  FROM (SELECT aa.status 
+					  ,aa.create_time 
+				      ,aa.sender_date 
+				      ,aa.return_date
+				      ,aa.receiver_date
+				      ,CASE WHEN aa.s_age <![CDATA[<]]> 20 THEN '10' 
+				            WHEN aa.s_age <![CDATA[<]]> 30 THEN '20'
+				            WHEN aa.s_age <![CDATA[<]]> 40 THEN '30'
+				            WHEN aa.s_age <![CDATA[<]]> 50 THEN '40'
+				            WHEN aa.s_age <![CDATA[<]]> 60 THEN '50'
+				            ELSE '60'
+				       END s_age
+				      ,CASE WHEN aa.r_age <![CDATA[<]]> 20 THEN '10' 
+				            WHEN aa.r_age <![CDATA[<]]> 30 THEN '20'
+				            WHEN aa.r_age <![CDATA[<]]> 40 THEN '30'
+				            WHEN aa.r_age <![CDATA[<]]> 50 THEN '40'
+				            WHEN aa.r_age <![CDATA[<]]> 60 THEN '50'
+				            ELSE '60'
+				       END r_age
+				  FROM (SELECT a.status 
+							  ,a.create_time 
+						      ,a.sender_date 
+						      ,a.return_date
+						      ,b.receiver_date
+						      ,period_diff(DATE_FORMAT(a.create_time, '%Y%m'), DATE_FORMAT(s.birthday, '%Y%m'))/12 AS s_age
+						      ,period_diff(DATE_FORMAT(a.create_time, '%Y%m'), DATE_FORMAT(r.birthday, '%Y%m'))/12 AS r_age
+						  FROM letter a
+						  LEFT OUTER JOIN letter_receiver b ON a.letter_id = b.letter_id
+						  LEFT OUTER JOIN koda_member s ON a.sender_id = s.id 
+						  LEFT OUTER JOIN koda_member r ON b.receiver_id = r.id
+					    ) aa
+		  		) aaa
+	</select>
+	
+	<select id="LetterDao.selectStatisticMemberTypeList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT #basic# AS gubun
+		      ,CASE WHEN #memberType# = 'B' THEN '기증자가족'
+		            WHEN #memberType# = 'D' THEN '수혜자'
+		       END AS type
+		      ,IFNULL(SUM(CASE WHEN a.status = 'approval' AND DATE_FORMAT(a.sender_date, #format#) = #basic# AND s.gubn=#memberType# THEN 1 END), 0) AS SENDER_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'return' AND DATE_FORMAT(a.return_date, #format#) = #basic#  AND s.gubn=#memberType# THEN 1 END), 0) AS RETURN_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'approval' AND a.sender_date IS NOT NULL AND DATE_FORMAT(b.receiver_date, #format#) = #basic#  AND r.gubn=#memberType# THEN 1 END), 0) AS RECEIVER_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'notApproval' AND DATE_FORMAT(a.create_time, #format#) = #basic# AND s.gubn=#memberType# THEN 1 END), 0) AS SENDER_STAY_CNT
+		  FROM letter a
+		  LEFT OUTER JOIN letter_receiver b ON a.letter_id = b.letter_id
+		  LEFT OUTER JOIN koda_member s ON a.sender_id = s.id 
+		  LEFT OUTER JOIN koda_member r ON b.receiver_id = r.id
+	</select>
+	
+	<select id="LetterDao.selectStatisticDonorRelationList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT #basic# AS gubun
+			  ,(SELECT z.name FROM common z where z.gubn='01' AND z.code=#donorType#) AS type
+		      ,IFNULL(SUM(CASE WHEN a.status = 'approval' AND DATE_FORMAT(a.sender_date, #format#) = #basic# AND (d.donor_relation=#donorType# OR f.donor_relation=#donorType#) THEN 1 END), 0) AS SENDER_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'return' AND DATE_FORMAT(a.return_date, #format#) = #basic# AND (d.donor_relation=#donorType# OR f.donor_relation=#donorType#) THEN 1 END), 0) AS RETURN_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'approval' AND a.sender_date IS NOT NULL AND DATE_FORMAT(b.receiver_date, #format#) = #basic# AND (d.donor_relation=#donorType# OR f.donor_relation=#donorType#) THEN 1 END), 0) AS RECEIVER_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'notApproval' AND DATE_FORMAT(a.create_time, #format#) = #basic# AND (d.donor_relation=#donorType# OR f.donor_relation=#donorType#) THEN 1 END), 0) AS SENDER_STAY_CNT
+		  FROM letter a
+		  LEFT OUTER JOIN letter_receiver b ON a.letter_id=b.letter_id
+		  LEFT OUTER JOIN koda_member c on a.sender_id=c.id
+		  LEFT OUTER JOIN donor_list d ON c.id=d.id
+		  LEFT OUTER JOIN koda_member e ON b.receiver_id=e.id
+		  LEFT OUTER JOIN donor_list f ON e.id=f.id
+	</select>
+	
+	<select id="LetterDao.selectStatisticBenefitOrganList" parameterClass="java.util.Map" resultClass="java.util.HashMap">
+		SELECT #basic# AS gubun
+		      ,(SELECT z.name FROM common z where z.gubn='02' AND z.code=#benefitOrganType#) AS type
+		      ,IFNULL(SUM(CASE WHEN a.status = 'approval' AND DATE_FORMAT(a.sender_date, #format#) = #basic# AND (d.benefi_parts=#benefitOrganType# OR f.benefi_parts=#benefitOrganType#) THEN 1 END), 0) AS SENDER_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'return' AND DATE_FORMAT(a.return_date, #format#) = #basic# AND (d.benefi_parts=#benefitOrganType# OR f.benefi_parts=#benefitOrganType#) THEN 1 END), 0) AS RETURN_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'approval' AND a.sender_date IS NOT NULL AND DATE_FORMAT(b.receiver_date, #format#) = #basic# AND (d.benefi_parts=#benefitOrganType# OR f.benefi_parts=#benefitOrganType#) THEN 1 END), 0) AS RECEIVER_CNT
+		      ,IFNULL(SUM(CASE WHEN a.status = 'notApproval' AND DATE_FORMAT(a.create_time, #format#) = #basic# AND (d.benefi_parts=#benefitOrganType# OR f.benefi_parts=#benefitOrganType#) THEN 1 END), 0) AS SENDER_STAY_CNT
+		  FROM letter a
+		  LEFT OUTER JOIN letter_receiver b ON a.letter_id=b.letter_id
+		  LEFT OUTER JOIN koda_member c on a.sender_id=c.id
+		  LEFT OUTER JOIN benefi_list d ON c.id=d.id
+		  LEFT OUTER JOIN koda_member e ON b.receiver_id=e.id
+		  LEFT OUTER JOIN benefi_list f ON e.id=f.id;
+	</select>
+
+
+
 
 </sqlMap>

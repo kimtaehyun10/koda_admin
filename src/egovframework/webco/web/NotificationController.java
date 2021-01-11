@@ -876,9 +876,14 @@ public class NotificationController {
 				notificationService.organScheduleUpdateEnd(commandMap);
 				msg = "수정 완료";
 			}else if("sch_insert".equals(commandMap.get("type"))){
-				//schedule 테이블 insert
+				//schedule 테이블 insert				
 				endIdx = notificationService.scheduleEndIdx();				
-				commandMap.put("sch_no", endIdx+1);				
+				commandMap.put("sch_no", endIdx+1);
+				//관련글이 없을 때 
+				if(commandMap.get("sch_link_no").equals("") || commandMap.get("sch_link_no") == null){
+					commandMap.put("sch_link_no", 0);
+				}				
+				//
 				notificationService.organScheduleInsertEnd(commandMap);
 				msg = "등록 완료";
 			}
@@ -1215,7 +1220,20 @@ public class NotificationController {
     	return "notification/update/surveyUpdateForm";	 	
 	}
 
- 	// koda인재채용
+ 	// 설문조사 삭제 end
+ 	@RequestMapping("/notification/surveyDeleteEnd.do")
+	@ResponseBody
+	public String surveyDeleteEnd(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{
+		
+ 		notificationService.surveyDeleteEnd(commandMap);
+ 		notificationService.surveyItemDeleteEnd(commandMap);
+		String msg = "삭제 완료";
+		adminService.insertActHist("D", "[설문조사]삭제 완료");
+		
+    	return msg;	 	
+	}
+
+ 	// 채용
 	@RequestMapping("/notification/hire.do")
 	public String hire(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{
 		
@@ -1260,7 +1278,7 @@ public class NotificationController {
     	
 		return "notification/hire";	 	
 	}
-	// koda인재채용 등록 form
+	// 채용 등록 form
  	@RequestMapping("/notification/hireWriteForm.do")
 	public String hireWriteForm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{
 		
@@ -1269,7 +1287,7 @@ public class NotificationController {
     	return "notification/write/hireWriteForm";	 	
 	}
 
- 	// koda인재채용 수정 form
+ 	// 채용 수정 form
  	@RequestMapping("/notification/hireUpdateForm.do")
 	public String hireUpdateForm(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{
 		
@@ -1280,6 +1298,8 @@ public class NotificationController {
 		
     	return "notification/update/hireUpdateForm";	 	
 	}
+ 	
+ 	
 }
 
         

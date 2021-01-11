@@ -109,7 +109,7 @@ response.setDateHeader("Expires",0);
 					                      <th>제목</th>
 					                      <th>시작일</th>
 					                      <th>종료일</th>
-					                      <th>관련 글 제목</th>					                      					                      					                      					                      
+					                      <th>관련 행사 제목</th>					                      					                      					                      					                      
 					                      <th>등록일</th>					                      
 					                      <th>조회수</th>					                      
 					                      <th>관리</th>
