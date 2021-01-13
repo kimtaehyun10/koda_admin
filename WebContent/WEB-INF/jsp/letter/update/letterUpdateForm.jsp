@@ -5,6 +5,7 @@
 <%@taglib prefix="ajax" uri="http://ajaxtags.sourceforge.net/tags/ajaxtags"%>
 <%@ taglib prefix="ui" uri="http://egovframework.gov/ctl/ui"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <%
 response.setHeader("Cache-Control","no-store");   
 response.setHeader("Pragma","no-cache");   
@@ -86,20 +87,27 @@ response.setDateHeader("Expires",0);
                                        	<input id="letter_title" name="letter_title" type="text" class="form-control input-sm" placeholder="" value="${letter.title }">
                                    	</div>
                            		</div>
-                           	
-                           		<div class="form-group">
-                            		<label class="col-md-1 control-label">스킨</label>
-                                    <div class="col-md-11">
-                                    	<c:forEach var="letterSkin" items="${letterSkinList }" varStatus="status">
-                                    		<label class="mt-checkbox">
-                                    			${letterSkin.letter_skin_name }
-                                    			<input name="letter_skin_id" type="radio" class="input-sm" value="${letterSkin.letter_skin_id }" <c:if test="${letterSkin.letter_skin_id eq letter.skin_id }"> checked </c:if>>
-                                    			<span></span>
-                                    		</label>
-                                    	</c:forEach>
-                                    </div>
-                            	</div>
-                           	
+                           		
+                           		<c:if test="${letter.admin_reply_yn ne 'Y' }">
+                                	<div class="form-group">
+	                            		<label class="col-md-1 control-label">스킨</label>
+	                                    <div class="col-md-11">
+	                                    	<label class="mt-checkbox">
+	                                   			없음
+	                                   			<input id="no_skin" name="letter_skin_id" type="radio" class="input-sm" value="no" checked>
+	                                   			<span></span>
+	                                   		</label>
+	                                    	<c:forEach var="letterSkin" items="${letterSkinList }" varStatus="status">
+	                                    		<label class="mt-checkbox">
+	                                    			${letterSkin.letter_skin_name }
+	                                    			<input name="letter_skin_id" type="radio" class="input-sm" value="${letterSkin.letter_skin_id }" <c:if test="${letterSkin.letter_skin_id eq letter.skin_id }"> checked </c:if>>
+	                                    			<span></span>
+	                                    		</label>
+	                                    	</c:forEach>
+	                                    </div>
+	                            	</div>                           	                           		
+                                </c:if>                           		
+                           		                          	
                            		<div class="form-group">
 		                        	<label class="col-md-1 control-label">내용</label>
 	                           		<div class="col-md-11">
@@ -181,7 +189,7 @@ response.setDateHeader("Expires",0);
 						            <c:if test="${letter.status ne 'approval' && letter.status ne 'return' }">
 										<input type="submit" class="btn blue" value="수정"/>
 									</c:if>
-									<input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기">
+									<!-- <input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기"> -->
 						        </div>
 			                </div>
 						</div>
@@ -215,7 +223,11 @@ response.setDateHeader("Expires",0);
                    </div>
                    <div class="row">
                       	<div class="col-md-2"><strong>내용</strong></div>
-                      	<div class="col-md-10"><span id="letter_preview_content"></span></div>
+                      	<div class="col-md-10">
+                      		<div id="letter_preview_skin">
+                      			<span id="letter_preview_content"></span>
+                      		</div>
+                      	</div>
                    </div>
                    <div class="row">
                       	<div class="col-md-2"><strong>파일 #1</strong></div>
@@ -238,6 +250,8 @@ response.setDateHeader("Expires",0);
 </div>
 
 
+
+
 <!-- END CONTAINER -->
 <c:import url="/webBottom.do" charEncoding="UTF-8"></c:import>
 <script src="${pageContext.request.contextPath}/common/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
@@ -256,8 +270,7 @@ $(document).ready(function() {
 	} else {
 		chkReadOnly = true;
 	}
-	
-    CKEDITOR.replace('letter_content', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:200});
+    CKEDITOR.replace('letter_content', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:450});
     CKEDITOR.replace('letter_return_reason', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:150, readOnly:chkReadOnly});
     
     $(':radio[name="letter_status"]').click(function(event) {
@@ -270,6 +283,50 @@ $(document).ready(function() {
     		CKEDITOR.instances.letter_return_reason.setReadOnly(true);
     	}
     });
+    
+    var preValue = $("input[name='letter_skin_id']:checked").val(); //스킨 클릭 이벤트 발생 전 선택된 값
+    
+    $("input:radio[name=letter_skin_id]").click(function() {
+    	
+    	if(!confirm('스킨변경시 글 내용이 초기화됩니다 진행하시겠습니까?')){
+    		
+    		$("input[name='letter_skin_id']:radio[value='" + preValue + "']").prop('checked', true);    		
+    		return;
+    	}
+    	
+		var radioVal = $('input[name="letter_skin_id"]:checked').val();
+		if(radioVal === 'no'){			
+			CKEDITOR.instances.letter_content.setData('');
+			preValue = $("input[name='letter_skin_id']:checked").val(); //스킨 클릭 이벤트 발생 전 선택된 값 재 설정
+			return;
+		}
+		$.ajax({
+			url: "<c:url value='/mailbox/letterPreview.do'/>",
+		    type: 'post',
+		    contentType: "application/x-www-form-urlencoded; charset=UTF-8",           
+		    dataType: "json",
+		    data: {
+		    	letter_skin_id: radioVal
+			},
+		    success: function(data) {		    			    	
+		    	var html1 = '';
+		    	html1 += '<table border="0" cellpadding="0" cellspacing="0" height="1733" width="1200">'
+		    	html1 += '<tr style="background-image:url(/imageView.do?imageName='+data.letter_skin_file_nm+'); background-repeat:no-repeat;">'
+		    	html1 += '<td style="padding:20px 35px;" valign="top">'
+		    	html1 += '</td>'
+		    	html1 += '</tr>'
+		    	html1 += '</table>'
+		    	CKEDITOR.instances.letter_content.setData(html1);
+		    	
+		    	preValue = $("input[name='letter_skin_id']:checked").val(); //스킨 클릭 이벤트 발생 전 선택된 값 재 설정
+		   	},
+		   	error: function(xhr, desc, err) {
+		    	
+		    }
+		});
+		
+    });
+    
 });
 
 function fnLetterSenderSearchPopup() {
@@ -316,7 +373,7 @@ function fnList() {
 
 function fnPreview() {
 	$.ajax({
-		url: "<c:url value='/mailbox/letterPreview.do'/>",
+		url: "<c:url value='/mailbox/letterPreviewImage.do'/>",
 	    type: 'post',
 	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",           
 	    dataType: "json",
@@ -325,7 +382,12 @@ function fnPreview() {
 	    	letter_skin_id: $(':radio[name="letter_skin_id"]:checked').val()
 		},
 	    success: function(data) {
+	    	var imgUrl = data.skinImage;
 	    	var cont = data.letter_content.replace('{내용}', CKEDITOR.instances.letter_content.getData());
+	    	$("#letter_preview_skin").css({"background":"url("+imgUrl+")"}); 	
+	    	$("#letter_preview_skin").css("width","100%"); 	
+	    	$("#letter_preview_skin").css("height","100%"); 	
+	    	$("#letter_preview_skin").css("background-repeat","round"); 
 	    	$('#letter_preview_content').html(cont);
 	    	$('#letter_preview_sender').text($('#sender_name').val());
 	    	$('#letter_preview_receiver').text($('#letter_receiver_name').val());

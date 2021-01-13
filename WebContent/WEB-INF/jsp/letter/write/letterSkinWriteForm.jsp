@@ -59,24 +59,19 @@ response.setDateHeader("Expires",0);
                                     	<input type="text" id="letter_skin_name" name="letter_skin_name" class="form-control input-sm" placeholder="" value=""/>
                                     </div>
                                 </div>
-                                <div class="form-group">
-                                    <label class="col-md-1 control-label"></label>
-                                    <div class="col-md-11">
-                                    	<b>※ 내용에는 반드시 {내용} 이라는 말이 들어가야 스킨이 적용됩니다.</b> 
-                                    </div>
-                                </div>
-                               	<div class="form-group">
-                                    <label class="col-md-1 control-label">스킨 내용</label>
-                                    <div class="col-md-11">
-                                    	<textarea class="ckeditor" id="letter_content" name="letter_content"></textarea>
-                                    </div>
-                                </div>
                                 <div class="form-group">                         
-                                    <label class="col-md-1 control-label">작은 이미지</label>
+                                    <label class="col-md-1 control-label">스킨 이미지</label>
                                     <div class="col-md-5">                                        
 										<input type="file" id="letter_skin_file_org_nm" name="letter_skin_file_org_nm" size="34"/>
                                     </div>                                                                                                          
+                                </div>                                
+                               	<div class="form-group">
+                                    <label class="col-md-1 control-label">내용</label>
+                                    <div class="col-md-11">
+                                    	<textarea class="ckeditor" id="letter_content" name="letter_content" readonly></textarea>
+                                    </div>
                                 </div>
+                                
                             </div>
 	                    	<div class="col-md-12 text-center">
 	                        	<input type="button" class="btn green" onclick="javascript:fnSubmit();" value="저장" />
@@ -116,7 +111,11 @@ function fnSubmit() {
 		return;
 	}
 	
-	var skinContent = CKEDITOR.instances.letter_content.getData().trim();
+	if(!$('#letter_skin_file_org_nm').val()){
+		alert('스킨 이지미 등록해주세요');
+	}
+		
+	/* 		var skinContent = CKEDITOR.instances.letter_content.getData().trim();
 	if(skinContent === '') {
 		alert('편지지 스킨 내용을 입력하여 주시기 바랍니다.');
 		return;
@@ -131,7 +130,7 @@ function fnSubmit() {
 	if(cnt !== 1) {
 		alert('스킨 내용 중에 {내용} 이 2개 이상 입력되어 있습니다.');
 		return;
-	}
+	} */
 	
 	$.ajax({
         url : '<c:url value="/mailbox/ajaxDuplicateSkinName.do"/>',

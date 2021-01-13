@@ -60,26 +60,22 @@ response.setDateHeader("Expires",0);
                                     	<input type="text" id="letter_skin_name" name="letter_skin_name" value="${letterSkin.letter_skin_name }" />
                                     </div>
                                 </div>
-                               	<div class="form-group">
-                                    <label class="col-md-1 control-label">편지지 스킨</label>
-                                    <div class="col-md-11">
-                                    	<textarea class="ckeditor" id="letter_content" name="letter_content">${letterSkin.letter_content }</textarea>
-                                    </div>
-                                </div>
                                 <div class="form-group">                         
-                                    <label class="col-md-1 control-label">작은 이미지</label>
-                                    <div class="col-md-11">
-                                    	<div class="col-md-3">
-											<input type="file" id="letter_skin_file_org_nm" name="letter_skin_file_org_nm" size="34"/>
-										</div>
-										<div class="col-md-8">
-											<c:if test="${not empty letterSkin.letter_skin_file_org_nm }">
-												<input type="checkbox" name="delFile1" id="delFile1"/> 파일 삭제 (${letterSkin.letter_skin_file_org_nm })<br />
-												※ 파일을 삭제하지 않으셨더라도 파일을 추가하신다면 자동으로 삭제됩니다.
-											</c:if>
-										</div>
+                                    <label class="col-md-1 control-label">스킨 이미지</label>
+                                    <div class="col-md-11">                                   	
+										<input type="file" id="letter_skin_file_org_nm" name="letter_skin_file_org_nm" size="34"/>
+
+										<c:if test="${not empty letterSkin.letter_skin_file_org_nm }">
+											<input type="checkbox" name="delFile1" id="delFile1"/ hidden> 이미지 (${letterSkin.letter_skin_file_org_nm })<br />											
+										</c:if>									
                                     </div>                                                                                                          
                                 </div>
+                               	<div class="form-group">
+                                    <label class="col-md-1 control-label">내용</label>
+                                    <div class="col-md-11">
+                                    	<textarea class="ckeditor" id="letter_content" name="letter_content" readonly>${letterSkin.letter_content }</textarea>
+                                    </div>
+                                </div>                                
                             </div>
 	                    	<div class="col-md-12 text-center">
 	                    		<input type="button" class="btn green" value="수정" onclick="javascript:fnSubmit();" />
@@ -119,7 +115,7 @@ function fnSubmit() {
 		return;
 	}
 	
-	var skinContent = CKEDITOR.instances.letter_content.getData().trim();
+	/* var skinContent = CKEDITOR.instances.letter_content.getData().trim();
 	if(skinContent === '') {
 		alert('편지지 스킨 내용을 입력하여 주시기 바랍니다.');
 		return;
@@ -134,7 +130,7 @@ function fnSubmit() {
 	if(cnt !== 1) {
 		alert('스킨 내용 중에 {내용} 이 2개 이상 입력되어 있습니다.');
 		return;
-	}
+	} */
 	
 	$.ajax({
         url : '<c:url value="/mailbox/ajaxDuplicateSkinName.do"/>',

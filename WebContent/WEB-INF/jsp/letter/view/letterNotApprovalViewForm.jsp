@@ -188,7 +188,11 @@ response.setDateHeader("Expires",0);
                    </div>
                    <div class="row">
                       	<div class="col-md-2"><strong>내용</strong></div>
-                      	<div class="col-md-10"><span id="letter_preview_content"></span></div>
+                      	<div class="col-md-10">
+                      		<div id="letter_preview_skin">
+                      			<span id="letter_preview_content"></span>
+                      		</div>
+                      	</div>
                    </div>
                    <div class="row">
                       	<div class="col-md-2"><strong>파일 #1</strong></div>
@@ -255,7 +259,7 @@ function fnFiledown(type, letter_id, letter_file_seq) {
 
 function fnPreview() {
 	$.ajax({
-		url: "<c:url value='/mailbox/letterPreview.do'/>",
+		url: "<c:url value='/mailbox/letterPreviewImage.do'/>",
 	    type: 'post',
 	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",           
 	    dataType: "json",
@@ -263,7 +267,12 @@ function fnPreview() {
 	    	letter_skin_id: $('#skin_id').val()
 		},
 	    success: function(data) {
+	    	var imgUrl = data.skinImage;
 	    	var cont = data.letter_content.replace('{내용}', $("#content").val());
+	    	$("#letter_preview_skin").css({"background":"url("+imgUrl+")"}); 	
+	    	$("#letter_preview_skin").css("width","100%"); 	
+	    	$("#letter_preview_skin").css("height","100%"); 	
+	    	$("#letter_preview_skin").css("background-repeat","round"); 
 	    	$('#letter_preview_content').html(cont);
 	    	$('#letter_preview_sender').text($('#sender_name').val());
 	    	$('#letter_preview_receiver').text($('#receiver_name').val());

@@ -57,7 +57,7 @@ response.setDateHeader("Expires",0);
                     	<input type="hidden" name="admin_reply_yn" value="Y" />
 				        <div class="row">
                            	<div class="col-md-12">
-                           		<div class="form-group">
+                           		<div class="form-group">                           			
                            			<label class="col-md-1 control-label">보내는사람</label>
                                    	<div class="col-md-8">
                                     	<input id="sender_id" name="sender_id" type="hidden" class="form-control input-sm" placeholder="" value=""/>
@@ -80,31 +80,19 @@ response.setDateHeader("Expires",0);
                                    	<div class="col-md-11">
                                        	<input id="letter_title" name="letter_title" type="text" class="form-control input-sm" placeholder="" value="[RE] ${letter.title } ">
                                    	</div>
-                           		</div>
-                           	
-                           		<div class="form-group">
-                            		<label class="col-md-1 control-label">스킨</label>
-                                    <div class="col-md-11">
-                                    	<c:forEach var="letterSkin" items="${letterSkinList }" varStatus="status">
-                                    		<label class="mt-checkbox">
-                                    			${letterSkin.letter_skin_name }
-                                    			<input id="letter_skin_id" name="letter_skin_id" type="radio" class="input-sm" value="${letterSkin.letter_skin_id }" <c:if test="${status.index eq 0 }"> checked </c:if>>
-                                    			<span></span>
-                                    		</label>
-                                    	</c:forEach>
-                                    </div>
-                            	</div>
+                           		</div>                           	                           		
                            	
                            		<div class="form-group">
 		                        	<label class="col-md-1 control-label">내용</label>
 	                           		<div class="col-md-11">
 			                        	<textarea class="ckeditor" id="letter_content" name="letter_content">
-			                        		<br />
+			                        		
+			                        		<%-- <br />
 				                        	==================================================================<br />
 				                        	<b>From</b>:${letter.sender_name }<br />
 				                        	<b>Send</b>:${letter.sender_date }<br />
 				                        	<b>Subject</b>:${letter.title }<br />
-				                        	${letter.content }
+				                        	${letter.content } --%>
 			                        	</textarea>
                           			</div>
                       			</div>
@@ -153,7 +141,7 @@ response.setDateHeader("Expires",0);
                             <div class="col-md-offset-5 col-md-7">
 								<input type="submit" class="btn green" value="저장"/>
 								<input type="button" class="btn green" name="list" id="list" onClick="javascript:fnList();" value="목록으로">
-								<input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기">
+								<!-- <input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기"> -->
 							</div>
 						</div>
 						</form>
@@ -187,7 +175,11 @@ response.setDateHeader("Expires",0);
                    </div>
                    <div class="row">
                       	<div class="col-md-2"><strong>내용</strong></div>
-                      	<div class="col-md-10"><span id="letter_preview_content"></span></div>
+                      	<div class="col-md-10">
+                      		<div id="letter_preview_skin">
+                      			<span id="letter_preview_content"></span>
+                      		</div>
+                      	</div>
                    </div>
                    <div class="row">
                       	<div class="col-md-2"><strong>파일 #1</strong></div>
@@ -220,9 +212,8 @@ response.setDateHeader("Expires",0);
 
 <script>
 $(document).ready(function() {
-    CKEDITOR.replace('letter_content', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:200});
+    CKEDITOR.replace('letter_content', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:450});
     CKEDITOR.replace('letter_return_reason', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:150, readOnly:true});
-    
     
     $(':radio[name="letter_status"]').click(function(event) {
     	var letter_status = $(':radio[name="letter_status"]:checked').val();
@@ -233,7 +224,8 @@ $(document).ready(function() {
     		CKEDITOR.instances.letter_return_reason.setData("");
     		CKEDITOR.instances.letter_return_reason.setReadOnly(true);
     	}
-    });
+    });        
+    
 });
 
 function fnList() {
@@ -267,7 +259,7 @@ function fnLetterAdminSearchReset() {
 
 function fnPreview() {
 	$.ajax({
-		url: "<c:url value='/mailbox/letterPreview.do'/>",
+		url: "<c:url value='/mailbox/letterPreviewImage.do'/>",
 	    type: 'post',
 	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",           
 	    dataType: "json",
@@ -276,7 +268,12 @@ function fnPreview() {
 	    	letter_skin_id: $(':radio[name="letter_skin_id"]:checked').val()
 		},
 	    success: function(data) {
-	    	var cont = data.letter_content.replace('{내용}',  CKEDITOR.instances.letter_content.getData());
+	    	var imgUrl = data.skinImage;
+	    	var cont = data.letter_content.replace('{내용}', CKEDITOR.instances.letter_content.getData());
+	    	$("#letter_preview_skin").css({"background":"url("+imgUrl+")"}); 	
+	    	$("#letter_preview_skin").css("width","100%"); 	
+	    	$("#letter_preview_skin").css("height","100%"); 	
+	    	$("#letter_preview_skin").css("background-repeat","round"); 
 	    	$('#letter_preview_content').html(cont);
 	    	$('#letter_preview_sender').text($('#sender_name').val());
 	    	$('#letter_preview_receiver').text($('#letter_receiver_name').val());

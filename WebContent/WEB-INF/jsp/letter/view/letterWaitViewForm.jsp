@@ -79,6 +79,7 @@ response.setDateHeader("Expires",0);
                            		<div class="form-group">
                             		<label class="col-md-1 control-label">스킨명</label>
                                     <div class="col-md-11">
+                                    	<input type="hidden" id="skin_id" value="${letter.skin_id }" />
                                     	<c:forEach var="letterSkin" items="${letterSkinList }" varStatus="status">
                                     		<c:if test="${letterSkin.letter_skin_id eq letter.skin_id }">${letterSkin.letter_skin_name }</c:if>
                                     	</c:forEach>
@@ -187,7 +188,11 @@ response.setDateHeader("Expires",0);
                    </div>
                    <div class="row">
                       	<div class="col-md-2"><strong>내용</strong></div>
-                      	<div class="col-md-10"><span id="letter_preview_content"></span></div>
+                      	<div class="col-md-10">
+                      		<div id="letter_preview_skin">
+                      			<span id="letter_preview_content"></span>
+                      		</div>
+                      	</div>
                    </div>
                    <div class="row">
                       	<div class="col-md-2"><strong>파일 #1</strong></div>
@@ -254,16 +259,21 @@ function fnFiledown(type, letter_id, letter_file_seq) {
 
 function fnPreview() {
 	$.ajax({
-		url: "<c:url value='/mailbox/letterPreview.do'/>",
+		url: "<c:url value='/mailbox/letterPreviewImage.do'/>",
 	    type: 'post',
 	    contentType: "application/x-www-form-urlencoded; charset=UTF-8",           
 	    dataType: "json",
 	    data: {
 	    	letter_id: '${letter.letter_id}',
-	    	letter_skin_id: $(':radio[name="letter_skin_id"]:checked').val()
+	    	letter_skin_id: $("#skin_id").val()
 		},
 	    success: function(data) {
+	    	var imgUrl = data.skinImage;
 	    	var cont = data.letter_content.replace('{내용}', $("#content").val());
+	    	$("#letter_preview_skin").css({"background":"url("+imgUrl+")"}); 	
+	    	$("#letter_preview_skin").css("width","100%"); 	
+	    	$("#letter_preview_skin").css("height","100%"); 	
+	    	$("#letter_preview_skin").css("background-repeat","round"); 	
 	    	$('#letter_preview_content').html(cont);
 	    	$('#letter_preview_sender').text($('#sender_name').val());
 	    	$('#letter_preview_receiver').text($('#receiver_name').val());

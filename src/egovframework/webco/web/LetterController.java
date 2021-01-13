@@ -1,7 +1,10 @@
 package egovframework.webco.web;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -9,9 +12,11 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Resource;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -337,6 +342,57 @@ public class LetterController {
 			throws Exception {
 		List<Map<String, Object>> letterSkinList = letterService.selectLetterSkinList(commandMap);
 		Map<String, Object> letterSkin = letterSkinList.get(0);
+		
+		return CommonUtil.getJsonStringFromMap(letterSkin);
+	}
+	
+	/**
+	 * 생명나눔 우체통 > 우체통관리, 발신대기함, 미승인대기목록 > 편지쓰기 > 미리보기
+	 * 
+	 * @param model
+	 * @param commandMap
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/mailbox/letterPreviewImage.do")
+	public @ResponseBody JSONObject letterPreviewImage(ModelMap model, @RequestParam Map<String, Object> commandMap)
+			throws Exception {
+		List<Map<String, Object>> letterSkinList = letterService.selectLetterSkinList(commandMap);
+		Map<String, Object> letterSkin = letterSkinList.get(0);
+		
+		if(letterSkin.get("letter_skin_file_nm") != null) {
+			String path = fileStorePath+"/";
+			String fileName = letterSkin.get("letter_skin_file_nm").toString();
+			String fileFullPath = path+fileName;
+			String fileExtName = fileName.substring( fileName.lastIndexOf(".") + 1);
+			
+			File file = new File(path+fileName);
+			String content = "";
+			
+			if(file.isFile()){
+				
+				byte[] buf = new byte[1024];
+				String imgBuf = "";
+				int len = 0;
+				
+				FileInputStream inputStream = new FileInputStream(file);
+				ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream();
+				
+				while( (len = inputStream.read(buf)) != -1 ) {
+					byteOutStream.write(buf, 0, len);
+				}
+				
+				byte[] fileArray = byteOutStream.toByteArray();
+				imgBuf = new String( Base64.encodeBase64(fileArray));
+				
+				String changeString = "data:image/"+ fileExtName +";base64,"+ imgBuf;
+				content = content.replace(fileFullPath, changeString);
+				letterSkin.put("skinImage", changeString);
+			}
+		} else {
+			letterSkin.put("skinImage", "");
+		}
+		
 		return CommonUtil.getJsonStringFromMap(letterSkin);
 	}
 
