@@ -142,7 +142,7 @@ response.setDateHeader("Expires",0);
                             <div class="col-md-offset-5 col-md-7">
 								<input type="button" class="btn green" onClick="javascript:fnSubmit();" value="저장"/>
 								<input type="button" class="btn green" onClick="javascript:fnList();" value="목록으로">
-								<input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기">
+								<!-- <input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기"> -->
 							</div>
 						</div>
 						</form>
@@ -214,7 +214,7 @@ response.setDateHeader("Expires",0);
 
 <script>
 $(document).ready(function() {
-    CKEDITOR.replace('letter_content', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:200});
+    CKEDITOR.replace('letter_content', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:450});
     CKEDITOR.replace('letter_return_reason', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:150, readOnly:true});
     
     $(':radio[name="letter_status"]').click(function(event) {
@@ -226,6 +226,47 @@ $(document).ready(function() {
     		CKEDITOR.instances.letter_return_reason.setData("");
     		CKEDITOR.instances.letter_return_reason.setReadOnly(true);
     	}
+    });
+    
+	$("input:radio[name=letter_skin_id]").click(function() {
+    	
+    	if(!confirm('스킨변경시 글 내용이 초기화됩니다 진행하시겠습니까?')){
+    		
+    		$("input[name='letter_skin_id']:radio[value='" + preValue + "']").prop('checked', true);    		
+    		return;
+    	}
+    	
+		var radioVal = $('input[name="letter_skin_id"]:checked').val();
+		if(radioVal === 'no'){			
+			CKEDITOR.instances.letter_content.setData('');
+			preValue = $("input[name='letter_skin_id']:checked").val(); //스킨 클릭 이벤트 발생 전 선택된 값 재 설정			
+			return;
+		}
+		$.ajax({
+			url: "<c:url value='/mailbox/letterPreview.do'/>",
+		    type: 'post',
+		    contentType: "application/x-www-form-urlencoded; charset=UTF-8",           
+		    dataType: "json",
+		    data: {
+		    	letter_skin_id: radioVal
+			},
+		    success: function(data) {		    			    	
+		    	var html1 = '';
+		    	html1 += '<table border="0" cellpadding="0" cellspacing="0" height="1733" width="1100">'
+		    	html1 += '<tr style="background-image:url(/imageView.do?imageName='+data.letter_skin_file_nm+'); background-repeat:no-repeat;">'
+		    	html1 += '<td style="padding:20px 35px;" valign="top">'
+		    	html1 += '</td>'
+		    	html1 += '</tr>'
+		    	html1 += '</table>'
+		    	CKEDITOR.instances.letter_content.setData(html1);
+		    	
+		    	preValue = $("input[name='letter_skin_id']:checked").val(); //스킨 클릭 이벤트 발생 전 선택된 값 재 설정
+		   	},
+		   	error: function(xhr, desc, err) {
+		    	
+		    }
+		});
+		
     });
 });
 

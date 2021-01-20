@@ -82,28 +82,15 @@ response.setDateHeader("Expires",0);
                            		</div>
                            	
                            		<div class="form-group">
-                            		<label class="col-md-1 control-label">스킨</label>
-                                    <div class="col-md-11">
-                                    	<c:forEach var="letterSkin" items="${letterSkinList }" varStatus="status">
-                                    		<label class="mt-checkbox">
-                                    			${letterSkin.letter_skin_name }
-                                    			<input id="letter_skin_id" name="letter_skin_id" type="radio" class="input-sm" value="${letterSkin.letter_skin_id }" <c:if test="${status.index eq 0 }"> checked </c:if>>
-                                    			<span></span>
-                                    		</label>
-                                    	</c:forEach>
-                                    </div>
-                            	</div>
-                           	
-                           		<div class="form-group">
 		                        	<label class="col-md-1 control-label">내용</label>
 	                           		<div class="col-md-11">
 			                        	<textarea class="ckeditor" id="letter_content" name="letter_content">
-			                        		<br />
+			                        		<%-- <br />
 				                        	==================================================================<br />
 				                        	<b>From</b>:${letter.sender_name }<br />
 				                        	<b>Send</b>:${letter.sender_date }<br />
 				                        	<b>Subject</b>:${letter.title }<br />
-				                        	${letter.content }
+				                        	${letter.content } --%>
 			                        	</textarea>
                           			</div>
                       			</div>
@@ -152,7 +139,7 @@ response.setDateHeader("Expires",0);
                             <div class="col-md-offset-5 col-md-7">
 								<input type="submit" class="btn green" value="저장"/>
 								<input type="button" class="btn green" name="list" id="list" onClick="javascript:fnList();" value="목록으로">
-								<input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기">
+								<!-- <input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기"> -->
 							</div>
 						</div>
 						</form>
@@ -223,7 +210,7 @@ response.setDateHeader("Expires",0);
 
 <script>
 $(document).ready(function() {
-    CKEDITOR.replace('letter_content', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:200});
+    CKEDITOR.replace('letter_content', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:450});
     CKEDITOR.replace('letter_return_reason', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:150, readOnly:true});
     
     
@@ -236,6 +223,47 @@ $(document).ready(function() {
     		CKEDITOR.instances.letter_return_reason.setData("");
     		CKEDITOR.instances.letter_return_reason.setReadOnly(true);
     	}
+    });
+    
+	$("input:radio[name=letter_skin_id]").click(function() {
+    	
+    	if(!confirm('스킨변경시 글 내용이 초기화됩니다 진행하시겠습니까?')){
+    		
+    		$("input[name='letter_skin_id']:radio[value='" + preValue + "']").prop('checked', true);    		
+    		return;
+    	}
+    	
+		var radioVal = $('input[name="letter_skin_id"]:checked').val();
+		if(radioVal === 'no'){			
+			CKEDITOR.instances.letter_content.setData('');
+			preValue = $("input[name='letter_skin_id']:checked").val(); //스킨 클릭 이벤트 발생 전 선택된 값 재 설정			
+			return;
+		}
+		$.ajax({
+			url: "<c:url value='/mailbox/letterPreview.do'/>",
+		    type: 'post',
+		    contentType: "application/x-www-form-urlencoded; charset=UTF-8",           
+		    dataType: "json",
+		    data: {
+		    	letter_skin_id: radioVal
+			},
+		    success: function(data) {		    			    	
+		    	var html1 = '';
+		    	html1 += '<table border="0" cellpadding="0" cellspacing="0" height="1733" width="1100">'
+		    	html1 += '<tr style="background-image:url(/imageView.do?imageName='+data.letter_skin_file_nm+'); background-repeat:no-repeat;">'
+		    	html1 += '<td style="padding:20px 35px;" valign="top">'
+		    	html1 += '</td>'
+		    	html1 += '</tr>'
+		    	html1 += '</table>'
+		    	CKEDITOR.instances.letter_content.setData(html1);
+		    	
+		    	preValue = $("input[name='letter_skin_id']:checked").val(); //스킨 클릭 이벤트 발생 전 선택된 값 재 설정
+		   	},
+		   	error: function(xhr, desc, err) {
+		    	
+		    }
+		});
+		
     });
 });
 

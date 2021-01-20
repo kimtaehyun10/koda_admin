@@ -154,7 +154,7 @@ response.setDateHeader("Expires",0);
 								</c:if>
 								<input type="button" class="btn green" name="btnReply" id="btnReply" onClick="javascript:fnLetterReplyForm();" value="답장">
 								<input type="button" class="btn green" name="btnList" id="btnList" onClick="javascript:fnList();" value="목록으로">
-								<input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기">
+								<!-- <input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기"> -->
 							</div>
 						</div>
 						</form>
@@ -225,7 +225,7 @@ response.setDateHeader("Expires",0);
 
 <script>
 $(document).ready(function() {
-    CKEDITOR.replace('letter_content', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:200});
+    CKEDITOR.replace('letter_content', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:450});
     CKEDITOR.replace('letter_return_reason', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:150});
 });
 

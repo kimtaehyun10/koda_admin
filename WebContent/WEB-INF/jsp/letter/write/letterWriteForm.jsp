@@ -257,7 +257,7 @@ $(document).ready(function() {
 			},
 		    success: function(data) {		    			    	
 		    	var html1 = '';
-		    	html1 += '<table border="0" cellpadding="0" cellspacing="0" height="1733" width="1200">'
+		    	html1 += '<table border="0" cellpadding="0" cellspacing="0" height="1733" width="1100">'
 		    	html1 += '<tr style="background-image:url(/imageView.do?imageName='+data.letter_skin_file_nm+'); background-repeat:no-repeat;">'
 		    	html1 += '<td style="padding:20px 35px;" valign="top">'
 		    	html1 += '</td>'

@@ -54,6 +54,7 @@ response.setDateHeader("Expires",0);
                     	<input type="hidden" name="group_id" value="${letter.group_id }" />
                     	<input type="hidden" name="group_order" value="${letter.group_order }" />
                     	<input type="hidden" name="depth" value="${letter.depth }" />
+                    	<input type="hidden" name="admin_reply_yn" value="Y" />
 				        <div class="row">
                            	<div class="col-md-12">
                            		<div class="form-group">
@@ -82,28 +83,15 @@ response.setDateHeader("Expires",0);
                            		</div>
                            	
                            		<div class="form-group">
-                            		<label class="col-md-1 control-label">스킨</label>
-                                    <div class="col-md-11">
-                                    	<c:forEach var="letterSkin" items="${letterSkinList }" varStatus="status">
-                                    		<label class="mt-checkbox">
-                                    			${letterSkin.letter_skin_name }
-                                    			<input id="letter_skin_id" name="letter_skin_id" type="radio" class="input-sm" value="${letterSkin.letter_skin_id }" <c:if test="${status.index eq 0 }"> checked </c:if>>
-                                    			<span></span>
-                                    		</label>
-                                    	</c:forEach>
-                                    </div>
-                            	</div>
-                           	
-                           		<div class="form-group">
 		                        	<label class="col-md-1 control-label">내용</label>
 	                           		<div class="col-md-11">
 			                        	<textarea class="ckeditor" id="letter_content" name="letter_content">
-			                        		<br />
+			                        		<%-- <br />
 				                        	==================================================================<br />
 				                        	<b>From</b>:${letter.sender_name }<br />
 				                        	<b>Send</b>:${letter.sender_date }<br />
 				                        	<b>Subject</b>:${letter.title }<br />
-				                        	${letter.content }
+				                        	${letter.content } --%>
 			                        	</textarea>
                           			</div>
                       			</div>
@@ -152,7 +140,7 @@ response.setDateHeader("Expires",0);
                             <div class="col-md-offset-5 col-md-7">
 								<input type="submit" class="btn green" value="저장"/>
 								<input type="button" class="btn green" name="list" id="list" onClick="javascript:fnList();" value="목록으로">
-								<input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기">
+								<!-- <input type="button" class="btn purple" name="btnPreview" id="btnPreview" onClick="javascript:fnPreview();" value="미리보기"> -->
 							</div>
 						</div>
 						</form>
@@ -223,7 +211,7 @@ response.setDateHeader("Expires",0);
 
 <script>
 $(document).ready(function() {
-    CKEDITOR.replace('letter_content', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:200});
+    CKEDITOR.replace('letter_content', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:450});
     CKEDITOR.replace('letter_return_reason', {filebrowserUploadUrl:'/admin/ckeditorUpload.do',height:150, readOnly:true});
     
     
@@ -237,6 +225,7 @@ $(document).ready(function() {
     		CKEDITOR.instances.letter_return_reason.setReadOnly(true);
     	}
     });
+    
 });
 
 function fnList() {
