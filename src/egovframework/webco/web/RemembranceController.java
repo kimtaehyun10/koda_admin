@@ -1,10 +1,13 @@
 package egovframework.webco.web;
 
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -18,7 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
+import egovframework.com.cmm.service.EgovProperties;
 import egovframework.com.utl.fcc.service.EgovStringUtil;
 import egovframework.rte.ptl.mvc.tags.ui.pagination.PaginationInfo;
 import egovframework.webco.service.AdminService;
@@ -47,6 +52,7 @@ public class RemembranceController {
     @Resource(name = "adminService")
     private AdminService adminService;
     
+    private String fileStorePath = EgovProperties.getProperty("globals.fileStorePath");
 	
 	//기증자 추모관
 	@RequestMapping("/remembrance/member.do")
@@ -245,15 +251,15 @@ public class RemembranceController {
 	//기증자 추모관 updateEnd
 	@RequestMapping("/remembrance/memberUpdateEnd.do")
 	@ResponseBody
-	public String memberUpdateEnd(ModelMap model, @RequestParam Map<String, Object> commandMap) throws Exception{
+	public String memberUpdateEnd(ModelMap model, @RequestParam Map<String, Object> commandMap, @RequestParam("brd_file_org_nm") MultipartFile multipartFile) throws Exception{
 		
 		if("".equals(commandMap.get("donate_anonymity")) || commandMap.get("donate_anonymity")==null){
 			commandMap.put("donate_anonymity", "N");
 		}
-		
-    	remembranceService.memberUpdateEnd(commandMap); 
+		//사진 업데이트 작업하자
+    	//remembranceService.memberUpdateEnd(commandMap); 
     	String msg="수정완료";
-    	adminService.insertActHist("L", "[기증자 추모관]수정 완료");
+    	//adminService.insertActHist("L", "[기증자 추모관]수정 완료");
 		
     	return msg;	 	
 	}
@@ -281,22 +287,42 @@ public class RemembranceController {
 	
 	//기증자 추모관 글쓰기 end
 	@RequestMapping("/remembrance/memberWriteEnd.do")
-	public String memberWriteEnd(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletResponse response, HttpServletRequest request) throws Exception{
+	public String memberWriteEnd(ModelMap model, @RequestParam Map<String, Object> commandMap, HttpServletResponse response, HttpServletRequest request, @RequestParam("brd_file_org_nm") MultipartFile multipartFile) throws Exception{
 		
 		if("".equals(commandMap.get("donate_anonymity")) || commandMap.get("donate_anonymity")==null){
 			commandMap.put("donate_anonymity", "N");
 		}
 		
-    	remembranceService.memberWriteEnd(commandMap);    	    	
-    	adminService.insertActHist("L", "[기증자 추모관]글쓰기 완료");
-		
-    	response.setContentType("text/html; charset=UTF-8");    	 
-    	PrintWriter out = response.getWriter();    	
-    	out.println("<script>alert('등록 완료'); location.href='"+request.getContextPath()+"/remembrance/member.do';</script>");    	 
-    	out.flush();
-    	
-    	
-    	
+		try {
+			// 파일 정보
+			String originFilename = multipartFile.getOriginalFilename();
+			
+			if(!"".equals(originFilename) && originFilename!=null){
+				String extName
+				= originFilename.substring(originFilename.lastIndexOf("."), originFilename.length());
+			Long size = multipartFile.getSize();
+			
+			// 서버에서 저장 할 파일 이름
+			String saveFileName = genSaveFileName(extName);
+			
+			commandMap.put("donate_org_img", originFilename);
+			commandMap.put("donate_img", saveFileName);
+			
+			writeFile(multipartFile, saveFileName, request);
+			}
+			
+			remembranceService.memberWriteEnd(commandMap);    	    	
+	    	adminService.insertActHist("L", "[기증자 추모관]글쓰기 완료");
+			
+	    	response.setContentType("text/html; charset=UTF-8");    	 
+	    	PrintWriter out = response.getWriter();    	
+	    	out.println("<script>alert('등록 완료'); location.href='"+request.getContextPath()+"/remembrance/member.do';</script>");    	 
+	    	out.flush();
+	    	
+			}catch (IOException e) {
+			
+			throw new RuntimeException(e);
+		}				    	    	    	    	
     	
     	return "remembrance/member";	 	
 	}
@@ -621,6 +647,29 @@ public class RemembranceController {
 		
     	return msg;	 	
 	}
+	
+    // 현재 시간을 기준으로 파일 이름 생성
+    private String genSaveFileName(String extName) {
+		String fileName = "";
+		
+		fileName += UUID.randomUUID().toString().replaceAll("-", "");
+		fileName += extName;
+		
+		return fileName;
+	}
+    
+    // 파일을 실제로 write 하는 메서드
+ 	private boolean writeFile(MultipartFile multipartFile, String saveFileName, HttpServletRequest request)throws IOException{
+ 		boolean result = false;
+ 		//String path=request.getServletContext().getRealPath("/upFile");
+ 		String path = fileStorePath;
+ 		byte[] data = multipartFile.getBytes();
+ 		FileOutputStream fos = new FileOutputStream(path + "/" + saveFileName);
+ 		fos.write(data);
+ 		fos.close();
+ 		
+ 		return result;
+ 	}
 }
 
         

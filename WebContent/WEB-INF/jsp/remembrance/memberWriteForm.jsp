@@ -85,6 +85,12 @@ response.setDateHeader("Expires",0);
                                         <input id="donate_writer" name="donate_writer" type="text" class="form-control input-sm" placeholder="" value="">
                                     </div>
                                 </div>
+                                <div class="form-group">                         
+                                    <label class="col-md-1 control-label">사진</label>
+                                    <div class="col-md-5">                                        
+										<input type="file" id="brd_file_org_nm" name="brd_file_org_nm" size="34"/>
+                                    </div>                                                                                                          
+                                </div>
                                 <div class="form-group">
                                     <label class="col-md-1 control-label">성별</label>
                                     <div class="col-md-11">
@@ -101,19 +107,19 @@ response.setDateHeader("Expires",0);
                                     <label class="col-md-1 control-label">내용</label>
                                     <div class="col-md-11">
                                         <textarea class=" ckeditor" id="donate_contents" name="donate_contents" msg="내용을 " >
-                                        <!-- 에디터 편지지 수정하자  (예시)-->                                        																													
-											<!-- <table border="0" cellpadding="0" cellspacing="0" height="1733" width="1200">															
-												<tr style="background-image:url('/mine/ckImgSubmit.do?uid=5a350bd1-790b-49c9-af58-4925b03c991c&amp;fileName=letter3.jpg'); background-repeat:no-repeat;">
-													<td style="padding:20px 35px;" valign="top">
-													
-													</td>
-												</tr>															
-											</table> -->		
-                                        <!--  -->
+                                        
                                         </textarea>
                                     </div>
                                 </div>
-                                
+                                <!-- 에디터 편지지 수정하자  (예시)-->                                        																													
+										<!-- <table border="0" cellpadding="0" cellspacing="0" height="1733" width="1200">															
+											<tr style="background-image:url('/mine/ckImgSubmit.do?uid=5a350bd1-790b-49c9-af58-4925b03c991c&amp;fileName=letter3.jpg'); background-repeat:no-repeat;">
+												<td style="padding:20px 35px;" valign="top">
+												
+												</td>
+											</tr>															
+										</table> -->		
+                                <!--  -->
                             </div>
                             <!-- /.col-md-6 -->
                         </div>

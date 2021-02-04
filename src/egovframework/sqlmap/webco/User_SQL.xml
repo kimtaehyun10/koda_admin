@@ -660,7 +660,9 @@
 	    	donate_gender,
 	    	donate_age,
 	    	donate_anonymity,
-	    	donate_area
+	    	donate_area,
+	    	donate_org_img,
+	    	donate_img
 	    	) 
     	values 
     		(    		
@@ -673,7 +675,9 @@
     		#donate_gender#,
     		#donate_age#,
     		#donate_anonymity#,
-    		'1'
+    		'1',
+    		#donate_org_img#,
+    		#donate_img#
     		)
     </insert>
     

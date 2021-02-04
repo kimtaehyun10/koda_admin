@@ -89,6 +89,13 @@ response.setDateHeader("Expires",0);
                                         <input id="donate_writer" name="donate_writer" type="text" class="form-control input-sm" placeholder="" value="${selectedMember.donate_writer}">
                                     </div>
                                 </div>
+                                <div class="form-group">                         
+                                    <label class="col-md-1 control-label">사진</label>
+                                    <div class="col-md-5">                                        
+										<input type="file" id="brd_file_org_nm" name="brd_file_org_nm" size="34"/>
+										${selectedMember.donate_org_img}
+                                    </div>                                                                                                          
+                                </div>
                                 <div class="form-group">
                                     <label class="col-md-1 control-label">성별</label>
                                     <div class="col-md-11">
@@ -189,17 +196,26 @@ response.setDateHeader("Expires",0);
         
    	var donate_contents = CKEDITOR.instances['before_donate_contents'].getData();
    	$('#donate_contents').val(donate_contents);
+	
+   	var form = $('#updateForm')[0];	
+    var data = new FormData(form);
+    
       	$.ajax({
               url : "/remembrance/memberUpdateEnd.do",
+              enctype: 'multipart/form-data',
               type: "POST",
-              data:$("#updateForm").serialize(),
-              dataType:"json", 
+              data: data,
+              dataType:"json",
+              processData: false,
+              contentType: false,
+              cache: false,
+              timeout: 600000,
               success : function(data, textStatus, jqXHR) {
               	  alert(data);          
               	  $("#listForm").submit();
               }, 
               error : function(jqXHR, textStatus, errorThrown){
-               	
+               	  alert("수정실패");
               }
           });    	
       }
